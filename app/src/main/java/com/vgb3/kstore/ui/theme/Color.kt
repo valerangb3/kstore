@@ -25,4 +25,6 @@ val Success = Color(0xFF22C55E)
 
 val White = Color(0xFFFFFFFF)
 
+val TitleTextField = Color(0xFF334155)
+val SimpleButtonTextColor = Color(0xFF475569)
 //input placeholder 0xFF94A3B8

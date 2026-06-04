@@ -220,11 +220,9 @@ fun CreatePasswordScreenPreview() {
                         .padding(horizontal = 16.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .size(40.dp)
-                            .clickable {},
-                        contentAlignment = Alignment.Center
+                    IconButton(
+                        modifier = Modifier.size(40.dp),
+                        onClick = {}
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.left_arrow_icon),

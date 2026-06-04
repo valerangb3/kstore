@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,24 +15,21 @@ import com.vgb3.kstore.ui.theme.KStoreTheme
 
 @Composable
 fun VaultScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            PasswordItem()
-            PasswordItem()
-        }
+        PasswordItem()
+        PasswordItem()
     }
 }
 
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun VaultScreenPreview() {
-    KStoreTheme() {
+    KStoreTheme {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             floatingActionButton = {

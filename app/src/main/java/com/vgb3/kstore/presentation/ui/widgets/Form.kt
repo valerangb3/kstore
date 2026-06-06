@@ -9,19 +9,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.vgb3.kstore.presentation.model.VaultFormInputs
 
 @Composable
 fun Form(
     modifier: Modifier = Modifier,
-    formContent: @Composable () -> Unit,
-    formFooter: @Composable () -> Unit
+    formContent: @Composable (
+        onInput: (inputField: VaultFormInputs, text: String) -> Unit
+    ) -> Unit,
+    formFooter: @Composable () -> Unit,
+    onInput: (inputField: VaultFormInputs, text: String) -> Unit = { inputType, inputValue -> }
 ) {
     Column (
         modifier = modifier
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(32.dp)
     ) {
-        formContent()
+        formContent(onInput)
         formFooter()
     }
 }

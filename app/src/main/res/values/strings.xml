@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">KStore</string>
+    <string name="save_password">Сохранить пароль</string>
+    <string name="password">Пароль</string>
+    <string name="app_name_title">Приложение</string>
+    <string name="app_name_placeholder">Например, Netflix, GitHub</string>
+    <string name="add_new_password">Создать новый пароль</string>
+    <string name="login_email">Логин / Email</string>
+    <string name="url_title">URL</string>
+    <string name="cancel">Отменить</string>
 </resources>

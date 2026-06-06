@@ -28,13 +28,16 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.vgb3.kstore.R
+import com.vgb3.kstore.domain.model.VaultItem
 import com.vgb3.kstore.ui.theme.Border
 import com.vgb3.kstore.ui.theme.Red
 import com.vgb3.kstore.ui.theme.TextPlaceholder
 import com.vgb3.kstore.ui.theme.White
+import kotlin.math.log
 
 @Composable
 fun PasswordItem(
+    vaultItem: VaultItem,
     modifier: Modifier = Modifier,
     onAction: () -> Unit = {},
     onPasswordCopy: () -> Unit = {},
@@ -67,6 +70,7 @@ fun PasswordItem(
                 ),
             contentAlignment = Alignment.Center
         ) {
+            //TODO: ICON NOT IMPLEMENTED
             Icon(
                 painter = painterResource(R.drawable.youtube_icon),
                 contentDescription = null,
@@ -77,11 +81,11 @@ fun PasswordItem(
             modifier = Modifier.weight(1f)
         ) {
             Text(
-                text = "Youtube",
+                text = vaultItem.appName,
                 fontWeight = FontWeight.W700,
                 fontSize = 16.sp
             )
-            Text(text = "vgb3@gmail.com")
+            Text(text = vaultItem.login)
         }
         Row {
             Box(
@@ -122,7 +126,24 @@ fun PasswordItemPreview() {
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        PasswordItem()
-        PasswordItem()
+
+        PasswordItem(
+            VaultItem(
+                id = "#1",
+                appName = "youtube",
+                url = "",
+                login = "vgb3@gmail.com",
+                password = "password,"
+            )
+        )
+        PasswordItem(
+            VaultItem(
+                id = "#2",
+                appName = "youtube",
+                url = "",
+                login = "vgb4@gmail.com",
+                password = "password,"
+            )
+        )
     }
 }

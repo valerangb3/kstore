@@ -15,12 +15,14 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.ui.NavDisplay
 import com.vgb3.kstore.navigation.VaultCreate
 import com.vgb3.kstore.navigation.VaultList
+import com.vgb3.kstore.presentation.VaultViewModel
 import com.vgb3.kstore.presentation.ui.screens.CreatePasswordScreen
 import com.vgb3.kstore.presentation.ui.screens.VaultScreen
 import com.vgb3.kstore.presentation.ui.widgets.CreatePasswordFab
@@ -29,6 +31,7 @@ import com.vgb3.kstore.presentation.ui.widgets.CreatePasswordFab
 fun App(
     backStack: SnapshotStateList<Any>,
     modifier: Modifier = Modifier,
+    vaultViewModel: VaultViewModel,
 ) {
     NavDisplay(
         modifier = modifier,
@@ -55,7 +58,8 @@ fun App(
                                 start = 24.dp,
                                 bottom = bottomPadding,
                                 end = 24.dp,
-                            )
+                            ),
+                            vaultViewModel = vaultViewModel
                         )
                     }
                 }
@@ -75,6 +79,7 @@ fun App(
                                     modifier = Modifier.size(40.dp),
                                     onClick = {
                                         backStack.removeLastOrNull()
+                                        vaultViewModel.clearFormFields()
                                     }
                                 ) {
                                     Icon(
@@ -85,7 +90,7 @@ fun App(
                                 Text(
                                     modifier = Modifier
                                         .weight(1f),
-                                    text = "Add New Password",
+                                    text = stringResource(R.string.add_new_password),
                                     textAlign = TextAlign.Center
                                 )
                             }
@@ -99,7 +104,16 @@ fun App(
                                 start = 16.dp,
                                 bottom = bottomPadding,
                                 end = 16.dp,
-                            )
+                            ),
+                            onCancel = {
+                                backStack.removeLastOrNull()
+                                vaultViewModel.clearFormFields()
+                            },
+                            onSavePassword = {
+                                vaultViewModel.createVault()
+                                backStack.removeLastOrNull()
+                            },
+                            vaultViewModel = vaultViewModel,
                         )
                     }
                 }

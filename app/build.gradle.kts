@@ -63,4 +63,6 @@ dependencies {
     implementation(libs.kotlinx.serialization.core)
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
+    implementation(libs.dagger)
+    ksp(libs.dagger.compiler)
 }

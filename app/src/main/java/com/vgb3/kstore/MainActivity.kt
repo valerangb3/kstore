@@ -8,6 +8,7 @@ import androidx.activity.viewModels
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import com.vgb3.kstore.di.test.datasource.LocalSource
+import com.vgb3.kstore.di.test.presenter.MainActivityPresenter
 import com.vgb3.kstore.navigation.VaultList
 import com.vgb3.kstore.presentation.VaultFormViewModel
 import com.vgb3.kstore.presentation.VaultViewModel
@@ -20,6 +21,8 @@ class MainActivity : ComponentActivity() {
     private val vaultFormViewModel: VaultFormViewModel by viewModels { VaultFormViewModel.Factory }
     @Inject
     lateinit var localSource: LocalSource
+    @Inject
+    lateinit var mainActivityPresenter: MainActivityPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

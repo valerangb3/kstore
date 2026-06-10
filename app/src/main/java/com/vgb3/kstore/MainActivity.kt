@@ -1,5 +1,6 @@
 package com.vgb3.kstore
 
+import android.content.res.Resources
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -23,11 +24,13 @@ class MainActivity : ComponentActivity() {
     lateinit var localSource: LocalSource
     @Inject
     lateinit var mainActivityPresenter: MainActivityPresenter
+    @Inject
+    lateinit var rs: Resources
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val dataSourceComponent = (this.applicationContext as KStoreApplication).dataSourceComponent
-        //dataSourceComponent.inject(this)
+        dataSourceComponent.inject(this)
         enableEdgeToEdge()
         setContent {
             KStoreTheme {

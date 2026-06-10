@@ -9,7 +9,7 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-class MainModule(private val context: Context) {
+class MainModule {
 
     @Provides
     fun provideMainActivityProvider(localSource: LocalSource, remoteSource: RemoteSource): MainActivityPresenter {
@@ -17,7 +17,7 @@ class MainModule(private val context: Context) {
     }
 
     @Provides
-    fun getResources(): Resources {
+    fun getResources(context: Context): Resources {
         return context.resources
     }
 }

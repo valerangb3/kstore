@@ -2,6 +2,7 @@ package com.vgb3.kstore
 
 import android.content.res.Resources
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -24,13 +25,14 @@ class MainActivity : ComponentActivity() {
     lateinit var localSource: LocalSource
     @Inject
     lateinit var mainActivityPresenter: MainActivityPresenter
-    @Inject
-    lateinit var rs: Resources
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val dataSourceComponent = (this.applicationContext as KStoreApplication).dataSourceComponent
-        dataSourceComponent.inject(this)
+        val appComponent = (this.applicationContext as KStoreApplication).appComponent
+        val mainComponent = appComponent.getMainComponent()
+        mainActivityPresenter = mainComponent.getMainPresenter()
+        Log.d("CHECK_PRESENTER", mainActivityPresenter.hashCode().toString())
+        //dataSourceComponent.inject(this)
         enableEdgeToEdge()
         setContent {
             KStoreTheme {

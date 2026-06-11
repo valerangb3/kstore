@@ -6,8 +6,7 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-class DataSourceModule {
-
+class AppModule {
     @Provides
     fun provideLocalSource(): LocalSource {
         return LocalSource()

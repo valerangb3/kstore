@@ -14,7 +14,7 @@ interface AppComponent {
     //fun inject(activity: MainActivity)
     fun getLocalSource(): LocalSource
     fun getRemoteSource(): RemoteSource
-    fun getMainComponent(): MainComponent
+    fun getMainComponent(): MainComponent.MainComponentBuilder
 
     @Component.Builder
     interface AppComponentBuilder {

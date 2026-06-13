@@ -13,5 +13,4 @@ class MainModule {
     fun provideMainActivityPresenterProvider(localSource: LocalSource, remoteSource: RemoteSource): MainActivityPresenter {
         return MainActivityPresenter(localSource, remoteSource)
     }
-
 }

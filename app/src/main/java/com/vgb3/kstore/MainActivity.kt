@@ -9,6 +9,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
+import com.vgb3.kstore.di.dagger.modules.MainModule
 import com.vgb3.kstore.di.test.datasource.LocalSource
 import com.vgb3.kstore.di.test.presenter.MainActivityPresenter
 import com.vgb3.kstore.navigation.VaultList
@@ -29,9 +30,12 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val appComponent = (this.applicationContext as KStoreApplication).appComponent
-        val mainComponent = appComponent.getMainComponent()
-        mainActivityPresenter = mainComponent.getMainPresenter()
-        Log.d("CHECK_PRESENTER", mainActivityPresenter.hashCode().toString())
+        val mainComponent = appComponent
+            .getMainComponent()
+            .setId("foo-bar")
+            .build()
+        mainComponent.getUser()
+        //Log.d("CHECK_PRESENTER", mainActivityPresenter.hashCode().toString())
         //dataSourceComponent.inject(this)
         enableEdgeToEdge()
         setContent {

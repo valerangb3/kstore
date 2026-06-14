@@ -32,14 +32,10 @@ fun VaultScreen(
         is VaultResult.Loading -> {}
         is VaultResult.VaultContent -> {
             val items = (vaultState as VaultResult.VaultContent).vaultList
-            if (items.isNotEmpty()) {
-                VaultData(
-                    modifier = modifier,
-                    vaultItems = (vaultState as VaultResult.VaultContent).vaultList
-                )
-            } else {
-                EmptyVault()
-            }
+            VaultData(
+                modifier = modifier,
+                vaultItems = items
+            )
         }
     }
 }
@@ -49,17 +45,21 @@ fun VaultData(
     modifier: Modifier = Modifier,
     vaultItems: List<VaultItem>
 ) {
-    LazyColumn(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        items(vaultItems) { vaultItem ->
-            PasswordItem(
-                vaultItem = vaultItem,
-                onAction = {},
-                onPasswordCopy = {}
-            )
+    if (vaultItems.isNotEmpty()) {
+        LazyColumn(
+            modifier = modifier,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            items(vaultItems) { vaultItem ->
+                PasswordItem(
+                    vaultItem = vaultItem,
+                    onAction = {},
+                    onPasswordCopy = {}
+                )
+            }
         }
+    } else {
+        EmptyVault()
     }
 }
 
@@ -85,7 +85,7 @@ fun VaultScreenPreview() {
                     end = 24.dp,
                 ),
                 vaultItems = listOf(
-                    VaultItem(
+                    /*VaultItem(
                         id = "#1",
                         appName = "youtube",
                         url = "",
@@ -98,7 +98,7 @@ fun VaultScreenPreview() {
                         url = "",
                         login = "vgb3@gmail.com",
                         password = "password,"
-                    )
+                    )*/
                 )
             )
         }

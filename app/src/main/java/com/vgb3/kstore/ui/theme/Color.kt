@@ -18,6 +18,10 @@ val TextSecondary = Color(0xFF64748B)
 val TextPlaceholder = Color(0xFF94A3B8)
 val Border = Color(0xFFE2E8F0)
 
+val CircleColorShape = Color(0x0D5048E5)
+val InsideBorderColor = Color(0x335048E5)
+val PrimaryIconTint = Color(0xFF5048E5)
+
 val Red = Color(0xFFDC2626)
 
 val Danger = Color(0xFFEF4444)

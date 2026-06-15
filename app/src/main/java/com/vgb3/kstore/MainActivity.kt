@@ -7,7 +7,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
-import com.vgb3.kstore.navigation.VaultList
+import com.vgb3.kstore.navigation.AppRoute
+import com.vgb3.kstore.presentation.AppViewModel
 import com.vgb3.kstore.presentation.VaultFormViewModel
 import com.vgb3.kstore.presentation.VaultViewModel
 import com.vgb3.kstore.ui.theme.KStoreTheme
@@ -15,17 +16,19 @@ import kotlin.getValue
 
 class MainActivity : ComponentActivity() {
     private val vaultViewModel: VaultViewModel by viewModels { VaultViewModel.Factory }
-    private val vaultFormViewModel: VaultFormViewModel by viewModels { VaultFormViewModel.Factory }
+    //private val vaultFormViewModel: VaultFormViewModel by viewModels { VaultFormViewModel.Factory }
+    private val appViewModel: AppViewModel by viewModels { AppViewModel.Factory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             KStoreTheme {
-                val backStack = remember { mutableStateListOf<Any>(VaultList) }
+                val backStack = remember { mutableStateListOf<AppRoute>(AppRoute.VaultList) }
                 App(
                     backStack = backStack,
-                    vaultViewModel = vaultViewModel
+                    vaultViewModel = vaultViewModel,
+                    appViewModel = appViewModel
                 )
             }
         }

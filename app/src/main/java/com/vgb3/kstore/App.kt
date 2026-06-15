@@ -21,8 +21,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.ui.NavDisplay
-import com.vgb3.kstore.navigation.VaultCreate
-import com.vgb3.kstore.navigation.VaultList
+import com.vgb3.kstore.navigation.AppRoute
+import com.vgb3.kstore.presentation.AppViewModel
 import com.vgb3.kstore.presentation.VaultViewModel
 import com.vgb3.kstore.presentation.model.VaultResult
 import com.vgb3.kstore.presentation.ui.screens.CreatePasswordScreen
@@ -31,85 +31,90 @@ import com.vgb3.kstore.presentation.ui.widgets.CreatePasswordFab
 
 @Composable
 fun App(
-    backStack: SnapshotStateList<Any>,
+    backStack: SnapshotStateList<AppRoute>,
     modifier: Modifier = Modifier,
+    appViewModel: AppViewModel,
     vaultViewModel: VaultViewModel,
 ) {
-    NavDisplay(
-        modifier = modifier,
-        backStack = backStack,
-        onBack = { backStack.removeLastOrNull() },
-        entryProvider = { key ->
-            when (key) {
-                is VaultList -> NavEntry(key) {
-                    val vaultState = vaultViewModel.vaultState.collectAsStateWithLifecycle()
-                    Scaffold(
-                        modifier = Modifier.fillMaxSize(),
-                        floatingActionButton = {
-                            val state = vaultState.value
-                            if (state is VaultResult.VaultContent && state.vaultList.isNotEmpty()) {
-                                CreatePasswordFab(
-                                    onClick =  {
-                                        backStack.add(VaultCreate)
-                                    }
-                                )
-                            }
+    val vaultState = vaultViewModel.vaultState.collectAsStateWithLifecycle()
+    //todo: detect recomposition, need fix ()
+    //todo: need pass an object so that the viewmodel gets a list of elements
+    //todo: but its make extra request to db
+    //todo: !!!possible fix is cache in repository!!!
+    val appState = appViewModel.appState.collectAsStateWithLifecycle()
+    val lastRoute = backStack.last()
+    Scaffold(
+        modifier = modifier
+            //.statusBarsPadding() - if VaultCreate screen
+            .fillMaxSize(),
+        floatingActionButton = {
+            if (lastRoute is AppRoute.VaultList) {
+                CreatePasswordFab(
+                    onClick =  {
+                        backStack.add(AppRoute.VaultCreate)
+                    }
+                )
+            }
+            /*val state = vaultState.value
+            if (state is VaultResult.VaultContent && state.vaultList.isNotEmpty()) {
+                CreatePasswordFab(
+                    onClick =  {
+                        backStack.add(AppRoute.VaultCreate)
+                    }
+                )
+            }*/
+        },
+        topBar = {
+            if (lastRoute is AppRoute.VaultCreate) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    IconButton(
+                        modifier = Modifier.size(40.dp),
+                        onClick = {
+                            backStack.removeLastOrNull()
+                            vaultViewModel.clearFormFields()
                         }
-                    ) { innerPadding ->
-                        val topPadding = innerPadding.calculateTopPadding()
-                        val bottomPadding = innerPadding.calculateTopPadding()
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.left_arrow_icon),
+                            contentDescription = null,
+                        )
+                    }
+                    Text(
+                        modifier = Modifier
+                            .weight(1f),
+                        text = stringResource(R.string.add_new_password),
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+        }
+    ) { innerPadding ->
+        NavDisplay(
+            modifier = Modifier.padding(innerPadding),
+            backStack = backStack,
+            onBack = { backStack.removeLastOrNull() },
+            entryProvider = { key ->
+                when (key) {
+                    is AppRoute.VaultList -> NavEntry(key) {
                         VaultScreen(
                             modifier = Modifier.padding(
-                                top = topPadding,
                                 start = 24.dp,
-                                bottom = bottomPadding,
                                 end = 24.dp,
                             ),
                             vaultViewModel = vaultViewModel,
-                            onNavigateToCreatePasswordScreen = { backStack.add(VaultCreate) },
+                            onNavigateToCreatePasswordScreen = { backStack.add(AppRoute.VaultCreate) },
                         )
                     }
-                }
-                is VaultCreate -> NavEntry(key) {
-                    Scaffold(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .statusBarsPadding(),
-                        topBar = {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 16.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                            ) {
-                                IconButton(
-                                    modifier = Modifier.size(40.dp),
-                                    onClick = {
-                                        backStack.removeLastOrNull()
-                                        vaultViewModel.clearFormFields()
-                                    }
-                                ) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.left_arrow_icon),
-                                        contentDescription = null,
-                                    )
-                                }
-                                Text(
-                                    modifier = Modifier
-                                        .weight(1f),
-                                    text = stringResource(R.string.add_new_password),
-                                    textAlign = TextAlign.Center
-                                )
-                            }
-                        }
-                    ) { innerPadding ->
-                        val topPadding = innerPadding.calculateTopPadding() + 16.dp
-                        val bottomPadding = innerPadding.calculateTopPadding()
+                    is AppRoute.VaultCreate -> NavEntry(key) {
                         CreatePasswordScreen(
                             modifier = Modifier.padding(
-                                top = topPadding,
+                                top = 16.dp,
                                 start = 16.dp,
-                                bottom = bottomPadding,
                                 end = 16.dp,
                             ),
                             onCancel = {
@@ -123,11 +128,27 @@ fun App(
                             vaultViewModel = vaultViewModel,
                         )
                     }
-                }
-                else -> {
-                    error("Unknown route: $key")
+                    else -> {
+                        error("Unknown route: $key")
+                    }
                 }
             }
+        )
+
+
+        if (false) {
+            val topPadding = innerPadding.calculateTopPadding()
+            val bottomPadding = innerPadding.calculateTopPadding()
+            VaultScreen(
+                modifier = Modifier.padding(
+                    top = topPadding,
+                    start = 24.dp,
+                    bottom = bottomPadding,
+                    end = 24.dp,
+                ),
+                vaultViewModel = vaultViewModel,
+                onNavigateToCreatePasswordScreen = { backStack.add(AppRoute.VaultCreate) },
+            )
         }
-    )
+    }
 }

@@ -7,11 +7,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vgb3.kstore.domain.model.VaultItem
 import com.vgb3.kstore.presentation.VaultViewModel
 import com.vgb3.kstore.presentation.model.VaultResult
@@ -24,22 +24,20 @@ import com.vgb3.kstore.ui.theme.KStoreTheme
 fun VaultScreen(
     modifier: Modifier = Modifier,
     vaultViewModel: VaultViewModel,
+    onNavigateToCreatePasswordScreen: () -> Unit = {},
 ) {
-    val vaultState by vaultViewModel.vaultState.collectAsState()
+    val vaultState by vaultViewModel.vaultState.collectAsStateWithLifecycle()
     when (vaultState) {
         is VaultResult.Idle -> {}
         is VaultResult.Error -> {}
         is VaultResult.Loading -> {}
         is VaultResult.VaultContent -> {
             val items = (vaultState as VaultResult.VaultContent).vaultList
-            if (items.isNotEmpty()) {
-                VaultData(
-                    modifier = modifier,
-                    vaultItems = (vaultState as VaultResult.VaultContent).vaultList
-                )
-            } else {
-                EmptyVault()
-            }
+            VaultData(
+                modifier = modifier,
+                vaultItems = items,
+                onNavigateToCreatePasswordScreen = onNavigateToCreatePasswordScreen
+            )
         }
     }
 }
@@ -47,19 +45,26 @@ fun VaultScreen(
 @Composable
 fun VaultData(
     modifier: Modifier = Modifier,
-    vaultItems: List<VaultItem>
+    vaultItems: List<VaultItem>,
+    onNavigateToCreatePasswordScreen: () -> Unit = {},
 ) {
-    LazyColumn(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        items(vaultItems) { vaultItem ->
-            PasswordItem(
-                vaultItem = vaultItem,
-                onAction = {},
-                onPasswordCopy = {}
-            )
+    if (vaultItems.isNotEmpty()) {
+        LazyColumn(
+            modifier = modifier,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            items(vaultItems) { vaultItem ->
+                PasswordItem(
+                    vaultItem = vaultItem,
+                    onAction = {},
+                    onPasswordCopy = {}
+                )
+            }
         }
+    } else {
+        EmptyVault(
+            onNavigateToCreatePasswordScreen = onNavigateToCreatePasswordScreen
+        )
     }
 }
 
@@ -85,7 +90,7 @@ fun VaultScreenPreview() {
                     end = 24.dp,
                 ),
                 vaultItems = listOf(
-                    VaultItem(
+                    /*VaultItem(
                         id = "#1",
                         appName = "youtube",
                         url = "",
@@ -98,7 +103,7 @@ fun VaultScreenPreview() {
                         url = "",
                         login = "vgb3@gmail.com",
                         password = "password,"
-                    )
+                    )*/
                 )
             )
         }

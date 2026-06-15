@@ -7,11 +7,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vgb3.kstore.domain.model.VaultItem
 import com.vgb3.kstore.presentation.VaultViewModel
 import com.vgb3.kstore.presentation.model.VaultResult
@@ -24,8 +24,9 @@ import com.vgb3.kstore.ui.theme.KStoreTheme
 fun VaultScreen(
     modifier: Modifier = Modifier,
     vaultViewModel: VaultViewModel,
+    onNavigateToCreatePasswordScreen: () -> Unit = {},
 ) {
-    val vaultState by vaultViewModel.vaultState.collectAsState()
+    val vaultState by vaultViewModel.vaultState.collectAsStateWithLifecycle()
     when (vaultState) {
         is VaultResult.Idle -> {}
         is VaultResult.Error -> {}
@@ -34,7 +35,8 @@ fun VaultScreen(
             val items = (vaultState as VaultResult.VaultContent).vaultList
             VaultData(
                 modifier = modifier,
-                vaultItems = items
+                vaultItems = items,
+                onNavigateToCreatePasswordScreen = onNavigateToCreatePasswordScreen
             )
         }
     }
@@ -43,7 +45,8 @@ fun VaultScreen(
 @Composable
 fun VaultData(
     modifier: Modifier = Modifier,
-    vaultItems: List<VaultItem>
+    vaultItems: List<VaultItem>,
+    onNavigateToCreatePasswordScreen: () -> Unit = {},
 ) {
     if (vaultItems.isNotEmpty()) {
         LazyColumn(
@@ -59,7 +62,9 @@ fun VaultData(
             }
         }
     } else {
-        EmptyVault()
+        EmptyVault(
+            onNavigateToCreatePasswordScreen = onNavigateToCreatePasswordScreen
+        )
     }
 }
 

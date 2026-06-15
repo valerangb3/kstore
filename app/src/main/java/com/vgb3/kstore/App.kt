@@ -18,11 +18,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.ui.NavDisplay
 import com.vgb3.kstore.navigation.VaultCreate
 import com.vgb3.kstore.navigation.VaultList
 import com.vgb3.kstore.presentation.VaultViewModel
+import com.vgb3.kstore.presentation.model.VaultResult
 import com.vgb3.kstore.presentation.ui.screens.CreatePasswordScreen
 import com.vgb3.kstore.presentation.ui.screens.VaultScreen
 import com.vgb3.kstore.presentation.ui.widgets.CreatePasswordFab
@@ -40,14 +42,18 @@ fun App(
         entryProvider = { key ->
             when (key) {
                 is VaultList -> NavEntry(key) {
+                    val vaultState = vaultViewModel.vaultState.collectAsStateWithLifecycle()
                     Scaffold(
                         modifier = Modifier.fillMaxSize(),
                         floatingActionButton = {
-                            CreatePasswordFab(
-                                onClick =  {
-                                    backStack.add(VaultCreate)
-                                }
-                            )
+                            val state = vaultState.value
+                            if (state is VaultResult.VaultContent && state.vaultList.isNotEmpty()) {
+                                CreatePasswordFab(
+                                    onClick =  {
+                                        backStack.add(VaultCreate)
+                                    }
+                                )
+                            }
                         }
                     ) { innerPadding ->
                         val topPadding = innerPadding.calculateTopPadding()
@@ -59,7 +65,8 @@ fun App(
                                 bottom = bottomPadding,
                                 end = 24.dp,
                             ),
-                            vaultViewModel = vaultViewModel
+                            vaultViewModel = vaultViewModel,
+                            onNavigateToCreatePasswordScreen = { backStack.add(VaultCreate) },
                         )
                     }
                 }

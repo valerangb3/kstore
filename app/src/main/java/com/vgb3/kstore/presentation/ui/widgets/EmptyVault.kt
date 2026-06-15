@@ -1,6 +1,5 @@
 package com.vgb3.kstore.presentation.ui.widgets
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,7 +27,10 @@ import com.vgb3.kstore.ui.theme.Success
 import com.vgb3.kstore.ui.theme.White
 
 @Composable
-fun EmptyVault(modifier: Modifier = Modifier) {
+fun EmptyVault(
+    modifier: Modifier = Modifier,
+    onNavigateToCreatePasswordScreen: () -> Unit = {},
+) {
     Column(
         modifier = modifier
             .padding(32.dp)
@@ -76,13 +78,13 @@ fun EmptyVault(modifier: Modifier = Modifier) {
                 .padding(top = 32.dp),
             textAlign = TextAlign.Center,
             fontSize = 16.sp,
-            text = "Сохраните первый пароль, чтобы она всегда был под рукой",
+            text = "Сохраните первый пароль, чтобы он всегда был под рукой",
         )
         Spacer(
             modifier = Modifier.height(40.dp)
         )
         PrimaryButton(
-            onClick = {},
+            onClick = onNavigateToCreatePasswordScreen,
             modifier = Modifier.fillMaxWidth(),
             content = {
                 Row(

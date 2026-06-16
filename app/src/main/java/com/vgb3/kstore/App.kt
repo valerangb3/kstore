@@ -1,11 +1,13 @@
 package com.vgb3.kstore
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -25,6 +27,7 @@ import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.ui.NavDisplay
 import com.vgb3.kstore.navigation.AppRoute
 import com.vgb3.kstore.presentation.AppViewModel
+import com.vgb3.kstore.presentation.ScaffoldItem
 import com.vgb3.kstore.presentation.VaultViewModel
 import com.vgb3.kstore.presentation.model.ScaffoldVisibleState
 import com.vgb3.kstore.presentation.model.VaultResult
@@ -90,6 +93,11 @@ fun App(
                     )
                 }
             }
+        },
+        bottomBar = {
+            if (appState.scaffoldState.showBottomBar) {
+                Text("Bottom bar")
+            }
         }
     ) { innerPadding ->
         NavDisplay(
@@ -104,23 +112,30 @@ fun App(
                             val showFab = (vaultState as VaultResult.VaultContent).vaultList.isNotEmpty()
                             if (showFab) {
                                 appViewModel.updateScaffoldState(
-                                    item = ScaffoldVisibleState(
-                                        fabVisible = true,
-                                        bottomBarVisible = true,
-                                        topBarVisible = false
-                                    )
+                                    ScaffoldItem.FAB,
+                                    true
                                 )
                             }
                         }
-                        VaultScreen(
-                            modifier = Modifier.padding(
-                                start = 24.dp,
-                                end = 24.dp,
-                            ),
-                            //vaultViewModel = vaultViewModel,
-                            vaultScreenState = vaultState,
-                            onNavigateToCreatePasswordScreen = { backStack.add(AppRoute.VaultCreate) },
-                        )
+                        Column() {
+                            Button(onClick = {
+                                appViewModel.updateScaffoldState(
+                                    ScaffoldItem.BOTTOM_BAR,
+                                    !appViewModel.appState.value.scaffoldState.showBottomBar
+                                )
+                            }) {
+                                Text("Показать/скрыть нижнюю навигацию")
+                            }
+                            VaultScreen(
+                                modifier = Modifier.padding(
+                                    start = 24.dp,
+                                    end = 24.dp,
+                                ),
+                                //vaultViewModel = vaultViewModel,
+                                vaultScreenState = vaultState,
+                                onNavigateToCreatePasswordScreen = { backStack.add(AppRoute.VaultCreate) },
+                            )
+                        }
                     }
                     is AppRoute.VaultCreate -> NavEntry(key) {
                         CreatePasswordScreen(

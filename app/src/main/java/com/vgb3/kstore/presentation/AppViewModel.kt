@@ -10,6 +10,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
+enum class ScaffoldItem {
+    TOP_BAR, BOTTOM_BAR, FAB;
+}
+
 class AppViewModel : ViewModel() {
     private val _state = MutableStateFlow(
         AppState(
@@ -22,15 +26,31 @@ class AppViewModel : ViewModel() {
     )
     val appState = _state.asStateFlow()
 
-    fun updateScaffoldState(item: ScaffoldVisibleState) {
+    fun updateScaffoldState(scaffoldItem: ScaffoldItem, value: Boolean) {
         _state.update { currentState ->
-            currentState.copy(
-                scaffoldState = currentState.scaffoldState.copy(
-                    showFab = item.fabVisible,
-                    showBottomBar = item.bottomBarVisible,
-                    showTopBar = item.topBarVisible
-                )
-            )
+            when (scaffoldItem) {
+                ScaffoldItem.FAB -> {
+                    currentState.copy(
+                        scaffoldState = currentState.scaffoldState.copy(
+                            showFab = value,
+                        )
+                    )
+                }
+                ScaffoldItem.TOP_BAR -> {
+                    currentState.copy(
+                        scaffoldState = currentState.scaffoldState.copy(
+                            showTopBar = value,
+                        )
+                    )
+                }
+                ScaffoldItem.BOTTOM_BAR -> {
+                    currentState.copy(
+                        scaffoldState = currentState.scaffoldState.copy(
+                            showBottomBar = value,
+                        )
+                    )
+                }
+            }
         }
     }
 

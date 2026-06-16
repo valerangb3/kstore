@@ -11,6 +11,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,6 +26,7 @@ import androidx.navigation3.ui.NavDisplay
 import com.vgb3.kstore.navigation.AppRoute
 import com.vgb3.kstore.presentation.AppViewModel
 import com.vgb3.kstore.presentation.VaultViewModel
+import com.vgb3.kstore.presentation.model.ScaffoldVisibleState
 import com.vgb3.kstore.presentation.model.VaultResult
 import com.vgb3.kstore.presentation.ui.screens.CreatePasswordScreen
 import com.vgb3.kstore.presentation.ui.screens.VaultScreen
@@ -36,19 +39,14 @@ fun App(
     appViewModel: AppViewModel,
     vaultViewModel: VaultViewModel,
 ) {
-    val vaultState = vaultViewModel.vaultState.collectAsStateWithLifecycle()
-    //todo: detect recomposition, need fix ()
-    //todo: need pass an object so that the viewmodel gets a list of elements
-    //todo: but its make extra request to db
-    //todo: !!!possible fix is cache in repository!!!
-    val appState = appViewModel.appState.collectAsStateWithLifecycle()
-    val lastRoute = backStack.last()
+    val appState by appViewModel.appState.collectAsStateWithLifecycle()
+
     Scaffold(
         modifier = modifier
             //.statusBarsPadding() - if VaultCreate screen
             .fillMaxSize(),
         floatingActionButton = {
-            if (lastRoute is AppRoute.VaultList) {
+            if (appState.scaffoldState.showFab) {
                 CreatePasswordFab(
                     onClick =  {
                         backStack.add(AppRoute.VaultCreate)
@@ -65,7 +63,7 @@ fun App(
             }*/
         },
         topBar = {
-            if (lastRoute is AppRoute.VaultCreate) {
+            if (false/*topRoute is AppRoute.VaultCreate*/) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -101,12 +99,26 @@ fun App(
             entryProvider = { key ->
                 when (key) {
                     is AppRoute.VaultList -> NavEntry(key) {
+                        val vaultState by vaultViewModel.vaultState.collectAsStateWithLifecycle()
+                        if (vaultState is VaultResult.VaultContent) {
+                            val showFab = (vaultState as VaultResult.VaultContent).vaultList.isNotEmpty()
+                            if (showFab) {
+                                appViewModel.updateScaffoldState(
+                                    item = ScaffoldVisibleState(
+                                        fabVisible = true,
+                                        bottomBarVisible = true,
+                                        topBarVisible = false
+                                    )
+                                )
+                            }
+                        }
                         VaultScreen(
                             modifier = Modifier.padding(
                                 start = 24.dp,
                                 end = 24.dp,
                             ),
-                            vaultViewModel = vaultViewModel,
+                            //vaultViewModel = vaultViewModel,
+                            vaultScreenState = vaultState,
                             onNavigateToCreatePasswordScreen = { backStack.add(AppRoute.VaultCreate) },
                         )
                     }
@@ -136,7 +148,7 @@ fun App(
         )
 
 
-        if (false) {
+        /*if (false) {
             val topPadding = innerPadding.calculateTopPadding()
             val bottomPadding = innerPadding.calculateTopPadding()
             VaultScreen(
@@ -149,6 +161,6 @@ fun App(
                 vaultViewModel = vaultViewModel,
                 onNavigateToCreatePasswordScreen = { backStack.add(AppRoute.VaultCreate) },
             )
-        }
+        }*/
     }
 }

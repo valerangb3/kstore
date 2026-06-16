@@ -23,19 +23,17 @@ import com.vgb3.kstore.ui.theme.KStoreTheme
 @Composable
 fun VaultScreen(
     modifier: Modifier = Modifier,
-    vaultViewModel: VaultViewModel,
+    vaultScreenState: VaultResult,
     onNavigateToCreatePasswordScreen: () -> Unit = {},
 ) {
-    val vaultState by vaultViewModel.vaultState.collectAsStateWithLifecycle()
-    when (vaultState) {
+    when (vaultScreenState) {
         is VaultResult.Idle -> {}
         is VaultResult.Error -> {}
         is VaultResult.Loading -> {}
         is VaultResult.VaultContent -> {
-            val items = (vaultState as VaultResult.VaultContent).vaultList
             VaultData(
                 modifier = modifier,
-                vaultItems = items,
+                vaultItems = vaultScreenState.vaultList,
                 onNavigateToCreatePasswordScreen = onNavigateToCreatePasswordScreen
             )
         }

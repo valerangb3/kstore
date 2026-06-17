@@ -5,14 +5,15 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.vgb3.kstore.presentation.model.AppState
 import com.vgb3.kstore.presentation.model.ScaffoldState
-import com.vgb3.kstore.presentation.model.ScaffoldVisibleState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-enum class ScaffoldItem {
-    TOP_BAR, BOTTOM_BAR, FAB;
-}
+data class ScaffoldItem(
+    val showFab: Boolean,
+    val showBottomBar: Boolean,
+    val showTopBar: Boolean
+)
 
 class AppViewModel : ViewModel() {
     private val _state = MutableStateFlow(
@@ -26,31 +27,15 @@ class AppViewModel : ViewModel() {
     )
     val appState = _state.asStateFlow()
 
-    fun updateScaffoldState(scaffoldItem: ScaffoldItem, value: Boolean) {
+    fun updateScaffoldState(scaffoldItem: ScaffoldItem) {
         _state.update { currentState ->
-            when (scaffoldItem) {
-                ScaffoldItem.FAB -> {
-                    currentState.copy(
-                        scaffoldState = currentState.scaffoldState.copy(
-                            showFab = value,
-                        )
-                    )
-                }
-                ScaffoldItem.TOP_BAR -> {
-                    currentState.copy(
-                        scaffoldState = currentState.scaffoldState.copy(
-                            showTopBar = value,
-                        )
-                    )
-                }
-                ScaffoldItem.BOTTOM_BAR -> {
-                    currentState.copy(
-                        scaffoldState = currentState.scaffoldState.copy(
-                            showBottomBar = value,
-                        )
-                    )
-                }
-            }
+            currentState.copy(
+                scaffoldState = currentState.scaffoldState.copy(
+                    showFab = scaffoldItem.showFab,
+                    showBottomBar = scaffoldItem.showBottomBar,
+                    showTopBar = scaffoldItem.showTopBar
+                )
+            )
         }
     }
 

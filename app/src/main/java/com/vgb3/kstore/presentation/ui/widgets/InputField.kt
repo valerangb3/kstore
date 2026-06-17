@@ -47,6 +47,7 @@ fun InputField(
         ) {
             titleField?.invoke()
             OutlinedTextField(
+                singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
                 value = value,
                 onValueChange = onValueChange,

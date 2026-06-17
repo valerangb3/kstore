@@ -43,11 +43,17 @@ fun App(
     vaultViewModel: VaultViewModel,
 ) {
     val appState by appViewModel.appState.collectAsStateWithLifecycle()
+    val first = backStack.last()
 
     Scaffold(
         modifier = modifier
             //.statusBarsPadding() - if VaultCreate screen
-            .fillMaxSize(),
+            .fillMaxSize()
+            .then(
+        if (first is AppRoute.VaultCreate)
+                    Modifier.statusBarsPadding()
+                else Modifier
+            ),
         floatingActionButton = {
             if (appState.scaffoldState.showFab) {
                 CreatePasswordFab(
@@ -56,17 +62,9 @@ fun App(
                     }
                 )
             }
-            /*val state = vaultState.value
-            if (state is VaultResult.VaultContent && state.vaultList.isNotEmpty()) {
-                CreatePasswordFab(
-                    onClick =  {
-                        backStack.add(AppRoute.VaultCreate)
-                    }
-                )
-            }*/
         },
         topBar = {
-            if (false/*topRoute is AppRoute.VaultCreate*/) {
+            if (appState.scaffoldState.showTopBar) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -108,20 +106,26 @@ fun App(
                 when (key) {
                     is AppRoute.VaultList -> NavEntry(key) {
                         val vaultState by vaultViewModel.vaultState.collectAsStateWithLifecycle()
-                        if (vaultState is VaultResult.VaultContent) {
-                            val showFab = (vaultState as VaultResult.VaultContent).vaultList.isNotEmpty()
-                            if (showFab) {
-                                appViewModel.updateScaffoldState(
-                                    ScaffoldItem.FAB,
-                                    true
-                                )
-                            }
-                        }
+
+                        val showFab = if (vaultState is VaultResult.VaultContent) {
+                            (vaultState as VaultResult.VaultContent).vaultList.isNotEmpty()
+                        } else false
+
+                        appViewModel.updateScaffoldState(
+                            ScaffoldItem(
+                                showTopBar = false,
+                                showBottomBar = !appViewModel.appState.value.scaffoldState.showBottomBar,
+                                showFab = showFab
+                            )
+                        )
                         Column() {
                             Button(onClick = {
                                 appViewModel.updateScaffoldState(
-                                    ScaffoldItem.BOTTOM_BAR,
-                                    !appViewModel.appState.value.scaffoldState.showBottomBar
+                                    ScaffoldItem(
+                                        showTopBar = false,
+                                        showBottomBar = !appViewModel.appState.value.scaffoldState.showBottomBar,
+                                        showFab = showFab
+                                    )
                                 )
                             }) {
                                 Text("Показать/скрыть нижнюю навигацию")
@@ -138,6 +142,13 @@ fun App(
                         }
                     }
                     is AppRoute.VaultCreate -> NavEntry(key) {
+                        appViewModel.updateScaffoldState(
+                            ScaffoldItem(
+                                showTopBar = true,
+                                showBottomBar = false,
+                                showFab = false
+                            )
+                        )
                         CreatePasswordScreen(
                             modifier = Modifier.padding(
                                 top = 16.dp,
@@ -161,21 +172,5 @@ fun App(
                 }
             }
         )
-
-
-        /*if (false) {
-            val topPadding = innerPadding.calculateTopPadding()
-            val bottomPadding = innerPadding.calculateTopPadding()
-            VaultScreen(
-                modifier = Modifier.padding(
-                    top = topPadding,
-                    start = 24.dp,
-                    bottom = bottomPadding,
-                    end = 24.dp,
-                ),
-                vaultViewModel = vaultViewModel,
-                onNavigateToCreatePasswordScreen = { backStack.add(AppRoute.VaultCreate) },
-            )
-        }*/
     }
 }

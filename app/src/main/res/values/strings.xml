@@ -8,4 +8,9 @@
     <string name="login_email">Логин / Email</string>
     <string name="url_title">URL</string>
     <string name="cancel">Отменить</string>
+    <string name="nav_item_title_home">Глвная</string>
+    <string name="nav_item_title_vault">Хранилище</string>
+    <string name="nav_item_title_generator">Генератор</string>
+    <string name="nav_item_title_secure">Безопасность</string>
+    <string name="nav_item_title_settings">Настройки</string>
 </resources>

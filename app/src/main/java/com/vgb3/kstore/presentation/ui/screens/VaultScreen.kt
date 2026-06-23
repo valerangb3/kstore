@@ -13,6 +13,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vgb3.kstore.domain.model.VaultItem
+import com.vgb3.kstore.presentation.AppViewModel
+import com.vgb3.kstore.presentation.ScaffoldItem
 import com.vgb3.kstore.presentation.VaultViewModel
 import com.vgb3.kstore.presentation.model.VaultResult
 import com.vgb3.kstore.presentation.ui.widgets.CreatePasswordFab
@@ -20,8 +22,9 @@ import com.vgb3.kstore.presentation.ui.widgets.EmptyVault
 import com.vgb3.kstore.presentation.ui.widgets.PasswordItem
 import com.vgb3.kstore.ui.theme.KStoreTheme
 
+
 @Composable
-fun VaultScreen(
+fun VaultContent(
     modifier: Modifier = Modifier,
     vaultScreenState: VaultResult,
     onNavigateToCreatePasswordScreen: () -> Unit = {},
@@ -38,6 +41,33 @@ fun VaultScreen(
             )
         }
     }
+}
+
+@Composable
+fun VaultScreen(
+    modifier: Modifier = Modifier,
+    appViewModel: AppViewModel,
+    vaultViewModel: VaultViewModel,
+    onNavigateToCreatePasswordScreen: () -> Unit = {},
+) {
+    val vaultState by vaultViewModel.vaultState.collectAsStateWithLifecycle()
+
+    val showFab = if (vaultState is VaultResult.VaultContent) {
+        (vaultState as VaultResult.VaultContent).vaultList.isNotEmpty()
+    } else false
+
+    appViewModel.updateScaffoldState(
+        ScaffoldItem(
+            showTopBar = false,
+            showBottomBar = showFab,
+            showFab = showFab
+        )
+    )
+    VaultContent(
+        modifier = modifier,
+        onNavigateToCreatePasswordScreen = onNavigateToCreatePasswordScreen,
+        vaultScreenState = vaultState
+    )
 }
 
 @Composable

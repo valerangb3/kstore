@@ -25,6 +25,7 @@ class AppViewModel : ViewModel() {
             )
         )
     )
+
     val appState = _state.asStateFlow()
 
     fun updateScaffoldState(scaffoldItem: ScaffoldItem) {

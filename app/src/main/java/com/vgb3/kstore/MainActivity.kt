@@ -8,6 +8,7 @@ import androidx.activity.viewModels
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import com.vgb3.kstore.navigation.AppRoute
+import com.vgb3.kstore.navigation.Destinations
 import com.vgb3.kstore.presentation.AppViewModel
 import com.vgb3.kstore.presentation.VaultFormViewModel
 import com.vgb3.kstore.presentation.VaultViewModel
@@ -24,11 +25,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             KStoreTheme {
-                val backStack = remember { mutableStateListOf<AppRoute>(AppRoute.VaultList) }
                 App(
-                    backStack = backStack,
                     vaultViewModel = vaultViewModel,
-                    appViewModel = appViewModel
+                    appViewModel = appViewModel,
                 )
             }
         }

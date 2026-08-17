@@ -5,6 +5,7 @@ import com.vgb3.kstore.data.datasource.local.db.entities.toVaultData
 import com.vgb3.kstore.data.model.VaultData
 import com.vgb3.kstore.data.model.toVaultEntity
 import com.vgb3.kstore.data.model.toVaultItem
+import com.vgb3.kstore.domain.model.CreateLogin
 import com.vgb3.kstore.domain.model.VaultItem
 import com.vgb3.kstore.domain.repository.VaultRepository
 import kotlinx.coroutines.CoroutineDispatcher
@@ -17,13 +18,23 @@ class VaultRepositoryImpl(
     private val vaultDao: VaultDao,
     private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
 ): VaultRepository {
-    override suspend fun createVaultItem(vaultItem: VaultItem): Long {
+
+    private suspend fun loadIcon() {
+        //TODO need implement load icon
+    }
+
+    override suspend fun createVaultItem(vaultCreateLogin: CreateLogin): Long {
+        val timestamp = System.currentTimeMillis()
         val vaultData = VaultData(
-            id = "0",
-            appName = vaultItem.appName,
-            url = vaultItem.url,
-            login = vaultItem.login,
-            password = vaultItem.password
+            appName = vaultCreateLogin.appName,
+            url = vaultCreateLogin.url,
+            login = vaultCreateLogin.login,
+            password = vaultCreateLogin.password,
+            categoryId = null,
+            icon = null,
+            updatedAt = timestamp,
+            createdAt = timestamp,
+            isFavorite = false
         )
         return vaultDao.insertNewVault(vaultData.toVaultEntity())
     }

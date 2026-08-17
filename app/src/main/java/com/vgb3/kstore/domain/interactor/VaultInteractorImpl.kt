@@ -1,5 +1,6 @@
 package com.vgb3.kstore.domain.interactor
 
+import com.vgb3.kstore.domain.model.CreateLogin
 import com.vgb3.kstore.domain.model.VaultItem
 import com.vgb3.kstore.domain.repository.VaultRepository
 import kotlinx.coroutines.CoroutineDispatcher
@@ -12,10 +13,10 @@ class VaultInteractorImpl(
     private val vaultRepository: VaultRepository,
     private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
 ): VaultInteractor {
-    override suspend fun createVaultItem(vaultItem: VaultItem): Long {
+    override suspend fun createVaultItem(vaultCreateLogin: CreateLogin): Long {
         var rowId = -1L
         withContext(coroutineDispatcher) {
-            rowId = vaultRepository.createVaultItem(vaultItem)
+            rowId = vaultRepository.createVaultItem(vaultCreateLogin)
         }
         return rowId
     }

@@ -7,7 +7,7 @@ import com.vgb3.kstore.data.model.VaultData
 @Entity(tableName = "vault_table")
 data class VaultEntity(
     @PrimaryKey(autoGenerate = true)
-    val id: Long,
+    val id: Long = 0,
     val appName: String,
     val picUrl: String,
     val login: String,
@@ -15,7 +15,7 @@ data class VaultEntity(
 )
 
 fun VaultEntity.toVaultData(): VaultData = VaultData(
-    id = this.id.toString(),
+    id = this.id,
     appName = this.appName,
     url = this.picUrl,
     login = this.login,

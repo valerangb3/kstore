@@ -5,7 +5,7 @@ import com.vgb3.kstore.domain.model.VaultItem
 
 data class VaultData(
     val id: Long = 0,
-    val appName: String,
+    val title: String,
     val url: String,
     val login: String,
     val password: String,
@@ -18,7 +18,7 @@ data class VaultData(
 
 fun VaultData.toVaultItem(): VaultItem = VaultItem.VaultLogin(
     id = this.id,
-    title = this.appName,
+    title = this.title,
     url = this.url,
     login = this.login,
     password = this.password,
@@ -32,8 +32,8 @@ fun VaultData.toVaultItem(): VaultItem = VaultItem.VaultLogin(
 
 fun VaultData.toVaultEntity(): VaultEntity = VaultEntity(
     id = this.id,
-    appName = this.appName,
-    picUrl = this.url,
+    title = this.title,
+    icon = this.icon ?: "",
     login = this.login,
     password = this.password
 )

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.vgb3.kstore.data.datasource.local.db.KStoreDataBase
 import com.vgb3.kstore.data.datasource.local.db.dao.VaultDao
+import com.vgb3.kstore.data.datasource.local.db.migrations.MIGRATION_1_2
 import com.vgb3.kstore.data.repository.VaultRepositoryImpl
 import com.vgb3.kstore.domain.interactor.VaultInteractor
 import com.vgb3.kstore.domain.interactor.VaultInteractorImpl
@@ -29,7 +30,9 @@ class Container(
             context,
             KStoreDataBase::class.java,
             "database.db"
-        ).build()
+        )
+            .addMigrations(MIGRATION_1_2)
+            .build()
         return dataBase.getVaultDao()
     }
 }

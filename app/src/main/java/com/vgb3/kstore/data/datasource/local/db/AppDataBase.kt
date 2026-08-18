@@ -7,7 +7,7 @@ import com.vgb3.kstore.data.datasource.local.db.entities.VaultEntity
 
 
 @Database(
-    version = 1,
+    version = 2,
     entities = [
         VaultEntity::class
     ]

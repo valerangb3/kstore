@@ -17,7 +17,6 @@ sealed interface VaultItem {
         override val createdAt: Long,
         override val isFavorite: Boolean,
         override val icon: String?,
-
         val url: String,
         val login: String,
         val password: String,

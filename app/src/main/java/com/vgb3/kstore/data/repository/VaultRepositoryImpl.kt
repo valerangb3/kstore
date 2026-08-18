@@ -26,7 +26,7 @@ class VaultRepositoryImpl(
     override suspend fun createVaultItem(vaultCreateLogin: CreateLogin): Long {
         val timestamp = System.currentTimeMillis()
         val vaultData = VaultData(
-            appName = vaultCreateLogin.appName,
+            title = vaultCreateLogin.appName,
             url = vaultCreateLogin.url,
             login = vaultCreateLogin.login,
             password = vaultCreateLogin.password,

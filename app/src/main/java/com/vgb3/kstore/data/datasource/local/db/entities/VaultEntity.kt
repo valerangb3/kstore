@@ -8,16 +8,21 @@ import com.vgb3.kstore.data.model.VaultData
 data class VaultEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
-    val appName: String,
-    val picUrl: String,
+    val title: String,
+    val icon: String,
     val login: String,
     val password: String,
 )
 
 fun VaultEntity.toVaultData(): VaultData = VaultData(
     id = this.id,
-    appName = this.appName,
-    url = this.picUrl,
+    title = this.title,
+    url = "",
+    icon = this.icon,
     login = this.login,
-    password = this.password
+    password = this.password,
+    categoryId = null,
+    updatedAt = 1,
+    createdAt = 1,
+    isFavorite = false
 )

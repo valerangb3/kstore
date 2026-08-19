@@ -29,12 +29,11 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.vgb3.kstore.R
-import com.vgb3.kstore.domain.model.VaultItem
+import com.vgb3.kstore.domain.model.output.VaultItem
 import com.vgb3.kstore.ui.theme.Border
 import com.vgb3.kstore.ui.theme.Red
 import com.vgb3.kstore.ui.theme.TextPlaceholder
 import com.vgb3.kstore.ui.theme.White
-import kotlin.math.log
 
 @Composable
 fun PasswordItem(
@@ -81,9 +80,10 @@ fun PasswordItem(
         Column(
             modifier = Modifier.weight(1f)
         ) {
+            vaultItem as VaultItem.VaultLogin
             Text(
                 maxLines = 1,
-                text = vaultItem.appName,
+                text = vaultItem.title,
                 fontWeight = FontWeight.W700,
                 fontSize = 16.sp,
                 overflow = TextOverflow.Ellipsis
@@ -135,21 +135,31 @@ fun PasswordItemPreview() {
     ) {
 
         PasswordItem(
-            VaultItem(
-                id = "#1",
-                appName = "youtube",
+            VaultItem.VaultLogin(
+                id = 1,
+                title = "youtube",
                 url = "",
                 login = "vgb3@gmail.com",
-                password = "password,"
+                password = "password",
+                icon = "",
+                isFavorite = false,
+                categoryId = 0,
+                createdAt = 1L,
+                updatedAt = 1L
             )
         )
         PasswordItem(
-            VaultItem(
-                id = "#2",
-                appName = "youtube",
+            VaultItem.VaultLogin(
+                id = 2,
+                title = "youtube",
                 url = "",
                 login = "vgb4@gmail.com",
-                password = "password,"
+                password = "password",
+                icon = "",
+                isFavorite = false,
+                categoryId = 0,
+                createdAt = 1L,
+                updatedAt = 1L
             )
         )
     }

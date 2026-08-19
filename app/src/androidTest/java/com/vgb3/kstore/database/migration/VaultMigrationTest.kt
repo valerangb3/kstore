@@ -48,20 +48,20 @@ class VaultMigrationTest {
         )
 
         val cursor = db.query(
-            "SELECT title, icon FROM vault_table WHERE id = 1"
+            "SELECT title, icon FROM vault_table WHERE id = 21"
         )
 
         assertTrue(cursor.moveToFirst())
 
         assertEquals(
-            "GitHub",
+            "ssdasd",
             cursor.getString(cursor.getColumnIndexOrThrow("title"))
         )
 
-       /* assertEquals(
-            "icon.png",
+        assertEquals(
+            "sadasdas",
             cursor.getString(cursor.getColumnIndexOrThrow("icon"))
-        )*/
+        )
 
         cursor.close()
         db.close()

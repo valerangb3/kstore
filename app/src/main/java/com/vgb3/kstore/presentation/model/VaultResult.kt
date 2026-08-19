@@ -1,6 +1,6 @@
 package com.vgb3.kstore.presentation.model
 
-import com.vgb3.kstore.domain.model.VaultItem
+import com.vgb3.kstore.domain.model.output.VaultItem
 
 sealed interface VaultResult {
     object Loading: VaultResult

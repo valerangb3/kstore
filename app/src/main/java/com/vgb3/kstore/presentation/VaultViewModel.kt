@@ -7,7 +7,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.vgb3.kstore.domain.interactor.VaultInteractor
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import com.vgb3.kstore.KStoreApplication
-import com.vgb3.kstore.domain.model.VaultItem
+import com.vgb3.kstore.domain.model.input.CreateVaultItem
 import com.vgb3.kstore.presentation.model.VaultFormInputs
 import com.vgb3.kstore.presentation.model.VaultFormResult
 import com.vgb3.kstore.presentation.model.VaultResult
@@ -87,11 +87,12 @@ class VaultViewModel(
         if (curState is VaultFormResult.VaultFormFields) {
             viewModelScope.launch {
                 vaultInteractor.createVaultItem(
-                    VaultItem(
-                        appName = curState.appNameInput,
+                    CreateVaultItem.Login(
+                        title = curState.appNameInput,
                         url = curState.urlInput,
                         login = curState.loginInput,
-                        password = curState.passwordInput
+                        password = curState.passwordInput,
+                        categoryId = 0
                     )
                 )
                 clearFormFields()

@@ -1,39 +1,92 @@
 package com.vgb3.kstore.data.model
 
 import com.vgb3.kstore.data.datasource.local.db.entities.VaultEntity
-import com.vgb3.kstore.domain.model.VaultItem
+import com.vgb3.kstore.domain.model.output.VaultItem
 
-data class VaultData(
-    val id: Long = 0,
-    val title: String,
-    val url: String,
-    val login: String,
-    val password: String,
-    val categoryId: Int?,
-    val updatedAt: Long,
-    val createdAt: Long,
-    val icon: String?,
+sealed interface VaultData {
+    val id: Long
+    val title: String
+    val createdAt: Long
+    val updatedAt: Long
     val isFavorite: Boolean
-)
+    val icon: String?
+    val categoryId: Int?
 
-fun VaultData.toVaultItem(): VaultItem = VaultItem.VaultLogin(
+    data class VaultLogin(
+        override val id: Long,
+        override val categoryId: Int?,
+        override val title: String,
+        override val updatedAt: Long,
+        override val createdAt: Long,
+        override val isFavorite: Boolean,
+        override val icon: String?,
+        val url: String,
+        val login: String,
+        val password: String,
+    ): VaultData
+
+    data class VaultBankCard(
+        override val id: Long,
+        override val categoryId: Int?,
+        override val title: String,
+        override val updatedAt: Long,
+        override val createdAt: Long,
+        override val isFavorite: Boolean,
+        override val icon: String?,
+
+        val cardNumber: String,
+        val cardholderName: String,
+        val expirationMonth: Int,
+        val expirationYear: Int,
+        val cvv: String,
+    ): VaultData
+
+    data class VaultSecureNote(
+        override val id: Long,
+        override val categoryId: Int?,
+        override val title: String,
+        override val updatedAt: Long,
+        override val createdAt: Long,
+        override val isFavorite: Boolean,
+        override val icon: String?,
+
+        val note: String,
+    ): VaultData
+}
+
+fun VaultItem.VaultLogin.toVaultLoginData(): VaultData.VaultLogin = VaultData.VaultLogin(
     id = this.id,
     title = this.title,
     url = this.url,
     login = this.login,
     password = this.password,
-    categoryId = null,
-    updatedAt = 1L,
-    createdAt = 1L,
-    icon = null,
+    categoryId = this.categoryId,
+    updatedAt = this.updatedAt,
+    createdAt = this.createdAt,
+    icon = this.icon,
     isFavorite = false
 )
 
 
-fun VaultData.toVaultEntity(): VaultEntity = VaultEntity(
+fun VaultData.VaultLogin.toVaultItem(): VaultItem = VaultItem.VaultLogin(
+    id = this.id,
+    title = this.title,
+    url = this.url,
+    login = this.login,
+    password = this.password,
+    categoryId = this.categoryId,
+    updatedAt = this.updatedAt,
+    createdAt = this.createdAt,
+    icon = this.icon ?: "",
+    isFavorite = this.isFavorite
+)
+
+
+fun VaultData.VaultLogin.toVaultEntity(): VaultEntity = VaultEntity(
     id = this.id,
     title = this.title,
     icon = this.icon ?: "",
     login = this.login,
-    password = this.password
+    password = this.password,
+
 )

@@ -1,4 +1,4 @@
-package com.vgb3.kstore.domain.model
+package com.vgb3.kstore.domain.model.output
 
 sealed interface VaultItem {
     val id: Long
@@ -50,11 +50,3 @@ sealed interface VaultItem {
         val note: String,
     ): VaultItem
 }
-
-data class VaultItem1(
-    val id: String = "0",
-    val appName: String,
-    val url: String,
-    val login: String,
-    val password: String,
-)

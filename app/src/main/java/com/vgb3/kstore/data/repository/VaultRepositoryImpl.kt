@@ -1,12 +1,11 @@
 package com.vgb3.kstore.data.repository
 
 import com.vgb3.kstore.data.datasource.local.db.dao.VaultDao
-import com.vgb3.kstore.data.datasource.local.db.entities.toVaultData
-import com.vgb3.kstore.data.model.VaultData
+import com.vgb3.kstore.data.datasource.local.db.entities.toVaultLoginData
 import com.vgb3.kstore.data.model.toVaultEntity
 import com.vgb3.kstore.data.model.toVaultItem
-import com.vgb3.kstore.domain.model.CreateLogin
-import com.vgb3.kstore.domain.model.VaultItem
+import com.vgb3.kstore.data.model.toVaultLoginData
+import com.vgb3.kstore.domain.model.output.VaultItem
 import com.vgb3.kstore.domain.repository.VaultRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -23,27 +22,23 @@ class VaultRepositoryImpl(
         //TODO need implement load icon
     }
 
-    override suspend fun createVaultItem(vaultCreateLogin: CreateLogin): Long {
-        val timestamp = System.currentTimeMillis()
-        val vaultData = VaultData(
-            title = vaultCreateLogin.appName,
-            url = vaultCreateLogin.url,
-            login = vaultCreateLogin.login,
-            password = vaultCreateLogin.password,
-            categoryId = null,
-            icon = null,
-            updatedAt = timestamp,
-            createdAt = timestamp,
-            isFavorite = false
-        )
-        return vaultDao.insertNewVault(vaultData.toVaultEntity())
+    override suspend fun createVaultItem(vaultItem: VaultItem): Long {
+        return when(vaultItem) {
+            is VaultItem.VaultLogin -> vaultDao.insertNewVault(
+                vaultItem
+                    .toVaultLoginData()
+                    .toVaultEntity()
+            )
+            is VaultItem.VaultBankCard -> TODO()
+            is VaultItem.VaultSecureNote -> TODO()
+        }
     }
 
     override fun getVaultItems(): Flow<List<VaultItem>> {
         return vaultDao.getVaultItems()
             .map { vaultEntity ->
                 vaultEntity.map { it
-                    .toVaultData()
+                    .toVaultLoginData()
                     .toVaultItem()
                 }
             }

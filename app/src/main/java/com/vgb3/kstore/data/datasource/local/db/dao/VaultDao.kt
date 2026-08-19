@@ -5,7 +5,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.vgb3.kstore.data.datasource.local.db.entities.VaultEntity
-import com.vgb3.kstore.domain.model.VaultItem
 import kotlinx.coroutines.flow.Flow
 
 @Dao

@@ -14,7 +14,7 @@ data class VaultEntity(
     val password: String,
 )
 
-fun VaultEntity.toVaultData(): VaultData = VaultData(
+fun VaultEntity.toVaultLoginData(): VaultData.VaultLogin = VaultData.VaultLogin(
     id = this.id,
     title = this.title,
     url = "",

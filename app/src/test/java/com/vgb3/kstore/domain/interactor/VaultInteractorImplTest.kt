@@ -1,6 +1,6 @@
 package com.vgb3.kstore.domain.interactor
 
-import com.vgb3.kstore.domain.model.VaultItem
+import com.vgb3.kstore.domain.model.output.VaultItem
 import com.vgb3.kstore.domain.repository.VaultRepository
 import io.mockk.coEvery
 import io.mockk.coVerify

@@ -1,7 +1,7 @@
 package com.vgb3.kstore.domain.interactor
 
-import com.vgb3.kstore.domain.model.CreateLogin
-import com.vgb3.kstore.domain.model.VaultItem
+import com.vgb3.kstore.domain.model.input.CreateVaultItem
+import com.vgb3.kstore.domain.model.output.VaultItem
 import com.vgb3.kstore.domain.repository.VaultRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -13,12 +13,27 @@ class VaultInteractorImpl(
     private val vaultRepository: VaultRepository,
     private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
 ): VaultInteractor {
-    override suspend fun createVaultItem(vaultCreateLogin: CreateLogin): Long {
-        var rowId = -1L
-        withContext(coroutineDispatcher) {
-            rowId = vaultRepository.createVaultItem(vaultCreateLogin)
+    override suspend fun createVaultItem(createVaultItem: CreateVaultItem): Long {
+        val now = System.currentTimeMillis()
+        val item = when(createVaultItem) {
+            is CreateVaultItem.Login -> VaultItem.VaultLogin(
+                id = 0,
+                title = createVaultItem.title,
+                createdAt = now,
+                updatedAt = now,
+                isFavorite = false,
+                icon = null,
+                categoryId = createVaultItem.categoryId,
+                login = createVaultItem.login,
+                password = createVaultItem.password,
+                url = createVaultItem.url
+            )
+            is CreateVaultItem.BankCard -> TODO()
+            is CreateVaultItem.SecureNote -> TODO()
         }
-        return rowId
+        return withContext(coroutineDispatcher) {
+            vaultRepository.createVaultItem(item)
+        }
     }
 
     override fun getVaultItems(): Flow<List<VaultItem>> {

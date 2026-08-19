@@ -2,7 +2,7 @@ package com.vgb3.kstore.data.repository
 
 import com.vgb3.kstore.data.datasource.local.db.dao.VaultDao
 import com.vgb3.kstore.data.datasource.local.db.entities.VaultEntity
-import com.vgb3.kstore.domain.model.VaultItem
+import com.vgb3.kstore.domain.model.output.VaultItem
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every

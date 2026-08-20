@@ -9,7 +9,6 @@ sealed interface VaultData {
     val createdAt: Long
     val updatedAt: Long
     val isFavorite: Boolean
-    val icon: String?
     val categoryId: Int?
 
     data class VaultLogin(
@@ -19,7 +18,6 @@ sealed interface VaultData {
         override val updatedAt: Long,
         override val createdAt: Long,
         override val isFavorite: Boolean,
-        override val icon: String?,
         val url: String,
         val login: String,
         val password: String,
@@ -32,7 +30,6 @@ sealed interface VaultData {
         override val updatedAt: Long,
         override val createdAt: Long,
         override val isFavorite: Boolean,
-        override val icon: String?,
 
         val cardNumber: String,
         val cardholderName: String,
@@ -48,7 +45,6 @@ sealed interface VaultData {
         override val updatedAt: Long,
         override val createdAt: Long,
         override val isFavorite: Boolean,
-        override val icon: String?,
 
         val note: String,
     ): VaultData
@@ -63,7 +59,6 @@ fun VaultItem.VaultLogin.toVaultLoginData(): VaultData.VaultLogin = VaultData.Va
     categoryId = this.categoryId,
     updatedAt = this.updatedAt,
     createdAt = this.createdAt,
-    icon = this.icon,
     isFavorite = false
 )
 
@@ -77,7 +72,6 @@ fun VaultData.VaultLogin.toVaultItem(): VaultItem = VaultItem.VaultLogin(
     categoryId = this.categoryId,
     updatedAt = this.updatedAt,
     createdAt = this.createdAt,
-    icon = this.icon ?: "",
     isFavorite = this.isFavorite
 )
 
@@ -85,8 +79,9 @@ fun VaultData.VaultLogin.toVaultItem(): VaultItem = VaultItem.VaultLogin(
 fun VaultData.VaultLogin.toVaultEntity(): VaultEntity = VaultEntity(
     id = this.id,
     title = this.title,
-    icon = this.icon ?: "",
     login = this.login,
     password = this.password,
-
+    createdAt = this.createdAt,
+    updatedAt = this.updatedAt,
+    isFavorite = this.isFavorite
 )

@@ -22,7 +22,6 @@ class VaultInteractorImpl(
                 createdAt = now,
                 updatedAt = now,
                 isFavorite = false,
-                icon = null,
                 categoryId = createVaultItem.categoryId,
                 login = createVaultItem.login,
                 password = createVaultItem.password,

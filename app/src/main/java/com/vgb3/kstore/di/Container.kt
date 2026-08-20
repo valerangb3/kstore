@@ -31,7 +31,6 @@ class Container(
             KStoreDataBase::class.java,
             "database.db"
         )
-            .addMigrations(MIGRATION_1_2)
             .build()
         return dataBase.getVaultDao()
     }

@@ -2,6 +2,7 @@ package com.vgb3.kstore.domain.interactor
 
 import com.vgb3.kstore.domain.model.input.CreateVaultItem
 import com.vgb3.kstore.domain.model.output.VaultItem
+import com.vgb3.kstore.domain.model.output.VaultItemSummary
 import com.vgb3.kstore.domain.repository.VaultRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -35,9 +36,9 @@ class VaultInteractorImpl(
         }
     }
 
-    override fun getVaultItems(): Flow<List<VaultItem>> {
+    override fun getVaultSummaryItems(): Flow<List<VaultItemSummary>> {
         return vaultRepository
-            .getVaultItems()
+            .getVaultSummaryItems()
             .flowOn(coroutineDispatcher)
     }
 }

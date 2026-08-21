@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "3bc6431f0fb47c24987d6a8637405965",
+    "identityHash": "1f24cb491137a19ec1be01925b6abb99",
     "entities": [
       {
         "tableName": "vault_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `createdAt` INTEGER NOT NULL, `updatedAt` INTEGER NOT NULL, `isFavorite` INTEGER NOT NULL, `login` TEXT NOT NULL, `password` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `createdAt` INTEGER NOT NULL, `updatedAt` INTEGER NOT NULL, `isFavorite` INTEGER NOT NULL, `categoryId` INTEGER, `type` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -39,14 +39,13 @@
             "notNull": true
           },
           {
-            "fieldPath": "login",
-            "columnName": "login",
-            "affinity": "TEXT",
-            "notNull": true
+            "fieldPath": "categoryId",
+            "columnName": "categoryId",
+            "affinity": "INTEGER"
           },
           {
-            "fieldPath": "password",
-            "columnName": "password",
+            "fieldPath": "type",
+            "columnName": "type",
             "affinity": "TEXT",
             "notNull": true
           }
@@ -57,11 +56,132 @@
             "id"
           ]
         }
+      },
+      {
+        "tableName": "vault_login_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`vaultItemId` INTEGER NOT NULL, `login` TEXT NOT NULL, `password` TEXT NOT NULL, `urlString` TEXT NOT NULL, PRIMARY KEY(`vaultItemId`), FOREIGN KEY(`vaultItemId`) REFERENCES `vault_table`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "vaultItemId",
+            "columnName": "vaultItemId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "login",
+            "columnName": "login",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "password",
+            "columnName": "password",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "urlString",
+            "columnName": "urlString",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "vaultItemId"
+          ]
+        },
+        "foreignKeys": [
+          {
+            "table": "vault_table",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "vaultItemId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "vault_bank_card_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`vaultItemId` INTEGER NOT NULL, `cardNumber` TEXT NOT NULL, `cardholderName` TEXT NOT NULL, `expirationMonth` INTEGER NOT NULL, `expirationYear` INTEGER NOT NULL, `cvv` TEXT NOT NULL, PRIMARY KEY(`vaultItemId`))",
+        "fields": [
+          {
+            "fieldPath": "vaultItemId",
+            "columnName": "vaultItemId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cardNumber",
+            "columnName": "cardNumber",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cardholderName",
+            "columnName": "cardholderName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "expirationMonth",
+            "columnName": "expirationMonth",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "expirationYear",
+            "columnName": "expirationYear",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cvv",
+            "columnName": "cvv",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "vaultItemId"
+          ]
+        }
+      },
+      {
+        "tableName": "vault_secure_note_entity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`vaultItemId` INTEGER NOT NULL, `note` TEXT NOT NULL, PRIMARY KEY(`vaultItemId`))",
+        "fields": [
+          {
+            "fieldPath": "vaultItemId",
+            "columnName": "vaultItemId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "note",
+            "columnName": "note",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "vaultItemId"
+          ]
+        }
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3bc6431f0fb47c24987d6a8637405965')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1f24cb491137a19ec1be01925b6abb99')"
     ]
   }
 }

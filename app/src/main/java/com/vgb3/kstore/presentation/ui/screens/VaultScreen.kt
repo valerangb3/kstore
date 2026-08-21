@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.vgb3.kstore.domain.model.output.VaultItem
+import com.vgb3.kstore.domain.model.output.VaultItemSummary
 import com.vgb3.kstore.presentation.AppViewModel
 import com.vgb3.kstore.presentation.ScaffoldItem
 import com.vgb3.kstore.presentation.VaultViewModel
@@ -73,7 +73,7 @@ fun VaultScreen(
 @Composable
 fun VaultData(
     modifier: Modifier = Modifier,
-    vaultItems: List<VaultItem>,
+    vaultItems: List<VaultItemSummary>,
     onNavigateToCreatePasswordScreen: () -> Unit = {},
 ) {
     if (vaultItems.isNotEmpty()) {

@@ -110,7 +110,7 @@ class VaultViewModel(
     fun getVaultItems() {
         viewModelScope.launch {
             vaultInteractor
-                .getVaultItems()
+                .getVaultSummaryItems()
                 .collect { vaultItems ->
                     _state.value = VaultResult.VaultContent(
                         vaultList = vaultItems

@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.vgb3.kstore.R
 import com.vgb3.kstore.domain.model.output.VaultItem
+import com.vgb3.kstore.domain.model.output.VaultItemSummary
 import com.vgb3.kstore.ui.theme.Border
 import com.vgb3.kstore.ui.theme.Red
 import com.vgb3.kstore.ui.theme.TextPlaceholder
@@ -37,7 +38,7 @@ import com.vgb3.kstore.ui.theme.White
 
 @Composable
 fun PasswordItem(
-    vaultItem: VaultItem,
+    vaultItem: VaultItemSummary,
     modifier: Modifier = Modifier,
     onAction: () -> Unit = {},
     onPasswordCopy: () -> Unit = {},
@@ -133,14 +134,11 @@ fun PasswordItemPreview() {
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-
         PasswordItem(
-            VaultItem.VaultLogin(
+            VaultItemSummary(
                 id = 1,
                 title = "youtube",
-                url = "",
-                login = "vgb3@gmail.com",
-                password = "password",
+                subTitle = "vgb3@gmail.com",
                 isFavorite = false,
                 categoryId = 0,
                 createdAt = 1L,
@@ -148,12 +146,10 @@ fun PasswordItemPreview() {
             )
         )
         PasswordItem(
-            VaultItem.VaultLogin(
-                id = 2,
+            VaultItemSummary(
+                id = 1,
                 title = "youtube",
-                url = "",
-                login = "vgb4@gmail.com",
-                password = "password",
+                subTitle = "vgb3@gmail.com",
                 isFavorite = false,
                 categoryId = 0,
                 createdAt = 1L,

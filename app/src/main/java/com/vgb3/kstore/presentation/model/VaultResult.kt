@@ -1,6 +1,6 @@
 package com.vgb3.kstore.presentation.model
 
-import com.vgb3.kstore.domain.model.output.VaultItem
+import com.vgb3.kstore.domain.model.output.VaultItemSummary
 
 sealed interface VaultResult {
     object Loading: VaultResult
@@ -13,6 +13,6 @@ sealed interface VaultResult {
         val passwordInput: String
     ): Result*/
     data class VaultContent(
-        val vaultList: List<VaultItem>
+        val vaultList: List<VaultItemSummary>
     ): VaultResult
 }

@@ -1,7 +1,4 @@
-package com.vgb3.kstore.data.model
-
-import com.vgb3.kstore.data.datasource.local.db.entities.VaultEntity
-import com.vgb3.kstore.domain.model.output.VaultItem
+package com.vgb3.kstore.data.model.input
 
 sealed interface VaultData {
     val id: Long
@@ -49,39 +46,3 @@ sealed interface VaultData {
         val note: String,
     ): VaultData
 }
-
-fun VaultItem.VaultLogin.toVaultLoginData(): VaultData.VaultLogin = VaultData.VaultLogin(
-    id = this.id,
-    title = this.title,
-    url = this.url,
-    login = this.login,
-    password = this.password,
-    categoryId = this.categoryId,
-    updatedAt = this.updatedAt,
-    createdAt = this.createdAt,
-    isFavorite = false
-)
-
-
-fun VaultData.VaultLogin.toVaultItem(): VaultItem = VaultItem.VaultLogin(
-    id = this.id,
-    title = this.title,
-    url = this.url,
-    login = this.login,
-    password = this.password,
-    categoryId = this.categoryId,
-    updatedAt = this.updatedAt,
-    createdAt = this.createdAt,
-    isFavorite = this.isFavorite
-)
-
-
-fun VaultData.VaultLogin.toVaultEntity(): VaultEntity = VaultEntity(
-    id = this.id,
-    title = this.title,
-    login = this.login,
-    password = this.password,
-    createdAt = this.createdAt,
-    updatedAt = this.updatedAt,
-    isFavorite = this.isFavorite
-)

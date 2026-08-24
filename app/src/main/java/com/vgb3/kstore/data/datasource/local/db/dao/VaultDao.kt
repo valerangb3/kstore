@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
+import com.vgb3.kstore.data.datasource.local.db.entities.VaultCategoryEntity
 import com.vgb3.kstore.data.datasource.local.db.entities.VaultEntity
 import com.vgb3.kstore.data.datasource.local.db.entities.VaultLoginEntity
 import com.vgb3.kstore.data.model.input.VaultSummaryData
@@ -54,4 +55,7 @@ interface VaultDao {
         return generatedId
     }
 
+
+    @Insert(entity = VaultCategoryEntity::class)
+    suspend fun insertCategoryVault(category: List<VaultCategoryEntity>): List<Long>
 }

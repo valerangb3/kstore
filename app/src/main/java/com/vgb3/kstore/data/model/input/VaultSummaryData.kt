@@ -8,6 +8,6 @@ data class VaultSummaryData(
     val createdAt: Long,
     val updatedAt: Long,
     val isFavorite: Boolean,
-    val categoryId: Int?,
+    val categoryId: Long?,
     val type: VaultItemType,
 )

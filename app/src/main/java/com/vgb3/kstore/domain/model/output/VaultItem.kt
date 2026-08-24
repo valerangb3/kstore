@@ -6,11 +6,11 @@ sealed interface VaultItem {
     val createdAt: Long
     val updatedAt: Long
     val isFavorite: Boolean
-    val categoryId: Int?
+    val categoryId: Long?
 
     data class VaultLogin(
         override val id: Long,
-        override val categoryId: Int?,
+        override val categoryId: Long?,
         override val title: String,
         override val updatedAt: Long,
         override val createdAt: Long,
@@ -22,7 +22,7 @@ sealed interface VaultItem {
 
     data class VaultBankCard(
         override val id: Long,
-        override val categoryId: Int?,
+        override val categoryId: Long?,
         override val title: String,
         override val updatedAt: Long,
         override val createdAt: Long,
@@ -37,7 +37,7 @@ sealed interface VaultItem {
 
     data class VaultSecureNote(
         override val id: Long,
-        override val categoryId: Int?,
+        override val categoryId: Long?,
         override val title: String,
         override val updatedAt: Long,
         override val createdAt: Long,

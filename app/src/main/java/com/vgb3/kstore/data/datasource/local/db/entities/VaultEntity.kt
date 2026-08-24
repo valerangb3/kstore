@@ -3,12 +3,26 @@ package com.vgb3.kstore.data.datasource.local.db.entities
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import androidx.room.Relation
 import com.vgb3.kstore.data.model.VaultItemType
 
 
-@Entity(tableName = "vault_table")
+@Entity(
+    tableName = "vault_table",
+    foreignKeys = [
+        ForeignKey(
+            entity = VaultCategoryEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["categoryId"],
+            onDelete = ForeignKey.SET_NULL
+        )
+    ],
+    indices = [
+        Index(value = ["categoryId"]),
+    ],
+)
 data class VaultEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
@@ -16,7 +30,7 @@ data class VaultEntity(
     val createdAt: Long,
     val updatedAt: Long,
     val isFavorite: Boolean,
-    val categoryId: Int?,
+    val categoryId: Long?,
     val type: VaultItemType
 )
 
@@ -59,9 +73,23 @@ data class VaultBankCardEntity(
     val cvv: String,
 )
 
-@Entity(tableName = "vault_secure_note_entity")
+@Entity(tableName = "vault_secure_note_table")
 data class VaultSecureNoteEntity(
     @PrimaryKey
     val vaultItemId: Long,
     val note: String,
+)
+
+
+@Entity(
+    tableName = "vault_category_table",
+    indices = [
+        Index(value = ["key"], unique = true)
+    ]
+)
+data class VaultCategoryEntity(
+    @PrimaryKey(autoGenerate = true)
+    val id: Long = 0,
+    val key: String,
+    val sortOrder: Int,
 )

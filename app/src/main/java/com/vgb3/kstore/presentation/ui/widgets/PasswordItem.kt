@@ -81,7 +81,7 @@ fun PasswordItem(
         Column(
             modifier = Modifier.weight(1f)
         ) {
-            vaultItem as VaultItem.VaultLogin
+            //vaultItem as VaultItem.VaultLogin
             Text(
                 maxLines = 1,
                 text = vaultItem.title,
@@ -91,7 +91,7 @@ fun PasswordItem(
             )
             Text(
                 maxLines = 1,
-                text = vaultItem.login,
+                text = vaultItem.subTitle ?: "",
                 overflow = TextOverflow.Ellipsis
             )
         }

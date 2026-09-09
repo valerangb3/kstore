@@ -1,5 +1,6 @@
 package com.vgb3.kstore.presentation.ui.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -7,17 +8,32 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ripple.RippleAlpha
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuAnchorType
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalRippleConfiguration
+import androidx.compose.material3.MenuAnchorType
+import androidx.compose.material3.MenuDefaults
+import androidx.compose.material3.RippleConfiguration
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -35,6 +51,7 @@ import com.vgb3.kstore.presentation.ui.widgets.Buttons.TransparentButton
 import com.vgb3.kstore.presentation.ui.widgets.Form
 import com.vgb3.kstore.presentation.ui.widgets.GroupContent
 import com.vgb3.kstore.presentation.ui.widgets.InputField
+import com.vgb3.kstore.ui.theme.Border
 import com.vgb3.kstore.ui.theme.KStoreTheme
 import com.vgb3.kstore.ui.theme.SimpleButtonTextColor
 import com.vgb3.kstore.ui.theme.TextPlaceholder
@@ -59,7 +76,6 @@ fun CreatePasswordScreen(
                         modifier = Modifier.fillMaxWidth(),
                         verticalArrangement = Arrangement.spacedBy(24.dp)
                     ) {
-                        //var appName by remember { mutableStateOf("") }
                         val appName = (formsState as VaultFormResult.VaultFormFields).appNameInput
                         InputField(
                             value = appName,
@@ -198,6 +214,8 @@ fun CreatePasswordScreen(
                                 )
                             }
                         )
+
+                        CategoryPicker()
                     }
                 }
             },
@@ -236,6 +254,83 @@ fun CreatePasswordScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CategoryPicker(modifier: Modifier = Modifier) {
+    val categories = listOf("Телефоны", "Ноутбуки", "Наушники")
+
+    var expanded by remember { mutableStateOf(false) }
+    var selected by remember { mutableStateOf("") }
+
+    ExposedDropdownMenuBox(
+        modifier = modifier.fillMaxWidth(),
+        expanded = expanded,
+        onExpandedChange = { expanded = it }
+    ) {
+        InputField(
+            value = selected,
+            onValueChange = {},
+            titleField = {
+                Text(
+                    text = stringResource(R.string.app_category),
+                    fontWeight = FontWeight.W600,
+                    fontSize = 14.sp,
+                    color = TitleTextField
+                )
+            },
+            trailingIcon = {
+                Icon(
+                    painterResource(R.drawable.dropdown_arrow),
+                    null,
+                    modifier.rotate(if (expanded) 180f else 0f)
+                )
+            },
+            leadingIcon = {
+                Icon(
+                    painter = painterResource(R.drawable.category_folder),
+                    contentDescription = "",
+                    tint = TextSecondary
+                )
+            },
+            placeholder = {
+                Text(
+                    text = stringResource(R.string.no_selected),
+                    color = TextPlaceholder,
+                    fontSize = 16.sp
+                )
+            },
+            modifier = Modifier
+                .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
+                .fillMaxWidth(),
+            readOnly = true
+        )
+        ExposedDropdownMenu(
+            expanded = true,
+            onDismissRequest = { expanded = false },
+            shape = RoundedCornerShape(12.dp),
+            containerColor = White,
+            border = BorderStroke(1.dp, Border),
+        ) {
+            categories.forEach { category ->
+                DropdownMenuItem(
+                    text = {
+                        Text(
+                            text = category,
+                            fontSize = 16.sp,
+                            //fontWeight = FontWeight.W400
+                        )
+                    },
+                    onClick = {
+                        selected = category
+                        expanded = false
+                    },
+                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
+                )
+            }
+        }
+    }
+}
+
 @Composable
 private fun CreatePasswordData(
     modifier: Modifier = Modifier,
@@ -251,6 +346,7 @@ private fun CreatePasswordData(
                     modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(24.dp)
                 ) {
+
                     var appName by remember { mutableStateOf("") }
                     InputField(
                         value = appName,
@@ -369,6 +465,8 @@ private fun CreatePasswordData(
                             )
                         }
                     )
+
+                    CategoryPicker()
                 }
             }
         },

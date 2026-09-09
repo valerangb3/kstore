@@ -3,6 +3,7 @@ package com.vgb3.kstore.presentation.ui.widgets
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -22,8 +23,9 @@ fun Form(
 ) {
     Column (
         modifier = modifier
+            .fillMaxHeight()
             .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(32.dp)
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
         formContent(onInput)
         formFooter()

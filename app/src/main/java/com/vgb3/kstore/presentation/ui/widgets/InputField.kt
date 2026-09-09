@@ -38,6 +38,8 @@ fun InputField(
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
     placeholder: @Composable (() -> Unit)? = null,
+    readOnly: Boolean = false,
+    singleLine: Boolean = true
 ) {
     Column(
         modifier = modifier.fillMaxWidth()
@@ -47,7 +49,7 @@ fun InputField(
         ) {
             titleField?.invoke()
             OutlinedTextField(
-                singleLine = true,
+                singleLine = singleLine,
                 modifier = Modifier.fillMaxWidth(),
                 value = value,
                 onValueChange = onValueChange,
@@ -63,17 +65,10 @@ fun InputField(
                 ),
                 textStyle = TextStyle(
                     fontSize = 16.sp
-                )
+                ),
+                readOnly = readOnly
             )
         }
-        /*BasicTextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = "",
-            onValueChange = {},
-            decorationBox = { innerTextField ->
-                innerTextField()
-            }
-        )*/
     }
 }
 

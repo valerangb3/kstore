@@ -7,6 +7,7 @@ sealed interface VaultFormResult {
         val appNameInput: String = "",
         val urlInput: String = "",
         val loginInput: String = "",
-        val passwordInput: String = ""
+        val passwordInput: String = "",
+        val categoryId: Int = 0
     ): VaultFormResult
 }

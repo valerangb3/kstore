@@ -34,6 +34,7 @@ fun InputField(
     value: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
+    fieldModifier: Modifier = Modifier,
     titleField: @Composable (() -> Unit)? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
@@ -42,33 +43,30 @@ fun InputField(
     singleLine: Boolean = true
 ) {
     Column(
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            titleField?.invoke()
-            OutlinedTextField(
-                singleLine = singleLine,
-                modifier = Modifier.fillMaxWidth(),
-                value = value,
-                onValueChange = onValueChange,
-                placeholder = placeholder,
-                shape = RoundedCornerShape(12.dp),
-                leadingIcon = leadingIcon,
-                trailingIcon = trailingIcon,
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Border,
-                    unfocusedBorderColor = Border,
-                    focusedContainerColor = White,
-                    unfocusedContainerColor = Background,
-                ),
-                textStyle = TextStyle(
-                    fontSize = 16.sp
-                ),
-                readOnly = readOnly
-            )
-        }
+        titleField?.invoke()
+        OutlinedTextField(
+            singleLine = singleLine,
+            modifier = fieldModifier.fillMaxWidth(),
+            value = value,
+            onValueChange = onValueChange,
+            placeholder = placeholder,
+            shape = RoundedCornerShape(12.dp),
+            leadingIcon = leadingIcon,
+            trailingIcon = trailingIcon,
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Border,
+                unfocusedBorderColor = Border,
+                focusedContainerColor = White,
+                unfocusedContainerColor = Background,
+            ),
+            textStyle = TextStyle(
+                fontSize = 16.sp
+            ),
+            readOnly = readOnly
+        )
     }
 }
 

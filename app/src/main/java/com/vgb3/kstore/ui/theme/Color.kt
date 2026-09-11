@@ -31,4 +31,6 @@ val White = Color(0xFFFFFFFF)
 
 val TitleTextField = Color(0xFF334155)
 val SimpleButtonTextColor = Color(0xFF475569)
+
+val Pressed = Color(0xFFF1F5F9)
 //input placeholder 0xFF94A3B8

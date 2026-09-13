@@ -11,6 +11,7 @@ import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import com.vgb3.kstore.presentation.AppViewModel
 import com.vgb3.kstore.presentation.ScaffoldItem
+import com.vgb3.kstore.presentation.VaultFormViewModel
 import com.vgb3.kstore.presentation.VaultViewModel
 import com.vgb3.kstore.presentation.ui.screens.CreatePasswordScreen
 import com.vgb3.kstore.presentation.ui.screens.VaultScreen
@@ -19,6 +20,7 @@ import com.vgb3.kstore.presentation.ui.screens.VaultScreen
 fun entryProvider(
     appViewModel: AppViewModel,
     vaultViewModel: VaultViewModel,
+    createPasswordFormViewModel: VaultFormViewModel,
     backStack: NavBackStack<NavKey>
 ): (NavKey) -> NavEntry<NavKey> = entryProvider {
     entry<AppRoute.VaultList> {
@@ -46,15 +48,12 @@ fun entryProvider(
                 start = 16.dp,
                 end = 16.dp,
             ),
-            onCancel = {
-                backStack.removeLastOrNull()
-                vaultViewModel.clearFormFields()
-            },
+            onCancel = { backStack.removeLastOrNull() },
             onSavePassword = {
-                vaultViewModel.createVault()
+                createPasswordFormViewModel.createVault()
                 backStack.removeLastOrNull()
             },
-            vaultViewModel = vaultViewModel,
+            createPasswordFormViewModel = createPasswordFormViewModel,
         )
     }
     entry<AppRoute.VaultGenerator> {

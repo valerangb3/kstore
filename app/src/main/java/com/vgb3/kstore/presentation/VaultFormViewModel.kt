@@ -8,101 +8,89 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.vgb3.kstore.KStoreApplication
 import com.vgb3.kstore.domain.interactor.VaultInteractor
 import com.vgb3.kstore.domain.model.input.CreateVaultItem
+import com.vgb3.kstore.domain.usecase.GetCategoriesUseCase
+import com.vgb3.kstore.presentation.map.toUi
+import com.vgb3.kstore.presentation.model.VaultFormInput
 import com.vgb3.kstore.presentation.model.VaultFormInputs
-import com.vgb3.kstore.presentation.model.VaultFormResult
+import com.vgb3.kstore.presentation.model.VaultFormUiState
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class VaultFormViewModel(
-    private val vaultInteractor: VaultInteractor
+    private val vaultInteractor: VaultInteractor,
+    private val getCategories: GetCategoriesUseCase
 ) : ViewModel() {
-    private val _state = MutableStateFlow<VaultFormResult>(VaultFormResult.VaultFormFields())
-    val vaultFormState = _state.asStateFlow()
 
-    private fun updateFormState(inputField: VaultFormInputs, fieldValue: String) {
-        _state.update { currentState ->
-            if (currentState is VaultFormResult.VaultFormFields) {
-                when (inputField) {
-                    VaultFormInputs.APP_NAME_INPUT -> {
-                        currentState.copy(
-                            appNameInput = fieldValue
-                        )
-                    }
-                    VaultFormInputs.URL_INPUT -> {
-                        currentState.copy(
-                            urlInput = fieldValue
-                        )
-                    }
-                    VaultFormInputs.LOGIN_INPUT -> {
-                        currentState.copy(
-                            loginInput = fieldValue
-                        )
-                    }
-                    VaultFormInputs.PASSWORD_INPUT -> {
-                        currentState.copy(
-                            passwordInput = fieldValue
-                        )
-                    }
-                }
-            } else {
-                when (inputField) {
-                    VaultFormInputs.APP_NAME_INPUT -> {
-                        VaultFormResult.VaultFormFields(
-                            appNameInput = fieldValue
-                        )
-                    }
-                    VaultFormInputs.URL_INPUT -> {
-                        VaultFormResult.VaultFormFields(
-                            urlInput = fieldValue
-                        )
-                    }
-                    VaultFormInputs.LOGIN_INPUT -> {
-                        VaultFormResult.VaultFormFields(
-                            loginInput = fieldValue
-                        )
-                    }
-                    VaultFormInputs.PASSWORD_INPUT -> {
-                        VaultFormResult.VaultFormFields(
-                            passwordInput = fieldValue
-                        )
-                    }
-                }
+    private val input = MutableStateFlow(VaultFormInput())
+    private val isSaving = MutableStateFlow(false)
 
+    val uiState = combine(
+        input,
+        getCategories(),
+        isSaving
+    ) { input, categories, saving ->
+        VaultFormUiState(
+            input = input,
+            categories = categories.map { it.toUi() },
+            isSaving = saving,
+            canSave = input.appNameInput.isNotBlank() && input.passwordInput.isNotBlank() && !saving
+        )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = VaultFormUiState()
+    )
+
+    init {
+        viewModelScope.launch {
+            getCategories()
+                .stateIn(viewModelScope)
+        }
+    }
+
+    fun onInput(inputField: VaultFormInputs, fieldValue: String) {
+        input.update { currentState ->
+            when (inputField) {
+                VaultFormInputs.APP_NAME_INPUT -> currentState.copy(appNameInput = fieldValue)
+                VaultFormInputs.URL_INPUT -> currentState.copy(urlInput = fieldValue)
+                VaultFormInputs.LOGIN_INPUT -> currentState.copy(loginInput = fieldValue)
+                VaultFormInputs.PASSWORD_INPUT -> currentState.copy(passwordInput = fieldValue)
             }
         }
+    }
+
+    fun onCategorySelected(categoryId: Long?) {
+        input.update { it.copy(selectedCategoryId = categoryId) }
     }
 
     fun createVault() {
-        val curState = vaultFormState.value
-        if (curState is VaultFormResult.VaultFormFields) {
-            viewModelScope.launch {
-                vaultInteractor.createVaultItem(
-                    CreateVaultItem.Login(
-                        title = curState.appNameInput,
-                        url = curState.urlInput,
-                        login = curState.loginInput,
-                        password = curState.passwordInput,
-                        categoryId = 0
-                    )
+        val curState = input.value
+        viewModelScope.launch {
+            isSaving.value = true
+            vaultInteractor.createVaultItem(
+                CreateVaultItem.Login(
+                    title = curState.appNameInput,
+                    url = curState.urlInput,
+                    login = curState.loginInput,
+                    password = curState.passwordInput,
+                    categoryId = curState.selectedCategoryId
                 )
-                clearFields()
-            }
+            )
+            input.value = VaultFormInput()
+            isSaving.value = false
         }
-    }
-
-    fun onInput(inputField: VaultFormInputs, fieldValue: String) = updateFormState(inputField, fieldValue)
-
-    fun clearFields() {
-        _state.value = VaultFormResult.VaultFormFields()
     }
 
     companion object {
         val Factory = viewModelFactory {
             initializer {
                 val vaultInteractor = (this[APPLICATION_KEY] as KStoreApplication).diContainer.provideVaultInteractor()
-                VaultFormViewModel(vaultInteractor)
+                val getCategories = (this[APPLICATION_KEY] as KStoreApplication).diContainer.provideGetCategoriesUseCase()
+                VaultFormViewModel(vaultInteractor, getCategories)
             }
         }
     }

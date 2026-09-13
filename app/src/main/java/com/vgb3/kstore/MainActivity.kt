@@ -17,7 +17,7 @@ import kotlin.getValue
 
 class MainActivity : ComponentActivity() {
     private val vaultViewModel: VaultViewModel by viewModels { VaultViewModel.Factory }
-    //private val vaultFormViewModel: VaultFormViewModel by viewModels { VaultFormViewModel.Factory }
+    private val vaultFormViewModel: VaultFormViewModel by viewModels { VaultFormViewModel.Factory }
     private val appViewModel: AppViewModel by viewModels { AppViewModel.Factory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,6 +28,7 @@ class MainActivity : ComponentActivity() {
                 App(
                     vaultViewModel = vaultViewModel,
                     appViewModel = appViewModel,
+                    createPasswordFormViewModel = vaultFormViewModel
                 )
             }
         }

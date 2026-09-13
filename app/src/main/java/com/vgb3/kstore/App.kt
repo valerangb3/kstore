@@ -28,6 +28,7 @@ import com.vgb3.kstore.navigation.AppRoute
 import com.vgb3.kstore.navigation.Destinations
 import com.vgb3.kstore.navigation.entryProvider
 import com.vgb3.kstore.presentation.AppViewModel
+import com.vgb3.kstore.presentation.VaultFormViewModel
 import com.vgb3.kstore.presentation.VaultViewModel
 import com.vgb3.kstore.presentation.ui.widgets.AppBottomBar
 import com.vgb3.kstore.presentation.ui.widgets.CreatePasswordFab
@@ -38,6 +39,7 @@ fun App(
     //backStack: SnapshotStateList<AppRoute>,
     appViewModel: AppViewModel,
     vaultViewModel: VaultViewModel,
+    createPasswordFormViewModel: VaultFormViewModel,
 ) {
     val appState by appViewModel.appState.collectAsStateWithLifecycle()
     //val startDestination = Destinations.HOME
@@ -46,7 +48,8 @@ fun App(
     val entryProvide = entryProvider(
         appViewModel = appViewModel,
         vaultViewModel = vaultViewModel,
-        backStack = backStack
+        backStack = backStack,
+        createPasswordFormViewModel = createPasswordFormViewModel
     )
     val decorators = listOf(rememberSaveableStateHolderNavEntryDecorator<NavKey>())
     val decoratedEntries = rememberDecoratedNavEntries(
@@ -60,8 +63,7 @@ fun App(
             //.statusBarsPadding() - if VaultCreate screen
             .fillMaxSize()
             .then(
-        if (first is AppRoute.VaultCreate)
-                    Modifier.statusBarsPadding()
+                if (first is AppRoute.VaultCreate) Modifier.statusBarsPadding()
                 else Modifier
             ),
         floatingActionButton = {
@@ -85,7 +87,6 @@ fun App(
                         modifier = Modifier.size(40.dp),
                         onClick = {
                             backStack.removeLastOrNull()
-                            vaultViewModel.clearFormFields()
                         }
                     ) {
                         Icon(

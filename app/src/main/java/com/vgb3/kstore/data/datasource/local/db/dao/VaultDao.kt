@@ -55,6 +55,8 @@ interface VaultDao {
         return generatedId
     }
 
+    @Query("SELECT * FROM vault_category_table")
+    fun getCategories(): Flow<List<VaultCategoryEntity>>
 
     @Insert(entity = VaultCategoryEntity::class)
     suspend fun insertCategoryVault(category: List<VaultCategoryEntity>): List<Long>

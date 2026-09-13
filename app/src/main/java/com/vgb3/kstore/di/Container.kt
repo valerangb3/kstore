@@ -6,10 +6,13 @@ import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.vgb3.kstore.data.datasource.local.db.KStoreDataBase
 import com.vgb3.kstore.data.datasource.local.db.entities.VaultCategoryEntity
+import com.vgb3.kstore.data.repository.CategoryRepositoryImpl
 import com.vgb3.kstore.data.repository.VaultRepositoryImpl
 import com.vgb3.kstore.domain.interactor.VaultInteractor
 import com.vgb3.kstore.domain.interactor.VaultInteractorImpl
+import com.vgb3.kstore.domain.repository.CategoryRepository
 import com.vgb3.kstore.domain.repository.VaultRepository
+import com.vgb3.kstore.domain.usecase.GetCategoriesUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -28,6 +31,14 @@ class Container(
         return VaultInteractorImpl(
             vaultRepository = provideVaultRepository()
         )
+    }
+
+    fun provideGetCategoriesUseCase(): GetCategoriesUseCase {
+        return GetCategoriesUseCase(provideCategoryRepository())
+    }
+
+    private fun provideCategoryRepository(): CategoryRepository {
+        return CategoryRepositoryImpl(dao = provideVaultDao())
     }
 
     private fun provideVaultRepository(): VaultRepository {

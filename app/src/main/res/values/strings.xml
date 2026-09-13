@@ -15,4 +15,12 @@
     <string name="nav_item_title_generator">Генератор</string>
     <string name="nav_item_title_secure">Безопасность</string>
     <string name="nav_item_title_settings">Настройки</string>
+
+    <string name="category_personal">Личное</string>
+    <string name="category_work">Работа</string>
+    <string name="category_finance">Финансы</string>
+    <string name="category_social">Соцсети</string>
+    <string name="category_shopping">Покупки</string>
+    <string name="category_education">Образование</string>
+    <string name="category_unknown">Другое</string>
 </resources>

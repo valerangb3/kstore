@@ -21,7 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -48,8 +48,8 @@ import com.vgb3.kstore.ui.theme.White
 @Composable
 fun DropdownField(
     options: List<DropdownOption>,
-    selected: Int,
-    onSelect: (DropdownOption) -> Unit,
+    selected: Long,
+    onSelect: (Long) -> Unit,
     modifier: Modifier = Modifier,
     leadingIcon: @Composable (() -> Unit)? = null,
     titleField: @Composable (() -> Unit)? = null,
@@ -63,10 +63,10 @@ fun DropdownField(
             expanded = expanded,
             onExpandedChange = { expanded = it }
         ) {
-            val inputText =
+            val inputTextRes =
                 options.find { it.id == selected }
-                    ?.text
-                    ?: stringResource(R.string.no_selected)
+                    ?.titleRes
+                    ?: R.string.category_unknown
 
             val arrowRotation by animateFloatAsState(
                 targetValue = if (expanded) 180f else 0f,
@@ -75,7 +75,7 @@ fun DropdownField(
             )
 
             InputField(
-                value = inputText,
+                value = stringResource(inputTextRes),
                 onValueChange = {},
                 titleField = titleField,
                 placeholder = placeholder,
@@ -116,14 +116,14 @@ fun DropdownField(
                     DropdownMenuItem(
                         text = {
                             Text(
-                                text = option.text,
+                                text = stringResource(option.titleRes),
                                 fontSize = 16.sp,
                                 //fontWeight = FontWeight.W400
                             )
                         },
                         onClick = {
                             //selected = option.text
-                            onSelect(option)
+                            onSelect(option.id)
                             expanded = false
                         },
                         contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
@@ -144,12 +144,12 @@ fun DropdownField(
 @Composable
 fun DropdownFieldPreview() {
     val categories = listOf(
-        DropdownOption(0, stringResource(R.string.no_selected)),
-        DropdownOption(1, "Телефоны"),
-        DropdownOption(2, "Ноутбуки"),
-        DropdownOption(3, "Наушники")
+        DropdownOption(1, "PERSONAL", R.string.category_personal),
+        DropdownOption(2, "WORK", R.string.category_work),
+        DropdownOption(3, "FINANCE", R.string.category_finance),
+        DropdownOption(4, "SOCIAL", R.string.category_social)
     )
-    var selected by remember { mutableIntStateOf(0) }
+    var selected by remember { mutableLongStateOf(1) }
     DropdownField(
         titleField = {
             Text(
@@ -175,8 +175,8 @@ fun DropdownFieldPreview() {
         },
         options = categories,
         selected = selected,
-        onSelect = { option ->
-            selected = option.id
+        onSelect = { optionId ->
+            selected = optionId
         }
     )
 }

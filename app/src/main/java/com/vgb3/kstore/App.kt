@@ -12,6 +12,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -21,11 +22,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberDecoratedNavEntries
-import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.vgb3.kstore.navigation.AppRoute
 import com.vgb3.kstore.navigation.Destinations
+import com.vgb3.kstore.navigation.TopLevelBackStack
 import com.vgb3.kstore.navigation.entryProvider
 import com.vgb3.kstore.presentation.AppViewModel
 import com.vgb3.kstore.presentation.VaultFormViewModel
@@ -36,24 +37,22 @@ import com.vgb3.kstore.presentation.ui.widgets.CreatePasswordFab
 @Composable
 fun App(
     modifier: Modifier = Modifier,
-    //backStack: SnapshotStateList<AppRoute>,
     appViewModel: AppViewModel,
     vaultViewModel: VaultViewModel,
     createPasswordFormViewModel: VaultFormViewModel,
 ) {
     val appState by appViewModel.appState.collectAsStateWithLifecycle()
-    //val startDestination = Destinations.HOME
-    val backStack = rememberNavBackStack(Destinations.HOME.route)
-    val first = backStack.last()
+    val topLevelBackStack = remember { TopLevelBackStack(Destinations.HOME.route) }
+
     val entryProvide = entryProvider(
         appViewModel = appViewModel,
         vaultViewModel = vaultViewModel,
-        backStack = backStack,
+        navigator = topLevelBackStack,
         createPasswordFormViewModel = createPasswordFormViewModel
     )
-    val decorators = listOf(rememberSaveableStateHolderNavEntryDecorator<NavKey>())
+    val decorators = listOf(rememberSaveableStateHolderNavEntryDecorator<AppRoute>())
     val decoratedEntries = rememberDecoratedNavEntries(
-        backStack = backStack,
+        backStack = topLevelBackStack.backStack,
         entryDecorators = decorators,
         entryProvider = entryProvide
     )
@@ -63,14 +62,14 @@ fun App(
             //.statusBarsPadding() - if VaultCreate screen
             .fillMaxSize()
             .then(
-                if (first is AppRoute.VaultCreate) Modifier.statusBarsPadding()
+                if (topLevelBackStack.backStack.last() is AppRoute.VaultCreate) Modifier.statusBarsPadding()
                 else Modifier
             ),
         floatingActionButton = {
             if (appState.scaffoldState.showFab) {
                 CreatePasswordFab(
                     onClick =  {
-                        backStack.add(AppRoute.VaultCreate)
+                        topLevelBackStack.add(AppRoute.VaultCreate)
                     }
                 )
             }
@@ -86,7 +85,7 @@ fun App(
                     IconButton(
                         modifier = Modifier.size(40.dp),
                         onClick = {
-                            backStack.removeLastOrNull()
+                            topLevelBackStack.removeLast()
                         }
                     ) {
                         Icon(
@@ -106,9 +105,9 @@ fun App(
         bottomBar = {
             if (appState.scaffoldState.showBottomBar) {
                 AppBottomBar(
-                    backStack = backStack,
+                    navigator = topLevelBackStack,
                     onItemClick = { _, destination ->
-                        backStack.add(destination.route)
+                        topLevelBackStack.addTopLevel(destination.route)
                     },
                 )
             }
@@ -116,10 +115,8 @@ fun App(
     ) { innerPadding ->
         NavDisplay(
             modifier = Modifier.padding(innerPadding),
-            //backStack = backStack,
-            onBack = { backStack.removeLastOrNull() },
+            onBack = { topLevelBackStack.removeLast() },
             entries = decoratedEntries
-            //entryProvider = entryProvide
         )
     }
 }

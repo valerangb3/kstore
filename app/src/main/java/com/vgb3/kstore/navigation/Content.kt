@@ -5,7 +5,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
@@ -21,8 +20,8 @@ fun entryProvider(
     appViewModel: AppViewModel,
     vaultViewModel: VaultViewModel,
     createPasswordFormViewModel: VaultFormViewModel,
-    backStack: NavBackStack<NavKey>
-): (NavKey) -> NavEntry<NavKey> = entryProvider {
+    navigator: TopLevelBackStack<AppRoute>
+): (AppRoute) -> NavEntry<AppRoute> = entryProvider {
     entry<AppRoute.VaultList> {
         VaultScreen(
             modifier = Modifier.padding(
@@ -31,7 +30,7 @@ fun entryProvider(
             ),
             appViewModel,
             vaultViewModel,
-            onNavigateToCreatePasswordScreen = { backStack.add(AppRoute.VaultCreate) },
+            onNavigateToCreatePasswordScreen = { navigator.add(AppRoute.VaultCreate) },
         )
     }
     entry<AppRoute.VaultCreate> {
@@ -48,10 +47,10 @@ fun entryProvider(
                 start = 16.dp,
                 end = 16.dp,
             ),
-            onCancel = { backStack.removeLastOrNull() },
+            onCancel = { navigator.removeLast() },
             onSavePassword = {
                 createPasswordFormViewModel.createVault()
-                backStack.removeLastOrNull()
+                navigator.removeLast()
             },
             createPasswordFormViewModel = createPasswordFormViewModel,
         )

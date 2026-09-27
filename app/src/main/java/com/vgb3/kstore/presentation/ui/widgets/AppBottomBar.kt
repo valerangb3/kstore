@@ -16,6 +16,8 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,7 +34,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
+import com.vgb3.kstore.navigation.AppRoute
 import com.vgb3.kstore.navigation.Destinations
+import com.vgb3.kstore.navigation.TopLevelBackStack
 import com.vgb3.kstore.ui.theme.Border
 import com.vgb3.kstore.ui.theme.Primary
 import com.vgb3.kstore.ui.theme.TextPlaceholder
@@ -40,14 +44,12 @@ import com.vgb3.kstore.ui.theme.White
 
 @Composable
 fun AppBottomBar(
-    backStack: NavBackStack<NavKey>,
+    navigator: TopLevelBackStack<AppRoute>,
     modifier: Modifier = Modifier,
     onItemClick: ((itemIdx: Int, destination: Destinations) -> Unit)? = null,
 ) {
     val shape = RoundedCornerShape(99.dp)
     val shadowColor = Color(0x1A000000)
-    val curr = backStack.last()
-
     BottomAppBar(
         modifier = modifier.height(100.dp),
         contentPadding = PaddingValues(0.dp),
@@ -88,7 +90,7 @@ fun AppBottomBar(
         ) {
             Destinations.entries.forEachIndexed { index, destinations ->
                 NavigationBarItem(
-                    selected = destinations.route == curr,
+                    selected = destinations.route == navigator.topLevelKey,
                     onClick = { onItemClick?.invoke(index, destinations) },
                     colors = NavigationBarItemDefaults.colors().copy(
                         selectedTextColor = Primary,
@@ -126,6 +128,6 @@ fun AppBottomBar(
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun AppBottomBarPreview() {
-    val backStack = rememberNavBackStack(Destinations.HOME.route)
-    AppBottomBar(backStack = backStack)
+    val backStack = TopLevelBackStack(Destinations.HOME.route)
+    AppBottomBar(navigator = backStack)
 }

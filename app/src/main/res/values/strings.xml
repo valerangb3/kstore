@@ -23,4 +23,16 @@
     <string name="category_shopping">Покупки</string>
     <string name="category_education">Образование</string>
     <string name="category_unknown">Другое</string>
+
+    <string name="type_login">Логин и пароль</string>
+    <string name="type_login_sub">Сайты и приложения</string>
+
+    <string name="type_card">Банковская карта</string>
+    <string name="type_card_sub">Номер, срок, CVV</string>
+
+    <string name="type_note">Защищенная заметка</string>
+    <string name="type_note_sub">Любой текст</string>
+
+    <string name="type_unknown">Другай заметка</string>
+    <string name="type_unknown_sub">Любой текст</string>
 </resources>

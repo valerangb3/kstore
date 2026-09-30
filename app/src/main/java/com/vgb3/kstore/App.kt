@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -35,8 +36,12 @@ import com.vgb3.kstore.navigation.entryProvider
 import com.vgb3.kstore.presentation.AppViewModel
 import com.vgb3.kstore.presentation.VaultFormViewModel
 import com.vgb3.kstore.presentation.VaultViewModel
+import com.vgb3.kstore.presentation.model.VaultResult
 import com.vgb3.kstore.presentation.ui.widgets.AppBottomBar
+import com.vgb3.kstore.presentation.ui.widgets.Buttons
+import com.vgb3.kstore.presentation.ui.widgets.CreateMenuBottomSheet
 import com.vgb3.kstore.presentation.ui.widgets.CreatePasswordFab
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,6 +52,7 @@ fun App(
     createPasswordFormViewModel: VaultFormViewModel,
 ) {
     val appState by appViewModel.appState.collectAsStateWithLifecycle()
+    val vaultState by vaultViewModel.vaultState.collectAsStateWithLifecycle()
     val topLevelBackStack = remember { TopLevelBackStack(Destinations.HOME.route) }
 
     val entryProvide = entryProvider(
@@ -61,7 +67,9 @@ fun App(
         entryDecorators = decorators,
         entryProvider = entryProvide
     )
-
+    val showFab = if (vaultState is VaultResult.VaultContent) {
+        (vaultState as VaultResult.VaultContent).vaultList.isNotEmpty()
+    } else false
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
     var showBottomSheet by remember { mutableStateOf(false) }
@@ -75,8 +83,7 @@ fun App(
                 else Modifier
             ),
         floatingActionButton = {
-            if (appState.scaffoldState.showFab) {
-
+            if (showFab) {
                 CreatePasswordFab(
                     onClick =  {
                         //topLevelBackStack.add(AppRoute.VaultCreate)
@@ -129,5 +136,27 @@ fun App(
             onBack = { topLevelBackStack.removeLast() },
             entries = decoratedEntries
         )
+    }
+    if (showBottomSheet) {
+        CreateMenuBottomSheet(
+            sheetState = sheetState,
+            onDismissRequest = {
+                showBottomSheet = false
+            },
+        ) {
+            Button(
+                onClick = {
+                    scope.launch {
+                        sheetState.hide()
+                    }.invokeOnCompletion {
+                        if (!sheetState.isVisible) {
+                            showBottomSheet = false
+                        }
+                    }
+                }
+            ) {
+                Text("Hide bottom sheet")
+            }
+        }
     }
 }

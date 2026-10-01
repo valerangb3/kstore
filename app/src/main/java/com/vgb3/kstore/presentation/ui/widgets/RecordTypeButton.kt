@@ -37,6 +37,7 @@ import com.vgb3.kstore.ui.theme.Amber600
 import com.vgb3.kstore.ui.theme.Green600
 import com.vgb3.kstore.ui.theme.Indigo600
 import com.vgb3.kstore.ui.theme.KStoreIcons
+import com.vgb3.kstore.ui.theme.KStoreTheme
 import com.vgb3.kstore.ui.theme.Slate100
 import com.vgb3.kstore.ui.theme.Slate400
 import com.vgb3.kstore.ui.theme.Slate500
@@ -143,5 +144,11 @@ fun RecordTypeButton(
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun PreviewRecordTypeButton() {
-    RecordTypeButton(styleFor("login")) {  }
+    Column {
+        KStoreTheme() {
+            RecordTypeButton(styleFor("login")) {  }
+            RecordTypeButton(styleFor("bank_card")) {  }
+            RecordTypeButton(styleFor("secure_note")) {  }
+        }
+    }
 }

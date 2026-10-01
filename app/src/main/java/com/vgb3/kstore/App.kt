@@ -1,8 +1,11 @@
 package com.vgb3.kstore
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -10,6 +13,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -41,6 +45,8 @@ import com.vgb3.kstore.presentation.ui.widgets.AppBottomBar
 import com.vgb3.kstore.presentation.ui.widgets.Buttons
 import com.vgb3.kstore.presentation.ui.widgets.CreateMenuBottomSheet
 import com.vgb3.kstore.presentation.ui.widgets.CreatePasswordFab
+import com.vgb3.kstore.presentation.ui.widgets.RecordTypeButton
+import com.vgb3.kstore.presentation.ui.widgets.styleFor
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -137,6 +143,15 @@ fun App(
             entries = decoratedEntries
         )
     }
+    val clickHandler = {
+            scope.launch {
+            sheetState.hide()
+        }.invokeOnCompletion {
+            if (!sheetState.isVisible) {
+                showBottomSheet = false
+            }
+        }
+    }
     if (showBottomSheet) {
         CreateMenuBottomSheet(
             sheetState = sheetState,
@@ -144,18 +159,26 @@ fun App(
                 showBottomSheet = false
             },
         ) {
-            Button(
-                onClick = {
-                    scope.launch {
-                        sheetState.hide()
-                    }.invokeOnCompletion {
-                        if (!sheetState.isVisible) {
-                            showBottomSheet = false
-                        }
-                    }
-                }
+            Column(
+                Modifier
+                    .padding(horizontal = 16.dp)
+                    .padding(bottom = 20.dp)
             ) {
-                Text("Hide bottom sheet")
+                Text(
+                    text = "Новая запись",
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Text(
+                    text = "Выберите, что сохранить",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(Modifier.height(14.dp))
+                RecordTypeButton(styleFor("login")) { clickHandler() }
+                Spacer(Modifier.height(8.dp))
+                RecordTypeButton(styleFor("bank_card")) { clickHandler() }
+                Spacer(Modifier.height(8.dp))
+                RecordTypeButton(styleFor("secure_note")) { clickHandler() }
             }
         }
     }

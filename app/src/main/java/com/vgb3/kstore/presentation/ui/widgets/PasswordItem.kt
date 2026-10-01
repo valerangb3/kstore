@@ -32,6 +32,7 @@ import com.vgb3.kstore.R
 import com.vgb3.kstore.domain.model.output.VaultItem
 import com.vgb3.kstore.domain.model.output.VaultItemSummary
 import com.vgb3.kstore.ui.theme.Border
+import com.vgb3.kstore.ui.theme.KStoreTheme
 import com.vgb3.kstore.ui.theme.Red
 import com.vgb3.kstore.ui.theme.TextPlaceholder
 import com.vgb3.kstore.ui.theme.White
@@ -131,30 +132,32 @@ fun PasswordItem(
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun PasswordItemPreview() {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        PasswordItem(
-            VaultItemSummary(
-                id = 1,
-                title = "youtube",
-                subTitle = "vgb3@gmail.com",
-                isFavorite = false,
-                categoryId = 0,
-                createdAt = 1L,
-                updatedAt = 1L
+    KStoreTheme {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            PasswordItem(
+                VaultItemSummary(
+                    id = 1,
+                    title = "youtube",
+                    subTitle = "vgb3@gmail.com",
+                    isFavorite = false,
+                    categoryId = 0,
+                    createdAt = 1L,
+                    updatedAt = 1L
+                )
             )
-        )
-        PasswordItem(
-            VaultItemSummary(
-                id = 1,
-                title = "youtube",
-                subTitle = "vgb3@gmail.com",
-                isFavorite = false,
-                categoryId = 0,
-                createdAt = 1L,
-                updatedAt = 1L
+            PasswordItem(
+                VaultItemSummary(
+                    id = 1,
+                    title = "youtube",
+                    subTitle = "vgb3@gmail.com",
+                    isFavorite = false,
+                    categoryId = 0,
+                    createdAt = 1L,
+                    updatedAt = 1L
+                )
             )
-        )
+        }
     }
 }

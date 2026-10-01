@@ -1,6 +1,7 @@
 package com.vgb3.kstore.presentation.ui.widgets
 
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -18,7 +19,8 @@ fun CreateMenuBottomSheet(
     ModalBottomSheet(
         modifier = modifier,
         sheetState = sheetState,
-        onDismissRequest = onDismissRequest
+        onDismissRequest = onDismissRequest,
+        containerColor = MaterialTheme.colorScheme.surface
     ) {
         content()
     }

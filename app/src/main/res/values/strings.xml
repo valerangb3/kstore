@@ -35,4 +35,8 @@
 
     <string name="type_unknown">Другай заметка</string>
     <string name="type_unknown_sub">Любой текст</string>
+
+    <string name="delete_item_title">Удалить запись?</string>
+    <string name="delete_item_message">«%1$s» будет удалена без возможности восстановления.</string>
+    <string name="delete">Удалить</string>
 </resources>

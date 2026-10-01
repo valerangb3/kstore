@@ -41,4 +41,10 @@ class VaultInteractorImpl(
             .getVaultSummaryItems()
             .flowOn(coroutineDispatcher)
     }
+
+    override suspend fun deleteVaultItem(id: Long) {
+        withContext(coroutineDispatcher) {
+            vaultRepository.deleteVaultItem(id)
+        }
+    }
 }

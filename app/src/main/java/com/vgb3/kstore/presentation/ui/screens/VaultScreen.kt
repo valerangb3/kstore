@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -18,8 +19,10 @@ import com.vgb3.kstore.presentation.ScaffoldItem
 import com.vgb3.kstore.presentation.VaultViewModel
 import com.vgb3.kstore.presentation.model.VaultResult
 import com.vgb3.kstore.presentation.ui.widgets.CreatePasswordFab
+import com.vgb3.kstore.presentation.ui.widgets.DeleteVaultItemDialog
 import com.vgb3.kstore.presentation.ui.widgets.EmptyVault
 import com.vgb3.kstore.presentation.ui.widgets.PasswordItem
+import com.vgb3.kstore.presentation.ui.widgets.SwipeToDeleteContainer
 import com.vgb3.kstore.ui.theme.KStoreTheme
 
 
@@ -28,6 +31,7 @@ fun VaultContent(
     modifier: Modifier = Modifier,
     vaultScreenState: VaultResult,
     onNavigateToCreatePasswordScreen: () -> Unit = {},
+    onDeleteRequest: (VaultItemSummary) -> Unit
 ) {
     when (vaultScreenState) {
         is VaultResult.Idle -> {}
@@ -37,7 +41,8 @@ fun VaultContent(
             VaultData(
                 modifier = modifier,
                 vaultItems = vaultScreenState.vaultList,
-                onNavigateToCreatePasswordScreen = onNavigateToCreatePasswordScreen
+                onNavigateToCreatePasswordScreen = onNavigateToCreatePasswordScreen,
+                onDeleteRequest = onDeleteRequest
             )
         }
     }
@@ -51,6 +56,7 @@ fun VaultScreen(
     onNavigateToCreatePasswordScreen: () -> Unit = {},
 ) {
     val vaultState by vaultViewModel.vaultState.collectAsStateWithLifecycle()
+    val pendingDelete by vaultViewModel.pendingDelete.collectAsStateWithLifecycle()
 
     val showFab = if (vaultState is VaultResult.VaultContent) {
         (vaultState as VaultResult.VaultContent).vaultList.isNotEmpty()
@@ -66,8 +72,17 @@ fun VaultScreen(
     VaultContent(
         modifier = modifier,
         onNavigateToCreatePasswordScreen = onNavigateToCreatePasswordScreen,
-        vaultScreenState = vaultState
+        vaultScreenState = vaultState,
+        onDeleteRequest = vaultViewModel::onDeleteRequest
     )
+
+    pendingDelete?.let { item ->
+        DeleteVaultItemDialog(
+            itemTitle = item.title,
+            onConfirm = vaultViewModel::onDeleteConfirm,
+            onDismiss = vaultViewModel::onDeleteDismiss,
+        )
+    }
 }
 
 @Composable
@@ -75,18 +90,24 @@ fun VaultData(
     modifier: Modifier = Modifier,
     vaultItems: List<VaultItemSummary>,
     onNavigateToCreatePasswordScreen: () -> Unit = {},
+    onDeleteRequest: (VaultItemSummary) -> Unit = {}
 ) {
     if (vaultItems.isNotEmpty()) {
         LazyColumn(
             modifier = modifier,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            items(vaultItems) { vaultItem ->
-                PasswordItem(
-                    vaultItem = vaultItem,
-                    onAction = {},
-                    onPasswordCopy = {}
-                )
+            items(vaultItems, key = { it.id }) { vaultItem ->
+                SwipeToDeleteContainer(
+                    onDeleteRequest = { onDeleteRequest(vaultItem) },
+                    modifier = Modifier.animateItem()
+                ) {
+                    PasswordItem(
+                        vaultItem = vaultItem,
+                        onAction = {},
+                        onPasswordCopy = {}
+                    )
+                }
             }
         }
     } else {

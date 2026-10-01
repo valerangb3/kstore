@@ -60,4 +60,7 @@ interface VaultDao {
 
     @Insert(entity = VaultCategoryEntity::class)
     suspend fun insertCategoryVault(category: List<VaultCategoryEntity>): List<Long>
+
+    @Query("DELETE FROM vault_table WHERE id = :id")
+    suspend fun deleteVaultItem(id: Long): Int
 }

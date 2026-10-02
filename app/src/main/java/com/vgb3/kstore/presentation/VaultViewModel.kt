@@ -7,6 +7,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.vgb3.kstore.domain.interactor.VaultInteractor
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import com.vgb3.kstore.KStoreApplication
+import com.vgb3.kstore.domain.model.output.VaultItemSummary
 import com.vgb3.kstore.presentation.model.VaultResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,8 +19,27 @@ class VaultViewModel(
     private val _state = MutableStateFlow<VaultResult>(VaultResult.Idle)
     val vaultState = _state.asStateFlow()
 
+    private val _pendingDelete = MutableStateFlow<VaultItemSummary?>(null)
+    val pendingDelete = _pendingDelete.asStateFlow()
+
     init {
         getVaultItems()
+    }
+
+    fun onDeleteRequest(item: VaultItemSummary) {
+        _pendingDelete.value = item
+    }
+
+    fun onDeleteDismiss() {
+        _pendingDelete.value = null
+    }
+
+    fun onDeleteConfirm() {
+        val item = _pendingDelete.value ?: return
+        _pendingDelete.value = null
+        viewModelScope.launch {
+            vaultInteractor.deleteVaultItem(item.id)
+        }
     }
 
     fun getVaultItems() {

@@ -47,4 +47,8 @@ class VaultRepositoryImpl(
             is VaultItem.VaultSecureNote -> TODO()
         }
     }
+
+    override suspend fun deleteVaultItem(id: Long) {
+        vaultDao.deleteVaultItem(id)
+    }
 }

@@ -7,4 +7,6 @@ import kotlinx.coroutines.flow.Flow
 interface VaultRepository {
     fun getVaultSummaryItems(): Flow<List<VaultItemSummary>>
     suspend fun createVaultItem(vaultItem: VaultItem): Long
+
+    suspend fun deleteVaultItem(id: Long)
 }

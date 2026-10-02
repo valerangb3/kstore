@@ -83,6 +83,11 @@ fun VaultScreen(
             onDismiss = vaultViewModel::onDeleteDismiss,
         )
     }
+    /*DeleteVaultItemDialog(
+        itemTitle = "f",
+        onConfirm = vaultViewModel::onDeleteConfirm,
+        onDismiss = vaultViewModel::onDeleteDismiss,
+    )*/
 }
 
 @Composable
@@ -99,7 +104,9 @@ fun VaultData(
         ) {
             items(vaultItems, key = { it.id }) { vaultItem ->
                 SwipeToDeleteContainer(
-                    onDeleteRequest = { onDeleteRequest(vaultItem) },
+                    onDeleteRequest = {
+                        onDeleteRequest(vaultItem)
+                    },
                     modifier = Modifier.animateItem()
                 ) {
                     PasswordItem(

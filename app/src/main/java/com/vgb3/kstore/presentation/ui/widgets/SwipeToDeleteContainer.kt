@@ -12,7 +12,7 @@ import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.vgb3.kstore.ui.theme.Danger
 import com.vgb3.kstore.ui.theme.White
+import kotlinx.coroutines.launch
 
 @Composable
 fun SwipeToDeleteContainer(
@@ -28,17 +29,18 @@ fun SwipeToDeleteContainer(
     content: @Composable () -> Unit
 ) {
     val state = rememberSwipeToDismissBoxState()
-    LaunchedEffect(state.currentValue) {
-        if (state.currentValue == SwipeToDismissBoxValue.EndToStart) {
-            onDeleteRequest()
-            state.reset()
-        }
-    }
+    val scope = rememberCoroutineScope()
 
     SwipeToDismissBox(
         modifier = modifier,
         state = state,
         enableDismissFromStartToEnd = false,
+        onDismiss = { direction ->
+            if (direction == SwipeToDismissBoxValue.EndToStart) {
+                onDeleteRequest()
+                scope.launch { state.reset() }
+            }
+        },
         backgroundContent = {
             val color = if (state.dismissDirection == SwipeToDismissBoxValue.EndToStart)
                 Danger

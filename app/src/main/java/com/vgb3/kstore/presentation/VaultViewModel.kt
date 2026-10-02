@@ -27,7 +27,7 @@ class VaultViewModel(
     }
 
     fun onDeleteRequest(item: VaultItemSummary) {
-
+        _pendingDelete.value = item
     }
 
     fun onDeleteDismiss() {

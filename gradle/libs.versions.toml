@@ -15,6 +15,7 @@ nav3Core = "1.1.2"
 kotlinSerialization = "2.2.21"
 kotlinxSerializationCore = "1.9.0"
 ksp = "2.3.7"
+revealswipe = "3.1.0-rc02"
 roomRuntime = "2.8.4"
 
 [libraries]
@@ -42,6 +43,7 @@ kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-t
 kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinxSerializationCore" }
 mockk-agent = { module = "io.mockk:mockk-agent", version.ref = "mockkAgent" }
 mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockkAndroid" }
+revealswipe = { module = "de.charlex.compose:revealswipe", version.ref = "revealswipe" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

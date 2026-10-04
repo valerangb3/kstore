@@ -4,10 +4,10 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
+import com.vgb3.kstore.data.datasource.local.db.entities.VaultRecordTypeEntity
 import com.vgb3.kstore.data.datasource.local.db.entities.VaultCategoryEntity
 import com.vgb3.kstore.data.datasource.local.db.entities.VaultEntity
 import com.vgb3.kstore.data.datasource.local.db.entities.VaultLoginEntity
-import com.vgb3.kstore.data.model.input.VaultSummaryData
 import com.vgb3.kstore.data.model.output.VaultSummaryRowData
 import kotlinx.coroutines.flow.Flow
 
@@ -58,8 +58,14 @@ interface VaultDao {
     @Query("SELECT * FROM vault_category_table")
     fun getCategories(): Flow<List<VaultCategoryEntity>>
 
+    @Query("SELECT * FROM record_types ORDER BY sortOrder")
+    fun getTypes(): Flow<List<VaultRecordTypeEntity>>
+
     @Insert(entity = VaultCategoryEntity::class)
     suspend fun insertCategoryVault(category: List<VaultCategoryEntity>): List<Long>
+
+    @Insert(entity = VaultRecordTypeEntity::class)
+    suspend fun insertRecordType(category: List<VaultRecordTypeEntity>): List<Long>
 
     @Query("DELETE FROM vault_table WHERE id = :id")
     suspend fun deleteVaultItem(id: Long): Int

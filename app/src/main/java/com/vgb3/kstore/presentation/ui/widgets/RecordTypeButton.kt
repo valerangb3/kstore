@@ -33,6 +33,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.vgb3.kstore.R
+import com.vgb3.kstore.domain.model.output.RecordType
+import com.vgb3.kstore.presentation.ui.model.RecordTypeUi
 import com.vgb3.kstore.ui.theme.Amber600
 import com.vgb3.kstore.ui.theme.Green600
 import com.vgb3.kstore.ui.theme.Indigo600
@@ -83,9 +85,10 @@ fun styleFor(key: String) = when (key) {
 
 @Composable
 fun RecordTypeButton(
+    recordType: RecordTypeUi,
     style: RecordTypeStyle,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit,
+    onClick: (RecordTypeUi) -> Unit,
 ) {
     val interaction = remember { MutableInteractionSource() }
     val pressed by interaction.collectIsPressedAsState()
@@ -93,7 +96,7 @@ fun RecordTypeButton(
     Surface(
         interactionSource = interaction,
         modifier = modifier.fillMaxWidth(),
-        onClick = onClick,
+        onClick = { onClick(recordType) },
         shape = RoundedCornerShape(16.dp),
         color = if (pressed) cs.primaryContainer.copy(alpha = .5f) else cs.surface,
         border = BorderStroke(1.dp, if (pressed) cs.primary else cs.outline)
@@ -146,9 +149,21 @@ fun RecordTypeButton(
 fun PreviewRecordTypeButton() {
     Column {
         KStoreTheme() {
-            RecordTypeButton(styleFor("login")) {  }
-            RecordTypeButton(styleFor("bank_card")) {  }
-            RecordTypeButton(styleFor("secure_note")) {  }
+            val login = RecordTypeUi(id = 1, type = "login")
+            val bankCard = RecordTypeUi(id = 2, type = "bank_card")
+            val secureNote = RecordTypeUi(id = 3, type = "secure_note")
+            RecordTypeButton(
+                recordType = login,
+                style = styleFor(login.type)
+            ) {  }
+            RecordTypeButton(
+                recordType = bankCard,
+                style = styleFor("bank_card")
+            ) {  }
+            RecordTypeButton(
+                recordType = secureNote,
+                style = styleFor("secure_note")
+            ) {  }
         }
     }
 }

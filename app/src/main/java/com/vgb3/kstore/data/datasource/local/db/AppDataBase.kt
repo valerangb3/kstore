@@ -7,17 +7,19 @@ import com.vgb3.kstore.data.datasource.local.db.entities.VaultBankCardEntity
 import com.vgb3.kstore.data.datasource.local.db.entities.VaultCategoryEntity
 import com.vgb3.kstore.data.datasource.local.db.entities.VaultEntity
 import com.vgb3.kstore.data.datasource.local.db.entities.VaultLoginEntity
+import com.vgb3.kstore.data.datasource.local.db.entities.VaultRecordTypeEntity
 import com.vgb3.kstore.data.datasource.local.db.entities.VaultSecureNoteEntity
 
 
 @Database(
-    version = 1,
+    version = 2,
     entities = [
         VaultEntity::class,
         VaultLoginEntity::class,
         VaultBankCardEntity::class,
         VaultSecureNoteEntity::class,
-        VaultCategoryEntity::class
+        VaultCategoryEntity::class,
+        VaultRecordTypeEntity::class
     ]
 )
 abstract class KStoreDataBase : RoomDatabase() {

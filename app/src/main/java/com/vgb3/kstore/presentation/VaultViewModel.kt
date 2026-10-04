@@ -8,19 +8,33 @@ import com.vgb3.kstore.domain.interactor.VaultInteractor
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import com.vgb3.kstore.KStoreApplication
 import com.vgb3.kstore.domain.model.output.VaultItemSummary
+import com.vgb3.kstore.domain.usecase.GetRecordTypesUseCase
+import com.vgb3.kstore.presentation.map.toUi
 import com.vgb3.kstore.presentation.model.VaultResult
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class VaultViewModel(
-    private val vaultInteractor: VaultInteractor
+    private val vaultInteractor: VaultInteractor,
+    private val getRecordTypesUseCase: GetRecordTypesUseCase
 ) : ViewModel() {
     private val _state = MutableStateFlow<VaultResult>(VaultResult.Idle)
     val vaultState = _state.asStateFlow()
 
     private val _pendingDelete = MutableStateFlow<VaultItemSummary?>(null)
     val pendingDelete = _pendingDelete.asStateFlow()
+
+    val recordTypes = getRecordTypesUseCase()
+        .map { types -> types.map { it.toUi() } }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = emptyList()
+        )
 
     init {
         getVaultItems()
@@ -58,7 +72,8 @@ class VaultViewModel(
         val Factory = viewModelFactory {
             initializer {
                 val vaultInteractor = (this[APPLICATION_KEY] as KStoreApplication).diContainer.provideVaultInteractor()
-                VaultViewModel(vaultInteractor)
+                val recordTypeUseCase = (this[APPLICATION_KEY] as KStoreApplication).diContainer.provideGetRecordTypesUseCase()
+                VaultViewModel(vaultInteractor, recordTypeUseCase)
             }
         }
     }

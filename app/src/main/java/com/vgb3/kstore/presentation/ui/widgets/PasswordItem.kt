@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -41,6 +42,7 @@ import com.vgb3.kstore.ui.theme.White
 fun PasswordItem(
     vaultItem: VaultItemSummary,
     modifier: Modifier = Modifier,
+    shape: Shape = RoundedCornerShape(24.dp),
     onAction: () -> Unit = {},
     onPasswordCopy: () -> Unit = {},
 ) {
@@ -49,7 +51,7 @@ fun PasswordItem(
             .fillMaxWidth()
             .height(82.dp)
             .dropShadow(
-                shape = RoundedCornerShape(24.dp),
+                shape = shape,
                 shadow = Shadow(
                     radius = 16.dp,
                     spread = 0.dp,
@@ -57,7 +59,7 @@ fun PasswordItem(
                     offset = DpOffset(x = 0.dp, y = 4.dp)
                 )
             )
-            .clip(RoundedCornerShape(24.dp))
+            .clip(shape)
             .background(White)
             .padding(16.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp),

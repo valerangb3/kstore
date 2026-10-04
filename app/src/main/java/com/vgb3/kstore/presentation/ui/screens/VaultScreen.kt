@@ -2,17 +2,27 @@ package com.vgb3.kstore.presentation.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.vgb3.kstore.R
 import com.vgb3.kstore.domain.model.output.VaultItemSummary
 import com.vgb3.kstore.presentation.AppViewModel
 import com.vgb3.kstore.presentation.ScaffoldItem
@@ -22,8 +32,12 @@ import com.vgb3.kstore.presentation.ui.widgets.CreatePasswordFab
 import com.vgb3.kstore.presentation.ui.widgets.DeleteVaultItemDialog
 import com.vgb3.kstore.presentation.ui.widgets.EmptyVault
 import com.vgb3.kstore.presentation.ui.widgets.PasswordItem
-import com.vgb3.kstore.presentation.ui.widgets.SwipeToDeleteContainer
+import com.vgb3.kstore.ui.theme.Danger
 import com.vgb3.kstore.ui.theme.KStoreTheme
+import com.vgb3.kstore.ui.theme.White
+import de.charlex.compose.RevealDirection
+import de.charlex.compose.RevealSwipe
+import de.charlex.compose.rememberRevealState
 
 
 @Composable
@@ -103,13 +117,40 @@ fun VaultData(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             items(vaultItems, key = { it.id }) { vaultItem ->
-                SwipeToDeleteContainer(
-                    onDeleteRequest = {
+                RevealSwipe(
+                    shape = RoundedCornerShape(24.dp),
+                    closeOnContentClick = true,
+                    state = rememberRevealState(directions = setOf(RevealDirection.EndToStart)),
+                    backgroundCardEndColor = Danger,
+                    onBackgroundEndClick = {
                         onDeleteRequest(vaultItem)
+                        true
                     },
-                    modifier = Modifier.animateItem()
-                ) {
+                    hiddenContentEnd = {
+                        Icon(
+                            imageVector = Icons.Outlined.Delete,
+                            contentDescription = null,
+                            tint = White
+                        )
+                    },
+                    backgroundCardStartColor = MaterialTheme.colorScheme.tertiaryContainer,
+                    backgroundStartActionLabel = "Mark entry as favorite",//todo
+                    backgroundEndActionLabel = stringResource(R.string.delete),
+                    card = { shape, content ->
+                        Card(
+                            modifier = Modifier.matchParentSize(),
+                            shape = shape,
+                            colors = CardDefaults.cardColors(
+                                contentColor = MaterialTheme.colorScheme.onSecondary,
+                                containerColor = Color.Transparent
+                            ),
+                            content = content
+                        )
+                    }
+                ) { shape ->
                     PasswordItem(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = shape,
                         vaultItem = vaultItem,
                         onAction = {},
                         onPasswordCopy = {}
@@ -146,20 +187,24 @@ fun VaultScreenPreview() {
                     end = 24.dp,
                 ),
                 vaultItems = listOf(
-                    /*VaultItem(
-                        id = "#1",
-                        appName = "youtube",
-                        url = "",
-                        login = "vgb3@gmail.com",
-                        password = "password,"
+                    VaultItemSummary(
+                        id = 1,
+                        title = "youtube",
+                        subTitle = "vgb3@gmail.com",
+                        isFavorite = true,
+                        categoryId = 1,
+                        createdAt = 1,
+                        updatedAt = 2
                     ),
-                    VaultItem(
-                        id = "#2",
-                        appName = "google",
-                        url = "",
-                        login = "vgb3@gmail.com",
-                        password = "password,"
-                    )*/
+                    VaultItemSummary(
+                        id = 2,
+                        title = "google",
+                        subTitle = "vgb3@gmail.com",
+                        isFavorite = true,
+                        categoryId = 1,
+                        createdAt = 1,
+                        updatedAt = 2
+                    )
                 )
             )
         }

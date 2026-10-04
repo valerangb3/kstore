@@ -93,3 +93,14 @@ data class VaultCategoryEntity(
     val key: String,
     val sortOrder: Int,
 )
+
+@Entity(
+    tableName = "record_types",
+    indices = [Index(value = ["code"], unique = true)]
+)
+data class VaultRecordTypeEntity(
+    @PrimaryKey(autoGenerate = true)
+    val id: Long = 0,
+    val code: String,
+    val sortOrder: Int
+)

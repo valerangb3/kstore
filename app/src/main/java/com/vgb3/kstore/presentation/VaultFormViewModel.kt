@@ -46,6 +46,7 @@ class VaultFormViewModel(
     )
 
     init {
+        //todo по идее нигде не используется
         viewModelScope.launch {
             getCategories()
                 .stateIn(viewModelScope)

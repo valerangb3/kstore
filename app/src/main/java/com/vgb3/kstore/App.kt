@@ -1,5 +1,6 @@
 package com.vgb3.kstore
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -41,8 +41,8 @@ import com.vgb3.kstore.presentation.AppViewModel
 import com.vgb3.kstore.presentation.VaultFormViewModel
 import com.vgb3.kstore.presentation.VaultViewModel
 import com.vgb3.kstore.presentation.model.VaultResult
+import com.vgb3.kstore.presentation.ui.model.RecordTypeUi
 import com.vgb3.kstore.presentation.ui.widgets.AppBottomBar
-import com.vgb3.kstore.presentation.ui.widgets.Buttons
 import com.vgb3.kstore.presentation.ui.widgets.CreateMenuBottomSheet
 import com.vgb3.kstore.presentation.ui.widgets.CreatePasswordFab
 import com.vgb3.kstore.presentation.ui.widgets.RecordTypeButton
@@ -59,6 +59,7 @@ fun App(
 ) {
     val appState by appViewModel.appState.collectAsStateWithLifecycle()
     val vaultState by vaultViewModel.vaultState.collectAsStateWithLifecycle()
+    val recordTypesState by vaultViewModel.recordTypes.collectAsStateWithLifecycle()
     val topLevelBackStack = remember { TopLevelBackStack(Destinations.HOME.route) }
 
     val entryProvide = entryProvider(
@@ -143,7 +144,7 @@ fun App(
             entries = decoratedEntries
         )
     }
-    val clickHandler = {
+    val clickHandler: (RecordTypeUi) -> Unit = {
             scope.launch {
             sheetState.hide()
         }.invokeOnCompletion {
@@ -174,11 +175,16 @@ fun App(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Spacer(Modifier.height(14.dp))
-                RecordTypeButton(styleFor("login")) { clickHandler() }
-                Spacer(Modifier.height(8.dp))
-                RecordTypeButton(styleFor("bank_card")) { clickHandler() }
-                Spacer(Modifier.height(8.dp))
-                RecordTypeButton(styleFor("secure_note")) { clickHandler() }
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    recordTypesState.forEach { recordType ->
+                        RecordTypeButton(
+                            recordType = recordType,
+                            style = styleFor(recordType.type),
+                        ) {
+                            clickHandler(it)
+                        }
+                    }
+                }
             }
         }
     }

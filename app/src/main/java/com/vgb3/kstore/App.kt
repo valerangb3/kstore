@@ -140,7 +140,10 @@ fun App(
     ) { innerPadding ->
         NavDisplay(
             modifier = Modifier.padding(innerPadding),
-            onBack = { topLevelBackStack.removeLast() },
+            onBack = {
+                //TODO: при системной навигации назад - остается top bar
+                topLevelBackStack.removeLast()
+            },
             entries = decoratedEntries
         )
     }

@@ -22,6 +22,9 @@ class TopLevelBackStack<T: Any>(startKey: T) {
             addAll(topLevelStacks.flatMap { it.value })
         }
 
+    //TODO: стартовый экран "Пароли", когда тапнем с другого экрана в стратовый,
+    // то он будет удален из нижнего слоя стэка. Кажется это супер не логичным.
+
     fun addTopLevel(key: T) {
         if (topLevelStacks[key] == null) {
             topLevelStacks[key] = mutableStateListOf(key)

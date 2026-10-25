@@ -6,8 +6,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomAppBar
@@ -50,10 +53,14 @@ fun AppBottomBar(
 ) {
     val shape = RoundedCornerShape(99.dp)
     val shadowColor = Color(0x1A000000)
+    val navBarHeight = WindowInsets.navigationBars
+        .asPaddingValues()
+        .calculateBottomPadding()
     BottomAppBar(
-        modifier = modifier.height(100.dp),
+        modifier = modifier.height(100.dp + navBarHeight),
         contentPadding = PaddingValues(0.dp),
-        containerColor = Color.Transparent
+        containerColor = Color.Transparent,
+        windowInsets = WindowInsets.navigationBars
     ) {
         Row(
             modifier = Modifier
@@ -84,7 +91,7 @@ fun AppBottomBar(
                 .border(1.dp, Border, shape)
                 .clip(shape)
                 .background(color = White)
-                .padding(horizontal = 16.dp, vertical = 8.dp),
+                .padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {

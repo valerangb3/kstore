@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -17,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -40,7 +43,9 @@ fun InputField(
     trailingIcon: @Composable (() -> Unit)? = null,
     placeholder: @Composable (() -> Unit)? = null,
     readOnly: Boolean = false,
-    singleLine: Boolean = true
+    singleLine: Boolean = true,
+    keyboardOptions: KeyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+    keyboardActions: KeyboardActions = KeyboardActions.Default
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -65,7 +70,9 @@ fun InputField(
             textStyle = TextStyle(
                 fontSize = 16.sp
             ),
-            readOnly = readOnly
+            readOnly = readOnly,
+            keyboardOptions = keyboardOptions,
+            keyboardActions = keyboardActions
         )
     }
 }

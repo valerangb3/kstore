@@ -6,8 +6,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 
-class TopLevelBackStack<T: Any>(startKey: T) {
-    private var topLevelStacks: LinkedHashMap<T, SnapshotStateList<T>> = linkedMapOf(
+class TopLevelBackStack<T: Any>(private val startKey: T) {
+    private val topLevelStacks: LinkedHashMap<T, SnapshotStateList<T>> = linkedMapOf(
         startKey to mutableStateListOf(startKey)
     )
 
@@ -16,25 +16,20 @@ class TopLevelBackStack<T: Any>(startKey: T) {
 
     val backStack = mutableStateListOf(startKey)
 
-    private fun updateBackStack() =
-        backStack.apply {
-            clear()
-            addAll(topLevelStacks.flatMap { it.value })
+    private fun updateBackStack() {
+        backStack.clear()
+        topLevelStacks[startKey]?.let { topLevelItems ->
+            backStack.addAll(topLevelItems)
         }
-
-    //TODO: стартовый экран "Пароли", когда тапнем с другого экрана в стратовый,
-    // то он будет удален из нижнего слоя стэка. Кажется это супер не логичным.
-
-    fun addTopLevel(key: T) {
-        if (topLevelStacks[key] == null) {
-            topLevelStacks[key] = mutableStateListOf(key)
-        } else {
-            topLevelStacks.apply {
-                remove(key)?.let {
-                    put(key, it)
-                }
+        if (topLevelKey != startKey) {
+            topLevelStacks[topLevelKey]?.let { topLevelItems ->
+                backStack.addAll(topLevelItems)
             }
         }
+    }
+
+    fun addTopLevel(key: T) {
+        topLevelStacks.getOrPut(key) { mutableStateListOf(key) }
         topLevelKey = key
         updateBackStack()
     }
@@ -45,10 +40,13 @@ class TopLevelBackStack<T: Any>(startKey: T) {
     }
 
     fun removeLast() {
-        if (backStack.size <= 1) return
-        val removedKey = topLevelStacks[topLevelKey]?.removeLastOrNull()
-        topLevelStacks.remove(removedKey)
-        topLevelKey = topLevelStacks.keys.last()
+        topLevelStacks[topLevelKey]?.let { stack ->
+            when {
+                stack.size > 1 -> stack.removeAt(stack.lastIndex)
+                topLevelKey != startKey -> topLevelKey = startKey
+                else -> return
+            }
+        }
         updateBackStack()
     }
 }

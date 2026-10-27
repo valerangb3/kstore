@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -18,9 +20,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -61,6 +66,7 @@ fun CreatePasswordScreen(
                     verticalArrangement = Arrangement.spacedBy(24.dp)
                 ) {
                     val appName = formsState.input.appNameInput
+                    val focusManager = LocalFocusManager.current
                     InputField(
                         value = appName,
                         onValueChange = { onInput(VaultFormInputs.APP_NAME_INPUT, it) },
@@ -113,7 +119,11 @@ fun CreatePasswordScreen(
                                 color = TextPlaceholder,
                                 fontSize = 16.sp
                             )
-                        }
+                        },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Uri,
+                            imeAction = ImeAction.Next
+                        )
                     )
 
                     val userName = formsState.input.loginInput
@@ -143,7 +153,11 @@ fun CreatePasswordScreen(
                                 color = TextPlaceholder,
                                 fontSize = 16.sp
                             )
-                        }
+                        },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Email,
+                            imeAction = ImeAction.Next
+                        )
                     )
 
                     val password = formsState.input.passwordInput
@@ -178,7 +192,14 @@ fun CreatePasswordScreen(
                                 color = TextPlaceholder,
                                 fontSize = 16.sp
                             )
-                        }
+                        },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Password,
+                            imeAction = ImeAction.Done
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onDone = { focusManager.clearFocus() }
+                        )
                     )
 
                     val selectedCategoryId = formsState.input.selectedCategoryId

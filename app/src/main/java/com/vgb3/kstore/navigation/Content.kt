@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.NavEntry
+import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import com.vgb3.kstore.R
 import com.vgb3.kstore.presentation.VaultFormViewModel
@@ -21,8 +22,8 @@ import com.vgb3.kstore.presentation.ui.widgets.BackTopBar
 fun entryProvider(
     vaultViewModel: VaultViewModel,
     createPasswordFormViewModel: VaultFormViewModel,
-    navigator: TopLevelBackStack<AppRoute>
-): (AppRoute) -> NavEntry<AppRoute> = entryProvider {
+    navigator: TopLevelBackStack
+): (NavKey) -> NavEntry<NavKey> = entryProvider {
     entry<AppRoute.VaultList> {
         VaultScreen(
             modifier = Modifier.padding(

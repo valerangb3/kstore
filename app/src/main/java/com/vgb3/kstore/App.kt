@@ -14,6 +14,7 @@ import com.vgb3.kstore.navigation.AppRoute
 import com.vgb3.kstore.navigation.Destinations
 import com.vgb3.kstore.navigation.TopLevelBackStack
 import com.vgb3.kstore.navigation.entryProvider
+import com.vgb3.kstore.navigation.rememberTopLevelBackStack
 import com.vgb3.kstore.presentation.VaultFormViewModel
 import com.vgb3.kstore.presentation.VaultViewModel
 import com.vgb3.kstore.presentation.ui.widgets.AppBottomBar
@@ -24,22 +25,20 @@ fun App(
     vaultViewModel: VaultViewModel,
     createPasswordFormViewModel: VaultFormViewModel,
 ) {
-    val topLevelBackStack = remember { TopLevelBackStack(Destinations.HOME.route) }
-
-    val entryProvide = entryProvider(
-        vaultViewModel = vaultViewModel,
-        navigator = topLevelBackStack,
-        createPasswordFormViewModel = createPasswordFormViewModel
-    )
-    val decorators = listOf(rememberSaveableStateHolderNavEntryDecorator<AppRoute>())
-    val decoratedEntries = rememberDecoratedNavEntries(
-        backStack = topLevelBackStack.backStack,
-        entryDecorators = decorators,
-        entryProvider = entryProvide
+    val topLevelBackStack = rememberTopLevelBackStack(
+        startKey = Destinations.HOME.route,
+        topLevelKeys = Destinations.entries.map { it.route }
     )
 
-    val currentKey = topLevelBackStack.backStack.last()
-    val showBottomBar = Destinations.entries.any { it.route == currentKey }
+    val entries = topLevelBackStack.toEntries(
+        entryProvider(
+            vaultViewModel = vaultViewModel,
+            navigator = topLevelBackStack,
+            createPasswordFormViewModel = createPasswordFormViewModel
+        )
+    )
+
+    val showBottomBar = Destinations.entries.any { it.route == topLevelBackStack.topLevelKey }
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -61,7 +60,7 @@ fun App(
             onBack = {
                 topLevelBackStack.removeLast()
             },
-            entries = decoratedEntries
+            entries = entries
         )
     }
 }

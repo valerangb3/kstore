@@ -40,6 +40,7 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import com.vgb3.kstore.navigation.AppRoute
 import com.vgb3.kstore.navigation.Destinations
 import com.vgb3.kstore.navigation.TopLevelBackStack
+import com.vgb3.kstore.navigation.rememberTopLevelBackStack
 import com.vgb3.kstore.ui.theme.Border
 import com.vgb3.kstore.ui.theme.Primary
 import com.vgb3.kstore.ui.theme.TextPlaceholder
@@ -47,7 +48,7 @@ import com.vgb3.kstore.ui.theme.White
 
 @Composable
 fun AppBottomBar(
-    navigator: TopLevelBackStack<AppRoute>,
+    navigator: TopLevelBackStack,
     modifier: Modifier = Modifier,
     onItemClick: ((itemIdx: Int, destination: Destinations) -> Unit)? = null,
 ) {
@@ -135,6 +136,14 @@ fun AppBottomBar(
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun AppBottomBarPreview() {
-    val backStack = TopLevelBackStack(Destinations.HOME.route)
-    AppBottomBar(navigator = backStack)
+    val topLevelBackStack = rememberTopLevelBackStack(
+        startKey = Destinations.HOME.route,
+        topLevelKeys = Destinations.entries.map { it.route }
+    )
+    AppBottomBar(
+        navigator = topLevelBackStack,
+        onItemClick = { _, destination ->
+            topLevelBackStack.addTopLevel(destination.route)
+        },
+    )
 }

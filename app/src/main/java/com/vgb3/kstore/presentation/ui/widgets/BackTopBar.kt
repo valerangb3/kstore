@@ -15,6 +15,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.vgb3.kstore.R
+import com.vgb3.kstore.ui.theme.KStoreTheme
 
 @Composable
 fun BackTopBar(
@@ -49,8 +50,10 @@ fun BackTopBar(
 @Preview
 @Composable
 private fun BackTopBarPreview() {
-    BackTopBar(
-        "Create",
-        {}
-    )
+    KStoreTheme {
+        BackTopBar(
+            "Create",
+            {}
+        )
+    }
 }

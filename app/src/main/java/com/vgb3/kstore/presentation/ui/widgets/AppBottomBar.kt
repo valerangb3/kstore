@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
@@ -34,17 +35,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation3.runtime.NavBackStack
-import androidx.navigation3.runtime.NavKey
-import androidx.navigation3.runtime.rememberNavBackStack
-import com.vgb3.kstore.navigation.AppRoute
 import com.vgb3.kstore.navigation.Destinations
 import com.vgb3.kstore.navigation.TopLevelBackStack
 import com.vgb3.kstore.navigation.rememberTopLevelBackStack
-import com.vgb3.kstore.ui.theme.Border
-import com.vgb3.kstore.ui.theme.Primary
-import com.vgb3.kstore.ui.theme.TextPlaceholder
-import com.vgb3.kstore.ui.theme.White
+import com.vgb3.kstore.ui.theme.KStoreTheme
 
 @Composable
 fun AppBottomBar(
@@ -89,9 +83,9 @@ fun AppBottomBar(
                         offset = DpOffset(x = 0.dp, 4.dp)
                     )
                 )
-                .border(1.dp, Border, shape)
+                .border(1.dp, MaterialTheme.colorScheme.outline, shape)
                 .clip(shape)
-                .background(color = White)
+                .background(color = MaterialTheme.colorScheme.surface)
                 .padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
@@ -101,11 +95,11 @@ fun AppBottomBar(
                     selected = destinations.route == navigator.topLevelKey,
                     onClick = { onItemClick?.invoke(index, destinations) },
                     colors = NavigationBarItemDefaults.colors().copy(
-                        selectedTextColor = Primary,
-                        selectedIconColor = Primary,
+                        selectedTextColor = MaterialTheme.colorScheme.primary,
+                        selectedIconColor = MaterialTheme.colorScheme.primary,
                         selectedIndicatorColor = Color.Transparent,
-                        unselectedTextColor = TextPlaceholder,
-                        unselectedIconColor = TextPlaceholder
+                        unselectedTextColor = KStoreTheme.colors.placeholderText,
+                        unselectedIconColor = KStoreTheme.colors.placeholderText
                     ),
                     icon = {
                         Box(
@@ -140,10 +134,12 @@ fun AppBottomBarPreview() {
         startKey = Destinations.HOME.route,
         topLevelKeys = Destinations.entries.map { it.route }
     )
-    AppBottomBar(
-        navigator = topLevelBackStack,
-        onItemClick = { _, destination ->
-            topLevelBackStack.addTopLevel(destination.route)
-        },
-    )
+    KStoreTheme {
+        AppBottomBar(
+            navigator = topLevelBackStack,
+            onItemClick = { _, destination ->
+                topLevelBackStack.addTopLevel(destination.route)
+            },
+        )
+    }
 }

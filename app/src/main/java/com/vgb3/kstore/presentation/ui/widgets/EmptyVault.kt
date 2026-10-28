@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -22,9 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.vgb3.kstore.R
 import com.vgb3.kstore.presentation.ui.widgets.Buttons.PrimaryButton
-import com.vgb3.kstore.ui.theme.PrimaryIconTint
-import com.vgb3.kstore.ui.theme.Success
-import com.vgb3.kstore.ui.theme.White
+import com.vgb3.kstore.ui.theme.KStoreTheme
 
 @Composable
 fun EmptyVault(
@@ -43,21 +42,21 @@ fun EmptyVault(
                 Icon(
                     painter = painterResource(R.drawable.account_secure),
                     contentDescription = null,
-                    tint = PrimaryIconTint
+                    tint = MaterialTheme.colorScheme.primary
                 )
             },
             borderTopEndCircleContent = {
                 Icon(
                     painter = painterResource(R.drawable.success_check_mark),
                     contentDescription = null,
-                    tint = Success
+                    tint = KStoreTheme.colors.success
                 )
             },
             borderBottomStartContent = {
                 Icon(
                     painter = painterResource(R.drawable.key_icon),
                     contentDescription = null,
-                    tint = PrimaryIconTint
+                    tint = MaterialTheme.colorScheme.primary
                 )
             }
         )
@@ -99,7 +98,6 @@ fun EmptyVault(
                     Text(
                         text = "Создать пароль",
                         fontSize = 16.sp,
-                        color = White,
                     )
                 }
             }
@@ -110,5 +108,7 @@ fun EmptyVault(
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun EmptyVaultPreview() {
-    EmptyVault()
+    KStoreTheme {
+        EmptyVault()
+    }
 }

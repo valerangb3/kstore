@@ -4,14 +4,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.vgb3.kstore.R
-import com.vgb3.kstore.ui.theme.Primary
-import com.vgb3.kstore.ui.theme.White
+import com.vgb3.kstore.ui.theme.KStoreTheme
 
 @Composable
 fun CreatePasswordFab(
@@ -23,12 +23,12 @@ fun CreatePasswordFab(
             .size(56.dp),
         shape = CircleShape,
         onClick = onClick,
-        containerColor = Primary
+        containerColor = MaterialTheme.colorScheme.primary
     ) {
         Icon(
             painter = painterResource(R.drawable.plus),
             contentDescription = null,
-            tint = White
+            tint = MaterialTheme.colorScheme.onPrimary
         )
     }
 }
@@ -36,7 +36,9 @@ fun CreatePasswordFab(
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun CreatePasswordFabPreview() {
-    CreatePasswordFab(
-        onClick = {}
-    )
+    KStoreTheme {
+        CreatePasswordFab(
+            onClick = {}
+        )
+    }
 }

@@ -1,6 +1,5 @@
 package com.vgb3.kstore.presentation.ui.widgets
 
-import android.graphics.drawable.Icon
 import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -33,16 +32,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.vgb3.kstore.R
-import com.vgb3.kstore.domain.model.output.RecordType
 import com.vgb3.kstore.presentation.ui.model.RecordTypeUi
-import com.vgb3.kstore.ui.theme.Amber600
-import com.vgb3.kstore.ui.theme.Green600
-import com.vgb3.kstore.ui.theme.Indigo600
 import com.vgb3.kstore.ui.theme.KStoreIcons
 import com.vgb3.kstore.ui.theme.KStoreTheme
-import com.vgb3.kstore.ui.theme.Slate100
-import com.vgb3.kstore.ui.theme.Slate400
-import com.vgb3.kstore.ui.theme.Slate500
 
 data class RecordTypeStyle(
     @StringRes val title: Int,
@@ -52,35 +44,40 @@ data class RecordTypeStyle(
     val container: Color
 )
 
-fun styleFor(key: String) = when (key) {
-    "login" -> RecordTypeStyle(
-        R.string.type_login,
-        R.string.type_login_sub,
-        KStoreIcons.Login,
-        Indigo600,
-        Indigo600.copy(alpha = .1f)
-    )
-    "bank_card" -> RecordTypeStyle(
-        R.string.type_card,
-        R.string.type_card_sub,
-        KStoreIcons.BankCard,
-        Green600,
-        Green600.copy(alpha = .1f)
-    )
-    "secure_note" -> RecordTypeStyle(
-        R.string.type_note,
-        R.string.type_note_sub,
-        KStoreIcons.SecureNote,
-        Amber600,
-        Amber600.copy(alpha = .1f)
-    )
-    else -> RecordTypeStyle(
-        R.string.type_unknown,
-        R.string.type_unknown_sub,
-        KStoreIcons.UnknownNote,
-        Slate500,
-        Slate100
-    )
+@Composable
+fun styleFor(key: String): RecordTypeStyle {
+    val c = KStoreTheme.colors
+    val cs = MaterialTheme.colorScheme
+    return when (key) {
+        "login" -> RecordTypeStyle(
+            R.string.type_login,
+            R.string.type_login_sub,
+            KStoreIcons.Login,
+            c.login.tint,
+            c.login.container
+        )
+        "bank_card" -> RecordTypeStyle(
+            R.string.type_card,
+            R.string.type_card_sub,
+            KStoreIcons.BankCard,
+            c.bankCard.tint,
+            c.bankCard.container
+        )
+        "secure_note" -> RecordTypeStyle(
+            R.string.type_note,
+            R.string.type_note_sub,
+            KStoreIcons.SecureNote,
+            c.secureNote.tint,
+            c.secureNote.container
+        )
+        else -> RecordTypeStyle(
+            R.string.type_unknown,
+            R.string.type_unknown_sub,
+            KStoreIcons.UnknownNote,
+            cs.onSurfaceVariant,
+            cs.surfaceVariant
+        )
+    }
 }
 
 @Composable
@@ -138,7 +135,7 @@ fun RecordTypeButton(
                 imageVector = Icons.AutoMirrored.Outlined.KeyboardArrowRight,
                 contentDescription = null,
                 modifier = Modifier.size(18.dp),
-                tint = if (pressed) cs.primary else Slate400,
+                tint = if (pressed) cs.primary else KStoreTheme.colors.placeholderText,
             )
         }
     }

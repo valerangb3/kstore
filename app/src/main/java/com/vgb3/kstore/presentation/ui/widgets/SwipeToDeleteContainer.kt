@@ -8,6 +8,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.rememberSwipeToDismissBoxState
@@ -18,8 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.vgb3.kstore.ui.theme.Danger
-import com.vgb3.kstore.ui.theme.White
 import kotlinx.coroutines.launch
 
 @Composable
@@ -43,7 +42,7 @@ fun SwipeToDeleteContainer(
         },
         backgroundContent = {
             val color = if (state.dismissDirection == SwipeToDismissBoxValue.EndToStart)
-                Danger
+                MaterialTheme.colorScheme.error
             else
                 Color.Transparent
             Box(
@@ -57,7 +56,7 @@ fun SwipeToDeleteContainer(
                 Icon(
                     imageVector = Icons.Outlined.Delete,
                     contentDescription = null,
-                    tint = White
+                    tint = MaterialTheme.colorScheme.onError
                 )
             }
         },

@@ -5,14 +5,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.navigation3.runtime.rememberDecoratedNavEntries
-import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
-import com.vgb3.kstore.navigation.AppRoute
 import com.vgb3.kstore.navigation.Destinations
-import com.vgb3.kstore.navigation.TopLevelBackStack
 import com.vgb3.kstore.navigation.entryProvider
 import com.vgb3.kstore.navigation.rememberTopLevelBackStack
 import com.vgb3.kstore.presentation.VaultFormViewModel
@@ -38,7 +33,7 @@ fun App(
         )
     )
 
-    val showBottomBar = Destinations.entries.any { it.route == topLevelBackStack.topLevelKey }
+    val showBottomBar = Destinations.entries.any { it.route == topLevelBackStack.currentKey }
 
     Scaffold(
         modifier = modifier.fillMaxSize(),

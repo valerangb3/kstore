@@ -45,9 +45,7 @@ import com.vgb3.kstore.presentation.ui.widgets.EmptyVault
 import com.vgb3.kstore.presentation.ui.widgets.PasswordItem
 import com.vgb3.kstore.presentation.ui.widgets.RecordTypeButton
 import com.vgb3.kstore.presentation.ui.widgets.styleFor
-import com.vgb3.kstore.ui.theme.Danger
 import com.vgb3.kstore.ui.theme.KStoreTheme
-import com.vgb3.kstore.ui.theme.White
 import de.charlex.compose.RevealDirection
 import de.charlex.compose.RevealSwipe
 import de.charlex.compose.rememberRevealState
@@ -187,7 +185,7 @@ fun VaultData(
                     shape = RoundedCornerShape(24.dp),
                     closeOnContentClick = true,
                     state = rememberRevealState(directions = setOf(RevealDirection.EndToStart)),
-                    backgroundCardEndColor = Danger,
+                    backgroundCardEndColor = MaterialTheme.colorScheme.error,
                     onBackgroundEndClick = {
                         onDeleteRequest(vaultItem)
                         true
@@ -196,10 +194,10 @@ fun VaultData(
                         Icon(
                             imageVector = Icons.Outlined.Delete,
                             contentDescription = null,
-                            tint = White
+                            tint = MaterialTheme.colorScheme.onError
                         )
                     },
-                    backgroundCardStartColor = MaterialTheme.colorScheme.tertiaryContainer,
+                    backgroundCardStartColor = MaterialTheme.colorScheme.surface,
                     backgroundStartActionLabel = "Mark entry as favorite",//todo
                     backgroundEndActionLabel = stringResource(R.string.delete),
                     card = { shape, content ->
@@ -207,7 +205,7 @@ fun VaultData(
                             modifier = Modifier.matchParentSize(),
                             shape = shape,
                             colors = CardDefaults.cardColors(
-                                contentColor = MaterialTheme.colorScheme.onSecondary,
+                                contentColor = MaterialTheme.colorScheme.onSurface,
                                 containerColor = Color.Transparent
                             ),
                             content = content

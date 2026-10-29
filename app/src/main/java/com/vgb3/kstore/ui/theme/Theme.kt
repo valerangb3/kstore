@@ -29,6 +29,7 @@ private val LightColorScheme = lightColorScheme(
     outline = Slate200,              // обводки
     error = Red500,
     onError = White,
+    outlineVariant = Slate100,
 )
 
 private val DarkColorScheme = darkColorScheme(
@@ -47,6 +48,7 @@ private val DarkColorScheme = darkColorScheme(
     outline = Slate700,
     error = Red500,
     onError = White,
+    outlineVariant = Slate800,
 )
 
 @Composable

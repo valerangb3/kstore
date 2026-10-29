@@ -15,6 +15,7 @@ import com.vgb3.kstore.R
 import com.vgb3.kstore.presentation.VaultFormViewModel
 import com.vgb3.kstore.presentation.VaultViewModel
 import com.vgb3.kstore.presentation.ui.screens.CreatePasswordScreen
+import com.vgb3.kstore.presentation.ui.screens.SettingsScreen
 import com.vgb3.kstore.presentation.ui.screens.VaultScreen
 import com.vgb3.kstore.presentation.ui.widgets.BackTopBar
 
@@ -68,6 +69,6 @@ fun entryProvider(
         Text("Security")
     }
     entry<AppRoute.VaultSettings> {
-        Text("Settings")
+        SettingsScreen()
     }
 }

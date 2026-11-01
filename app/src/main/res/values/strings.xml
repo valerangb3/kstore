@@ -44,6 +44,9 @@
     <string name="settings_item_theme_sub_title">Системная</string>
     <string name="settings_item_theme_appearance_title">Оформление</string>
 
+    <string name="theme_dialog_title">Тема</string>
+    <string name="theme_dialog_subtitle">Как будет выглядеть KStore</string>
+
     <string name="theme_system">Системная</string>
     <string name="theme_system_hint">Как в настройках телефона</string>
 
@@ -52,4 +55,6 @@
 
     <string name="theme_dark">Темная</string>
     <string name="theme_dark_hint">Темное оформление</string>
+
+    <string name="settings_screen_title">Настройки</string>
 </resources>

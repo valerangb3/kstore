@@ -15,9 +15,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.dropShadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.vgb3.kstore.R
@@ -42,6 +46,7 @@ fun SettingsGroup(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
+        val shape = RoundedCornerShape(16.dp)
         title?.let {
             Text(
                 text = it.uppercase(),
@@ -55,7 +60,16 @@ fun SettingsGroup(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(16.dp))
+                .dropShadow(
+                    shape = shape,
+                    shadow = Shadow(
+                        radius = 10.dp,
+                        spread = 0.dp,
+                        color = Color(0x0D000000),
+                        offset = DpOffset(x = 0.dp, y = 1.dp)
+                    )
+                )
+                .clip(shape)
                 .background(MaterialTheme.colorScheme.surface)
         ) {
             items.forEachIndexed { index, item ->

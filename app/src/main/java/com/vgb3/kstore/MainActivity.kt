@@ -25,12 +25,10 @@ class MainActivity : ComponentActivity() {
             )
         )
         setContent {
-            KStoreTheme {
-                App(
-                    vaultViewModel = vaultViewModel,
-                    createPasswordFormViewModel = vaultFormViewModel
-                )
-            }
+            App(
+                vaultViewModel = vaultViewModel,
+                createPasswordFormViewModel = vaultFormViewModel
+            )
         }
     }
 }

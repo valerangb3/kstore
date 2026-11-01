@@ -10,15 +10,19 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Contrast
 import androidx.compose.material.icons.outlined.DarkMode
 import androidx.compose.material.icons.outlined.LightMode
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,15 +31,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import com.vgb3.kstore.R
+import com.vgb3.kstore.domain.model.settings.ThemeMode
 import com.vgb3.kstore.presentation.ui.model.ThemeOptionStyle
 import com.vgb3.kstore.ui.theme.KStoreTheme
-import java.nio.file.WatchEvent
-
-enum class ThemeMode {
-    SYSTEM, LIGHT, DARK;
-}
 
 @Composable
 fun ThemeMode.style(): ThemeOptionStyle {
@@ -135,5 +138,87 @@ private fun ThemeOption(
                 tint = cs.primary
             )
         }
+    }
+}
+
+@Composable
+fun ThemeDialog(
+    current: ThemeMode,
+    onSelect: (ThemeMode) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    Dialog(
+        onDismissRequest = onDismiss
+    ) {
+        ThemeDialogContent(current, onSelect, onDismiss)
+    }
+}
+
+@Composable
+private fun ThemeDialogContent(
+    current: ThemeMode,
+    onSelect: (ThemeMode) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    Surface(
+        shape = RoundedCornerShape(24.dp),
+        color = MaterialTheme.colorScheme.surfaceContainerHigh
+    ) {
+        Column(
+            modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 24.dp, bottom = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Column(
+                modifier = Modifier.padding(horizontal = 4.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Text(
+                    stringResource(R.string.theme_dialog_title),
+                    fontSize = 20.sp,
+                    lineHeight = 28.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    stringResource(R.string.theme_dialog_subtitle),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            Column(
+                modifier = Modifier.selectableGroup(),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                ThemeMode.entries.forEach { mode ->
+                    ThemeOption(
+                        mode = mode,
+                        selected = mode == current,
+                        onClick = { onSelect(mode) }
+                    )
+                }
+            }
+            TextButton(
+                onClick = onDismiss,
+                modifier = Modifier.align(Alignment.End),
+                colors = ButtonDefaults.textButtonColors(
+                    contentColor = KStoreTheme.colors.accentText
+                )
+            ) {
+                Text(stringResource(R.string.cancel))
+            }
+        }
+    }
+}
+
+
+@Preview
+@Composable
+fun ThemeDialogPreview() {
+    KStoreTheme {
+        ThemeDialogContent(
+            current = ThemeMode.SYSTEM,
+            onSelect = {},
+            onDismiss = {}
+        )
     }
 }

@@ -1,6 +1,10 @@
 package com.vgb3.kstore.di
 
 import android.content.Context
+import androidx.datastore.dataStore
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import androidx.datastore.preferences.preferencesDataStore
+import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
@@ -8,16 +12,21 @@ import com.vgb3.kstore.data.datasource.local.db.KStoreDataBase
 import com.vgb3.kstore.data.datasource.local.db.entities.VaultCategoryEntity
 import com.vgb3.kstore.data.datasource.local.db.entities.VaultRecordTypeEntity
 import com.vgb3.kstore.data.datasource.local.db.migrations.MIGRATION_1_2
+import com.vgb3.kstore.data.datasource.local.settings.SettingsDataStoreDataSource
+import com.vgb3.kstore.data.datasource.local.settings.SettingsLocalDataSource
 import com.vgb3.kstore.data.repository.CategoryRepositoryImpl
 import com.vgb3.kstore.data.repository.RecordTypeRepositoryImpl
 import com.vgb3.kstore.data.repository.VaultRepositoryImpl
+import com.vgb3.kstore.data.repository.settings.SettingsRepositoryImpl
 import com.vgb3.kstore.domain.interactor.VaultInteractor
 import com.vgb3.kstore.domain.interactor.VaultInteractorImpl
 import com.vgb3.kstore.domain.repository.CategoryRepository
 import com.vgb3.kstore.domain.repository.RecordTypeRepository
 import com.vgb3.kstore.domain.repository.VaultRepository
+import com.vgb3.kstore.domain.repository.settings.SettingsRepository
 import com.vgb3.kstore.domain.usecase.GetCategoriesUseCase
 import com.vgb3.kstore.domain.usecase.GetRecordTypesUseCase
+import com.vgb3.kstore.domain.usecase.settings.GetSettingsThemeUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -28,9 +37,35 @@ class Container(
     private val context: Context
 ) {
 
+    private val settingsDataStore by lazy {
+        PreferenceDataStoreFactory.create(
+            produceFile = {
+                context.preferencesDataStoreFile(name = "settings_preferences")
+            }
+        )
+    }
+
     val appScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     @Volatile
     private var instance: KStoreDataBase? = null
+
+    private fun provideSettingsLocalDataSource(): SettingsLocalDataSource {
+        return SettingsDataStoreDataSource(
+            dataStore = settingsDataStore
+        )
+    }
+
+    fun provideSettingsRepository(): SettingsRepository {
+        return SettingsRepositoryImpl(
+            provideSettingsLocalDataSource()
+        )
+    }
+
+    fun provideGetSettingsThemeUseCase(): GetSettingsThemeUseCase {
+        return GetSettingsThemeUseCase(
+            provideSettingsRepository()
+        )
+    }
 
     fun provideVaultInteractor(): VaultInteractor {
         return VaultInteractorImpl(

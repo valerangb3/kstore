@@ -19,18 +19,16 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge(
-            navigationBarStyle = SystemBarStyle.light(
-                scrim = Color.TRANSPARENT,
+            navigationBarStyle = SystemBarStyle.auto(
+                lightScrim = Color.TRANSPARENT,
                 darkScrim = Color.TRANSPARENT
             )
         )
         setContent {
-            KStoreTheme {
-                App(
-                    vaultViewModel = vaultViewModel,
-                    createPasswordFormViewModel = vaultFormViewModel
-                )
-            }
+            App(
+                vaultViewModel = vaultViewModel,
+                createPasswordFormViewModel = vaultFormViewModel
+            )
         }
     }
 }

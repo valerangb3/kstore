@@ -16,17 +16,6 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.runtime.serialization.NavKeySerializer
 import androidx.savedstate.compose.serialization.serializers.MutableStateSerializer
 
-/**
- * Каждый экран приложения содержит в себе стэк. Он необходим для навигации вглубь конкретного экрана.
- * Для хранения этой информации используется Map.
- *
- * topLevelKey - используется для bottom bar navigation, для определения активного item'а в bottom bar'е.
- * currentKey - экран, который рисует NavDisplay.
- *
- *
- *
- */
-
 class TopLevelBackStack(
     private val startKey: NavKey,
     topLevelKey: MutableState<NavKey>,
@@ -50,10 +39,6 @@ class TopLevelBackStack(
         stacks.getValue(topLevelKey).add(key)
     }
 
-    /**
-     * Для снятия верхнего экрана берем в stacks, значение по ключу topLevelKey, значением является стэк для родительского экрана.
-     * И у полученного стэка верхний NavKey, если у экрана остался 1 экран, то topLevel становится стартовым (startKey).
-     */
     fun removeLast() {
         val stack = stacks.getValue(topLevelKey)
         when {
@@ -64,7 +49,6 @@ class TopLevelBackStack(
 
     @Composable
     fun toEntries(entryProvider: (NavKey) -> NavEntry<NavKey>): List<NavEntry<NavKey>> {
-        //мапим стэки экранов в NavEntry для NavDisplay
         val decorated = stacks.mapValues { (_, stack) ->
             rememberDecoratedNavEntries(
                 backStack = stack,

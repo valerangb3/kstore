@@ -1,12 +1,12 @@
 package com.vgb3.kstore.presentation.ui.widgets
 
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.vgb3.kstore.R
-import com.vgb3.kstore.ui.theme.Danger
 
 @Composable
 fun DeleteVaultItemDialog(
@@ -20,7 +20,7 @@ fun DeleteVaultItemDialog(
         text = { Text(stringResource(R.string.delete_item_message, itemTitle)) },
         confirmButton = {
             TextButton(onClick = onConfirm) {
-                Text(stringResource(R.string.delete), color = Danger)
+                Text(stringResource(R.string.delete), color = MaterialTheme.colorScheme.error)
             }
         },
         dismissButton = {

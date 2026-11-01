@@ -17,6 +17,7 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalRippleConfiguration
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -36,13 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.vgb3.kstore.R
 import com.vgb3.kstore.presentation.ui.model.DropdownOption
-import com.vgb3.kstore.ui.theme.Background
-import com.vgb3.kstore.ui.theme.Border
-import com.vgb3.kstore.ui.theme.Pressed
-import com.vgb3.kstore.ui.theme.TextPlaceholder
-import com.vgb3.kstore.ui.theme.TextSecondary
-import com.vgb3.kstore.ui.theme.TitleTextField
-import com.vgb3.kstore.ui.theme.White
+import com.vgb3.kstore.ui.theme.KStoreTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -97,8 +92,8 @@ fun DropdownField(
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
                 shape = RoundedCornerShape(12.dp),
-                containerColor = White,
-                border = BorderStroke(1.dp, Border),
+                containerColor = MaterialTheme.colorScheme.surface,
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
             ) {
                 options.forEach { option ->
                     val isSelected = option.id == selected
@@ -106,9 +101,9 @@ fun DropdownField(
                     val isPressed by interactionSource.collectIsPressedAsState()
                     val itemBackground by animateColorAsState(
                         targetValue = when {
-                            isPressed -> Pressed
-                            isSelected -> Background
-                            else -> White
+                            isPressed -> MaterialTheme.colorScheme.surfaceVariant
+                            isSelected -> MaterialTheme.colorScheme.background
+                            else -> MaterialTheme.colorScheme.surface
                         },
                         animationSpec = tween(if (isPressed) 80 else 250),
                         label = "itemBackground"
@@ -143,40 +138,40 @@ fun DropdownField(
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun DropdownFieldPreview() {
-    val categories = listOf(
-        DropdownOption(1, "PERSONAL", R.string.category_personal),
-        DropdownOption(2, "WORK", R.string.category_work),
-        DropdownOption(3, "FINANCE", R.string.category_finance),
-        DropdownOption(4, "SOCIAL", R.string.category_social)
-    )
-    var selected by remember { mutableLongStateOf(1) }
-    DropdownField(
-        titleField = {
-            Text(
-                text = stringResource(R.string.app_category),
-                fontWeight = FontWeight.W600,
-                fontSize = 14.sp,
-                color = TitleTextField
-            )
-        },
-        placeholder = {
-            Text(
-                text = stringResource(R.string.no_selected),
-                color = TextPlaceholder,
-                fontSize = 16.sp
-            )
-        },
-        leadingIcon = {
-            Icon(
-                painter = painterResource(R.drawable.category_folder),
-                contentDescription = "",
-                tint = TextSecondary
-            )
-        },
-        options = categories,
-        selected = selected,
-        onSelect = { optionId ->
-            selected = optionId
-        }
-    )
+    KStoreTheme {
+        val categories = listOf(
+            DropdownOption(1, "PERSONAL", R.string.category_personal),
+            DropdownOption(2, "WORK", R.string.category_work),
+            DropdownOption(3, "FINANCE", R.string.category_finance),
+            DropdownOption(4, "SOCIAL", R.string.category_social)
+        )
+        var selected by remember { mutableLongStateOf(1) }
+        DropdownField(
+            titleField = {
+                Text(
+                    text = stringResource(R.string.app_category),
+                    fontWeight = FontWeight.W600,
+                    fontSize = 14.sp,
+                )
+            },
+            placeholder = {
+                Text(
+                    text = stringResource(R.string.no_selected),
+                    color = KStoreTheme.colors.placeholderText,
+                    fontSize = 16.sp
+                )
+            },
+            leadingIcon = {
+                Icon(
+                    painter = painterResource(R.drawable.category_folder),
+                    contentDescription = "",
+                )
+            },
+            options = categories,
+            selected = selected,
+            onSelect = { optionId ->
+                selected = optionId
+            }
+        )
+    }
 }

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,12 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.vgb3.kstore.R
-import com.vgb3.kstore.ui.theme.Border
-import com.vgb3.kstore.ui.theme.CircleColorShape
-import com.vgb3.kstore.ui.theme.InsideBorderColor
-import com.vgb3.kstore.ui.theme.PrimaryIconTint
-import com.vgb3.kstore.ui.theme.Success
-import com.vgb3.kstore.ui.theme.White
+import com.vgb3.kstore.ui.theme.KStoreTheme
 
 @Composable
 fun EmptyVaultData(
@@ -45,19 +41,19 @@ fun EmptyVaultData(
         modifier = modifier
             .size(commonSize)
             .background(
-                CircleColorShape,
-                CircleShape
+                MaterialTheme.colorScheme.primary.copy(alpha = 0.05f), CircleShape
             ),
         contentAlignment = Alignment.Center
     ) {
         if (showInnerBorder) {
+            val circleColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
             Canvas(
                 modifier = Modifier
                     .size(commonSize)
                     .padding(12.dp)
             ) {
                 drawCircle(
-                    color = InsideBorderColor,
+                    color = circleColor,
                     radius = size.minDimension / 2,
                     style = Stroke(
                         width = 2.dp.toPx(),
@@ -99,10 +95,10 @@ fun EmptyVaultData(
                             radius = 10.dp
                         )
                     )
-                    .background(color = White, shape = shape)
+                    .background(color = MaterialTheme.colorScheme.surface, shape = shape)
                     .border(
                         width = 1.dp,
-                        color = Border,
+                        color = MaterialTheme.colorScheme.outline,
                         shape = shape
                     ),
                 contentAlignment = Alignment.Center
@@ -138,12 +134,12 @@ fun EmptyVaultData(
                             ),
                         )
                         .background(
-                            White,
+                            MaterialTheme.colorScheme.surface,
                             shape
                         )
                         .border(
                             width = 1.dp,
-                            color = Border,
+                            color = MaterialTheme.colorScheme.outline,
                             shape = shape
                         ),
                     contentAlignment = Alignment.Center
@@ -183,10 +179,10 @@ fun EmptyVaultData(
                             ),
                         )
                         .clip(shape)
-                        .background(White)
+                        .background(MaterialTheme.colorScheme.surface)
                         .border(
                             width = 1.dp,
-                            color = Border,
+                            color = MaterialTheme.colorScheme.outline,
                             shape = shape
                         ),
                     contentAlignment = Alignment.Center
@@ -201,27 +197,29 @@ fun EmptyVaultData(
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun EmptyVaultDataPreview() {
-    EmptyVaultData(
-        mainIcon = {
-            Icon(
-                painter = painterResource(R.drawable.account_secure),
-                contentDescription = null,
-                tint = PrimaryIconTint
-            )
-        },
-        borderTopEndCircleContent = {
-            Icon(
-                painter = painterResource(R.drawable.success_check_mark),
-                contentDescription = null,
-                tint = Success
-            )
-        },
-        borderBottomStartContent = {
-            Icon(
-                painter = painterResource(R.drawable.key_icon),
-                contentDescription = null,
-                tint = PrimaryIconTint
-            )
-        }
-    )
+    KStoreTheme {
+        EmptyVaultData(
+            mainIcon = {
+                Icon(
+                    painter = painterResource(R.drawable.account_secure),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            },
+            borderTopEndCircleContent = {
+                Icon(
+                    painter = painterResource(R.drawable.success_check_mark),
+                    contentDescription = null,
+                    tint = KStoreTheme.colors.success
+                )
+            },
+            borderBottomStartContent = {
+                Icon(
+                    painter = painterResource(R.drawable.key_icon),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
+        )
+    }
 }

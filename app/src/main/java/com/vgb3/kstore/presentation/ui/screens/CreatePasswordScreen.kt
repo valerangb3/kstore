@@ -33,7 +33,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vgb3.kstore.R
 import com.vgb3.kstore.presentation.VaultFormViewModel
-import com.vgb3.kstore.presentation.VaultViewModel
 import com.vgb3.kstore.presentation.model.VaultFormInputs
 import com.vgb3.kstore.presentation.ui.widgets.Buttons.PrimaryButton
 import com.vgb3.kstore.presentation.ui.widgets.Buttons.TransparentButton
@@ -42,11 +41,6 @@ import com.vgb3.kstore.presentation.ui.widgets.Form
 import com.vgb3.kstore.presentation.ui.widgets.GroupContent
 import com.vgb3.kstore.presentation.ui.widgets.InputField
 import com.vgb3.kstore.ui.theme.KStoreTheme
-import com.vgb3.kstore.ui.theme.SimpleButtonTextColor
-import com.vgb3.kstore.ui.theme.TextPlaceholder
-import com.vgb3.kstore.ui.theme.TextSecondary
-import com.vgb3.kstore.ui.theme.TitleTextField
-import com.vgb3.kstore.ui.theme.White
 
 @Composable
 fun CreatePasswordScreen(
@@ -75,20 +69,17 @@ fun CreatePasswordScreen(
                                 text = stringResource(R.string.app_name_title),
                                 fontWeight = FontWeight.W600,
                                 fontSize = 14.sp,
-                                color = TitleTextField
                             )
                         },
                         leadingIcon = {
                             Icon(
                                 painter = painterResource(R.drawable.app_icon),
                                 contentDescription = "",
-                                tint = TextSecondary
                             )
                         },
                         placeholder = {
                             Text(
                                 text = stringResource(R.string.app_name_placeholder),
-                                color = TextPlaceholder,
                                 fontSize = 16.sp
                             )
                         }
@@ -103,20 +94,17 @@ fun CreatePasswordScreen(
                                 text = stringResource(R.string.url_title),
                                 fontWeight = FontWeight.W600,
                                 fontSize = 14.sp,
-                                color = TitleTextField
                             )
                         },
                         leadingIcon = {
                             Icon(
                                 painter = painterResource(R.drawable.www_icon),
                                 contentDescription = "",
-                                tint = TextSecondary
                             )
                         },
                         placeholder = {
                             Text(
                                 text = "https://example.com",
-                                color = TextPlaceholder,
                                 fontSize = 16.sp
                             )
                         },
@@ -137,20 +125,17 @@ fun CreatePasswordScreen(
                                 text = stringResource(R.string.login_email),
                                 fontWeight = FontWeight.W600,
                                 fontSize = 14.sp,
-                                color = TitleTextField
                             )
                         },
                         leadingIcon = {
                             Icon(
                                 painter = painterResource(R.drawable.user_icon),
                                 contentDescription = "",
-                                tint = TextSecondary
                             )
                         },
                         placeholder = {
                             Text(
                                 text = "vgb3@gmail.com",
-                                color = TextPlaceholder,
                                 fontSize = 16.sp
                             )
                         },
@@ -169,27 +154,23 @@ fun CreatePasswordScreen(
                                 text = stringResource(R.string.password),
                                 fontWeight = FontWeight.W600,
                                 fontSize = 14.sp,
-                                color = TitleTextField
                             )
                         },
                         leadingIcon = {
                             Icon(
                                 painter = painterResource(R.drawable.secure_icon),
                                 contentDescription = "",
-                                tint = TextSecondary
                             )
                         },
                         trailingIcon = {
                             Icon(
                                 painter = painterResource(R.drawable.visible),
                                 contentDescription = "",
-                                tint = TextSecondary
                             )
                         },
                         placeholder = {
                             Text(
                                 text = "foo-bar-foo",
-                                color = TextPlaceholder,
                                 fontSize = 16.sp
                             )
                         },
@@ -209,7 +190,6 @@ fun CreatePasswordScreen(
                             Icon(
                                 painter = painterResource(R.drawable.category_folder),
                                 contentDescription = "",
-                                tint = TextSecondary
                             )
                         },
                         titleField = {
@@ -217,13 +197,11 @@ fun CreatePasswordScreen(
                                 text = stringResource(R.string.app_category),
                                 fontWeight = FontWeight.W600,
                                 fontSize = 14.sp,
-                                color = TitleTextField
                             )
                         },
                         placeholder = {
                             Text(
                                 text = stringResource(R.string.no_selected),
-                                color = TextPlaceholder,
                                 fontSize = 16.sp
                             )
                         },
@@ -245,7 +223,6 @@ fun CreatePasswordScreen(
                         Text(
                             text = stringResource(R.string.save_password),
                             fontSize = 16.sp,
-                            color = White,
                         )
                     }
                 )
@@ -256,7 +233,6 @@ fun CreatePasswordScreen(
                         Text(
                             text = stringResource(R.string.cancel),
                             fontSize = 16.sp,
-                            color = SimpleButtonTextColor
                         )
                     }
                 )
@@ -296,20 +272,17 @@ private fun CreatePasswordData(
                                 text = stringResource(R.string.app_name_title),
                                 fontWeight = FontWeight.W600,
                                 fontSize = 14.sp,
-                                color = TitleTextField
                             )
                         },
                         leadingIcon = {
                             Icon(
                                 painter = painterResource(R.drawable.app_icon),
                                 contentDescription = "",
-                                tint = TextSecondary
                             )
                         },
                         placeholder = {
                             Text(
                                 text = stringResource(R.string.app_name_placeholder),
-                                color = TextPlaceholder,
                                 fontSize = 16.sp
                             )
                         }
@@ -324,20 +297,17 @@ private fun CreatePasswordData(
                                 text = stringResource(R.string.url_title),
                                 fontWeight = FontWeight.W600,
                                 fontSize = 14.sp,
-                                color = TitleTextField
                             )
                         },
                         leadingIcon = {
                             Icon(
                                 painter = painterResource(R.drawable.www_icon),
                                 contentDescription = "",
-                                tint = TextSecondary
                             )
                         },
                         placeholder = {
                             Text(
                                 text = "https://example.com",
-                                color = TextPlaceholder,
                                 fontSize = 16.sp
                             )
                         }
@@ -352,20 +322,17 @@ private fun CreatePasswordData(
                                 text = stringResource(R.string.login_email),
                                 fontWeight = FontWeight.W600,
                                 fontSize = 14.sp,
-                                color = TitleTextField
                             )
                         },
                         leadingIcon = {
                             Icon(
                                 painter = painterResource(R.drawable.user_icon),
                                 contentDescription = "",
-                                tint = TextSecondary
                             )
                         },
                         placeholder = {
                             Text(
                                 text = "vgb3@gmail.com",
-                                color = TextPlaceholder,
                                 fontSize = 16.sp
                             )
                         }
@@ -380,27 +347,23 @@ private fun CreatePasswordData(
                                 text = stringResource(R.string.password),
                                 fontWeight = FontWeight.W600,
                                 fontSize = 14.sp,
-                                color = TitleTextField
                             )
                         },
                         leadingIcon = {
                             Icon(
                                 painter = painterResource(R.drawable.secure_icon),
                                 contentDescription = "",
-                                tint = TextSecondary
                             )
                         },
                         trailingIcon = {
                             Icon(
                                 painter = painterResource(R.drawable.visible),
                                 contentDescription = "",
-                                tint = TextSecondary
                             )
                         },
                         placeholder = {
                             Text(
                                 text = "foo-bar-foo",
-                                color = TextPlaceholder,
                                 fontSize = 16.sp
                             )
                         }
@@ -411,7 +374,6 @@ private fun CreatePasswordData(
                             Icon(
                                 painter = painterResource(R.drawable.category_folder),
                                 contentDescription = "",
-                                tint = TextSecondary
                             )
                         },
                         titleField = {
@@ -419,13 +381,11 @@ private fun CreatePasswordData(
                                 text = stringResource(R.string.app_category),
                                 fontWeight = FontWeight.W600,
                                 fontSize = 14.sp,
-                                color = TitleTextField
                             )
                         },
                         placeholder = {
                             Text(
                                 text = stringResource(R.string.no_selected),
-                                color = TextPlaceholder,
                                 fontSize = 16.sp
                             )
                         },
@@ -447,7 +407,6 @@ private fun CreatePasswordData(
                         Text(
                             text = stringResource(R.string.save_password),
                             fontSize = 16.sp,
-                            color = White,
                         )
                     }
                 )
@@ -458,7 +417,6 @@ private fun CreatePasswordData(
                         Text(
                             text = stringResource(R.string.cancel),
                             fontSize = 16.sp,
-                            color = SimpleButtonTextColor
                         )
                     }
                 )

@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -30,13 +31,9 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.vgb3.kstore.R
-import com.vgb3.kstore.domain.model.output.VaultItem
 import com.vgb3.kstore.domain.model.output.VaultItemSummary
-import com.vgb3.kstore.ui.theme.Border
+import com.vgb3.kstore.ui.theme.BrandYoutubeRed
 import com.vgb3.kstore.ui.theme.KStoreTheme
-import com.vgb3.kstore.ui.theme.Red
-import com.vgb3.kstore.ui.theme.TextPlaceholder
-import com.vgb3.kstore.ui.theme.White
 
 @Composable
 fun PasswordItem(
@@ -60,7 +57,7 @@ fun PasswordItem(
                 )
             )
             .clip(shape)
-            .background(White)
+            .background(MaterialTheme.colorScheme.surface)
             .padding(16.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -69,7 +66,7 @@ fun PasswordItem(
             modifier = Modifier.size(48.dp)
                 .border(
                     width = 1.dp,
-                    color = Border,
+                    color = MaterialTheme.colorScheme.outline,
                     shape = RoundedCornerShape(16.dp)
                 ),
             contentAlignment = Alignment.Center
@@ -78,7 +75,7 @@ fun PasswordItem(
             Icon(
                 painter = painterResource(R.drawable.youtube_icon),
                 contentDescription = null,
-                tint = Red
+                tint = BrandYoutubeRed
             )
         }
         Column(
@@ -95,7 +92,8 @@ fun PasswordItem(
             Text(
                 maxLines = 1,
                 text = vaultItem.subTitle ?: "",
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
         Row {
@@ -109,7 +107,7 @@ fun PasswordItem(
                     Icon(
                         painter = painterResource(R.drawable.copy),
                         contentDescription = null,
-                        tint = TextPlaceholder
+                        tint = KStoreTheme.colors.placeholderText
                     )
                 }
             }
@@ -123,7 +121,7 @@ fun PasswordItem(
                     Icon(
                         painter = painterResource(R.drawable.more_horizontal),
                         contentDescription = null,
-                        tint = TextPlaceholder
+                        tint = KStoreTheme.colors.placeholderText
                     )
                 }
             }

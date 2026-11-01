@@ -7,10 +7,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,12 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.vgb3.kstore.R
-import com.vgb3.kstore.ui.theme.Background
-import com.vgb3.kstore.ui.theme.Border
-import com.vgb3.kstore.ui.theme.TextPlaceholder
-import com.vgb3.kstore.ui.theme.TextSecondary
-import com.vgb3.kstore.ui.theme.TitleTextField
-import com.vgb3.kstore.ui.theme.White
+import com.vgb3.kstore.ui.theme.KStoreTheme
 
 
 @Composable
@@ -51,7 +49,9 @@ fun InputField(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        titleField?.invoke()
+        titleField?.let {
+            CompositionLocalProvider(LocalContentColor provides KStoreTheme.colors.labelText) { it() }
+        }
         OutlinedTextField(
             singleLine = singleLine,
             modifier = fieldModifier.fillMaxWidth(),
@@ -62,10 +62,16 @@ fun InputField(
             leadingIcon = leadingIcon,
             trailingIcon = trailingIcon,
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Border,
-                unfocusedBorderColor = Border,
-                focusedContainerColor = White,
-                unfocusedContainerColor = Background,
+                focusedBorderColor = MaterialTheme.colorScheme.outline,
+                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                focusedContainerColor = MaterialTheme.colorScheme.surface,
+                unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                focusedLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                unfocusedLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                focusedTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                unfocusedTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                focusedPlaceholderColor = KStoreTheme.colors.placeholderText,
+                unfocusedPlaceholderColor = KStoreTheme.colors.placeholderText,
             ),
             textStyle = TextStyle(
                 fontSize = 16.sp
@@ -80,31 +86,30 @@ fun InputField(
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun InputFieldPreview() {
-    var appName by remember { mutableStateOf("") }
-    InputField(
-        value = appName,
-        titleField = {
-            Text(
-                text = "App name",
-                fontWeight = FontWeight.W600,
-                fontSize = 14.sp,
-                color = TitleTextField
-            )
-        },
-        onValueChange = { appName = it },
-        leadingIcon = {
-            Icon(
-                painter = painterResource(R.drawable.app_icon),
-                contentDescription = "",
-                tint = TextSecondary
-            )
-        },
-        placeholder = {
-            Text(
-                text = "e.g. Netflix, GitHub",
-                color = TextPlaceholder,
-                fontSize = 16.sp
-            )
-        }
-    )
+    KStoreTheme {
+        var appName by remember { mutableStateOf("") }
+        InputField(
+            value = appName,
+            titleField = {
+                Text(
+                    text = "App name",
+                    fontWeight = FontWeight.W600,
+                    fontSize = 14.sp,
+                )
+            },
+            onValueChange = { appName = it },
+            leadingIcon = {
+                Icon(
+                    painter = painterResource(R.drawable.app_icon),
+                    contentDescription = "",
+                )
+            },
+            placeholder = {
+                Text(
+                    text = "e.g. Netflix, GitHub",
+                    fontSize = 16.sp
+                )
+            }
+        )
+    }
 }

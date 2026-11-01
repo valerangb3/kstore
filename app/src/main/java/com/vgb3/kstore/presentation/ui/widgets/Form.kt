@@ -15,6 +15,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.vgb3.kstore.presentation.model.VaultFormInputs
+import com.vgb3.kstore.ui.theme.KStoreTheme
 
 @Composable
 fun Form(
@@ -49,8 +50,10 @@ fun Form(
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun FormPreview() {
-    Form(
-        formContent = { onInput, onSelect -> },
-        formFooter = {}
-    )
+    KStoreTheme {
+        Form(
+            formContent = { onInput, onSelect -> },
+            formFooter = {}
+        )
+    }
 }

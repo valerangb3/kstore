@@ -37,6 +37,7 @@ import com.vgb3.kstore.R
 import com.vgb3.kstore.domain.model.output.VaultItemSummary
 import com.vgb3.kstore.presentation.VaultViewModel
 import com.vgb3.kstore.presentation.model.VaultResult
+import com.vgb3.kstore.presentation.ui.model.RecordFormType
 import com.vgb3.kstore.presentation.ui.model.RecordTypeUi
 import com.vgb3.kstore.presentation.ui.widgets.CreateMenuBottomSheet
 import com.vgb3.kstore.presentation.ui.widgets.CreatePasswordFab
@@ -79,7 +80,7 @@ fun VaultContent(
 fun VaultScreen(
     modifier: Modifier = Modifier,
     vaultViewModel: VaultViewModel,
-    onNavigateToCreatePasswordScreen: () -> Unit = {},
+    onNavigateToCreate: (RecordFormType) -> Unit = {},
 ) {
     val recordTypes by vaultViewModel.recordTypes.collectAsStateWithLifecycle()
     val vaultState by vaultViewModel.vaultState.collectAsStateWithLifecycle()
@@ -107,18 +108,19 @@ fun VaultScreen(
             modifier = modifier
                 .padding(paddingValues)
                 .consumeWindowInsets(paddingValues),
-            onNavigateToCreatePasswordScreen = onNavigateToCreatePasswordScreen,
+            //nNavigateToCreatePasswordScreen = onNavigateToCreate,
             vaultScreenState = vaultState,
             onDeleteRequest = vaultViewModel::onDeleteRequest
         )
     }
 
-    val clickHandler: (RecordTypeUi) -> Unit = {
+    val clickHandler: (RecordTypeUi) -> Unit = { recordType ->
         scope.launch {
             sheetState.hide()
         }.invokeOnCompletion {
             if (!sheetState.isVisible) {
                 showBottomSheet = false
+                RecordFormType.fromKey(recordType.type)?.let(onNavigateToCreate)
             }
         }
     }

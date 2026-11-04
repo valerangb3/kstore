@@ -27,7 +27,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             App(
                 vaultViewModel = vaultViewModel,
-                createPasswordFormViewModel = vaultFormViewModel
+                vaultFormViewModel = vaultFormViewModel
             )
         }
     }

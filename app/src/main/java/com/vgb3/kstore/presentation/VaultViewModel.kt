@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 
 class VaultViewModel(
     private val vaultInteractor: VaultInteractor,
-    private val getRecordTypesUseCase: GetRecordTypesUseCase
+    getRecordTypesUseCase: GetRecordTypesUseCase
 ) : ViewModel() {
     private val _state = MutableStateFlow<VaultResult>(VaultResult.Idle)
     val vaultState = _state.asStateFlow()

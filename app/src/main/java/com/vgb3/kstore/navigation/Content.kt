@@ -15,6 +15,7 @@ import com.vgb3.kstore.R
 import com.vgb3.kstore.presentation.VaultFormViewModel
 import com.vgb3.kstore.presentation.VaultViewModel
 import com.vgb3.kstore.presentation.ui.screens.CreatePasswordScreen
+import com.vgb3.kstore.presentation.ui.screens.CreateRecordScreen
 import com.vgb3.kstore.presentation.ui.screens.SettingsScreen
 import com.vgb3.kstore.presentation.ui.screens.VaultScreen
 import com.vgb3.kstore.presentation.ui.widgets.BackTopBar
@@ -22,7 +23,7 @@ import com.vgb3.kstore.presentation.ui.widgets.BackTopBar
 @Composable
 fun entryProvider(
     vaultViewModel: VaultViewModel,
-    createPasswordFormViewModel: VaultFormViewModel,
+    vaultFormViewModel: VaultFormViewModel,
     navigator: TopLevelBackStack
 ): (NavKey) -> NavEntry<NavKey> = entryProvider {
     entry<AppRoute.VaultList> {
@@ -32,10 +33,21 @@ fun entryProvider(
                 end = 24.dp,
             ),
             vaultViewModel,
-            onNavigateToCreatePasswordScreen = { navigator.add(AppRoute.VaultCreate) },
+            onNavigateToCreate = { type -> navigator.add(AppRoute.VaultCreate(type)) },
         )
     }
-    entry<AppRoute.VaultCreate> {
+    entry<AppRoute.VaultCreate> { key ->
+        CreateRecordScreen(
+            type = key.type,
+            vaultFormViewModel = vaultFormViewModel,
+            onSave = {
+                vaultFormViewModel.createVault()
+                navigator.removeLast()
+            },
+            onClose = { navigator.removeLast() }
+        )
+        /*
+        TODO: Remove after refactor
         Scaffold(
             topBar = {
                 BackTopBar(
@@ -60,7 +72,7 @@ fun entryProvider(
                 },
                 createPasswordFormViewModel = createPasswordFormViewModel,
             )
-        }
+        }*/
     }
     entry<AppRoute.VaultGenerator> {
         Text("Generator")

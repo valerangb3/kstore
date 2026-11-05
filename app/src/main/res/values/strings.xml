@@ -60,4 +60,9 @@
     <string name="add_new_password">Новый пароль</string>
     <string name="add_new_card">Новая карта</string>
     <string name="add_new_note">Новая заметка</string>
+
+    <string name="create_record_title">Создать запись</string>
+
+    <string name="empty_vault_title">Ваше хранилище пустое</string>
+    <string name="empty_vault_description">Добавьте первую запись, чтобы нужные данные всегда были под рукой</string>
 </resources>

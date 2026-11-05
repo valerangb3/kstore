@@ -57,7 +57,7 @@ import kotlinx.coroutines.launch
 fun VaultContent(
     modifier: Modifier = Modifier,
     vaultScreenState: VaultResult,
-    onNavigateToCreatePasswordScreen: () -> Unit = {},
+    onCreateClick: () -> Unit = {},
     onDeleteRequest: (VaultItemSummary) -> Unit
 ) {
     when (vaultScreenState) {
@@ -68,7 +68,7 @@ fun VaultContent(
             VaultData(
                 modifier = modifier,
                 vaultItems = vaultScreenState.vaultList,
-                onNavigateToCreatePasswordScreen = onNavigateToCreatePasswordScreen,
+                onCreateClick = onCreateClick,
                 onDeleteRequest = onDeleteRequest
             )
         }
@@ -108,7 +108,9 @@ fun VaultScreen(
             modifier = modifier
                 .padding(paddingValues)
                 .consumeWindowInsets(paddingValues),
-            //nNavigateToCreatePasswordScreen = onNavigateToCreate,
+            onCreateClick = {
+                showBottomSheet = true
+            },
             vaultScreenState = vaultState,
             onDeleteRequest = vaultViewModel::onDeleteRequest
         )
@@ -174,7 +176,7 @@ fun VaultScreen(
 fun VaultData(
     modifier: Modifier = Modifier,
     vaultItems: List<VaultItemSummary>,
-    onNavigateToCreatePasswordScreen: () -> Unit = {},
+    onCreateClick: () -> Unit = {},
     onDeleteRequest: (VaultItemSummary) -> Unit = {}
 ) {
     if (vaultItems.isNotEmpty()) {
@@ -226,7 +228,7 @@ fun VaultData(
         }
     } else {
         EmptyVault(
-            onNavigateToCreatePasswordScreen = onNavigateToCreatePasswordScreen
+            onCreateClick = onCreateClick
         )
     }
 }

@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,7 +29,7 @@ import com.vgb3.kstore.ui.theme.KStoreTheme
 @Composable
 fun EmptyVault(
     modifier: Modifier = Modifier,
-    onNavigateToCreatePasswordScreen: () -> Unit = {},
+    onCreateClick: () -> Unit = {},
 ) {
     Column(
         modifier = modifier
@@ -67,7 +68,7 @@ fun EmptyVault(
             modifier = Modifier
                 .fillMaxWidth(),
             fontSize = 24.sp,
-            text = "Ваше хранилище паролей пустое",
+            text = stringResource(R.string.empty_vault_title),
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.W700
         )
@@ -77,13 +78,13 @@ fun EmptyVault(
                 .padding(top = 32.dp),
             textAlign = TextAlign.Center,
             fontSize = 16.sp,
-            text = "Сохраните первый пароль, чтобы он всегда был под рукой",
+            text = stringResource(R.string.empty_vault_description),
         )
         Spacer(
             modifier = Modifier.height(40.dp)
         )
         PrimaryButton(
-            onClick = onNavigateToCreatePasswordScreen,
+            onClick = onCreateClick,
             modifier = Modifier.fillMaxWidth(),
             content = {
                 Row(
@@ -96,7 +97,7 @@ fun EmptyVault(
                         painter = painterResource(R.drawable.plus)
                     )
                     Text(
-                        text = "Создать пароль",
+                        text = stringResource(R.string.create_record_title),
                         fontSize = 16.sp,
                     )
                 }

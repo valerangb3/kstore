@@ -25,7 +25,7 @@ import com.vgb3.kstore.ui.theme.KStoreTheme
 fun App(
     modifier: Modifier = Modifier,
     vaultViewModel: VaultViewModel,
-    createPasswordFormViewModel: VaultFormViewModel,
+    vaultFormViewModel: VaultFormViewModel,
     appSettingsViewModel: AppSettingsViewModel = viewModel(factory = AppSettingsViewModel.Factory)
 ) {
     val themeState by appSettingsViewModel.themeMode.collectAsStateWithLifecycle()
@@ -44,7 +44,7 @@ fun App(
             entryProvider(
                 vaultViewModel = vaultViewModel,
                 navigator = topLevelBackStack,
-                createPasswordFormViewModel = createPasswordFormViewModel
+                vaultFormViewModel = vaultFormViewModel
             )
         )
 

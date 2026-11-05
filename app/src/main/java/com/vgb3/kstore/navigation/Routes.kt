@@ -4,6 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.navigation3.runtime.NavKey
 import com.vgb3.kstore.R
+import com.vgb3.kstore.presentation.ui.model.RecordFormType
 import kotlinx.serialization.Serializable
 
 enum class Destinations(
@@ -51,7 +52,7 @@ enum class Destinations(
 @Serializable
 sealed interface AppRoute : NavKey {
     @Serializable
-    data object VaultCreate: AppRoute
+    data class VaultCreate(val type: RecordFormType): AppRoute
     @Serializable
     data object VaultList: AppRoute
     //data object Vault: AppRoute

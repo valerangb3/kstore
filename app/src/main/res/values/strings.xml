@@ -5,7 +5,6 @@
     <string name="app_name_title">Приложение</string>
     <string name="app_category">Категория</string>
     <string name="app_name_placeholder">Например, Netflix, GitHub</string>
-    <string name="add_new_password">Создать новый пароль</string>
     <string name="no_selected">Не выбрано</string>
     <string name="login_email">Логин / Email</string>
     <string name="url_title">URL</string>
@@ -57,4 +56,13 @@
     <string name="theme_dark_hint">Темное оформление</string>
 
     <string name="settings_screen_title">Настройки</string>
+
+    <string name="add_new_password">Новый пароль</string>
+    <string name="add_new_card">Новая карта</string>
+    <string name="add_new_note">Новая заметка</string>
+
+    <string name="create_record_title">Создать запись</string>
+
+    <string name="empty_vault_title">Ваше хранилище пустое</string>
+    <string name="empty_vault_description">Добавьте первую запись, чтобы нужные данные всегда были под рукой</string>
 </resources>

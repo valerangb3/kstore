@@ -37,6 +37,7 @@ import com.vgb3.kstore.R
 import com.vgb3.kstore.domain.model.output.VaultItemSummary
 import com.vgb3.kstore.presentation.VaultViewModel
 import com.vgb3.kstore.presentation.model.VaultResult
+import com.vgb3.kstore.presentation.ui.model.RecordFormType
 import com.vgb3.kstore.presentation.ui.model.RecordTypeUi
 import com.vgb3.kstore.presentation.ui.widgets.CreateMenuBottomSheet
 import com.vgb3.kstore.presentation.ui.widgets.CreatePasswordFab
@@ -56,7 +57,7 @@ import kotlinx.coroutines.launch
 fun VaultContent(
     modifier: Modifier = Modifier,
     vaultScreenState: VaultResult,
-    onNavigateToCreatePasswordScreen: () -> Unit = {},
+    onCreateClick: () -> Unit = {},
     onDeleteRequest: (VaultItemSummary) -> Unit
 ) {
     when (vaultScreenState) {
@@ -67,7 +68,7 @@ fun VaultContent(
             VaultData(
                 modifier = modifier,
                 vaultItems = vaultScreenState.vaultList,
-                onNavigateToCreatePasswordScreen = onNavigateToCreatePasswordScreen,
+                onCreateClick = onCreateClick,
                 onDeleteRequest = onDeleteRequest
             )
         }
@@ -79,7 +80,7 @@ fun VaultContent(
 fun VaultScreen(
     modifier: Modifier = Modifier,
     vaultViewModel: VaultViewModel,
-    onNavigateToCreatePasswordScreen: () -> Unit = {},
+    onNavigateToCreate: (RecordFormType) -> Unit = {},
 ) {
     val recordTypes by vaultViewModel.recordTypes.collectAsStateWithLifecycle()
     val vaultState by vaultViewModel.vaultState.collectAsStateWithLifecycle()
@@ -107,18 +108,21 @@ fun VaultScreen(
             modifier = modifier
                 .padding(paddingValues)
                 .consumeWindowInsets(paddingValues),
-            onNavigateToCreatePasswordScreen = onNavigateToCreatePasswordScreen,
+            onCreateClick = {
+                showBottomSheet = true
+            },
             vaultScreenState = vaultState,
             onDeleteRequest = vaultViewModel::onDeleteRequest
         )
     }
 
-    val clickHandler: (RecordTypeUi) -> Unit = {
+    val clickHandler: (RecordTypeUi) -> Unit = { recordType ->
         scope.launch {
             sheetState.hide()
         }.invokeOnCompletion {
             if (!sheetState.isVisible) {
                 showBottomSheet = false
+                RecordFormType.fromKey(recordType.type)?.let(onNavigateToCreate)
             }
         }
     }
@@ -172,7 +176,7 @@ fun VaultScreen(
 fun VaultData(
     modifier: Modifier = Modifier,
     vaultItems: List<VaultItemSummary>,
-    onNavigateToCreatePasswordScreen: () -> Unit = {},
+    onCreateClick: () -> Unit = {},
     onDeleteRequest: (VaultItemSummary) -> Unit = {}
 ) {
     if (vaultItems.isNotEmpty()) {
@@ -224,7 +228,7 @@ fun VaultData(
         }
     } else {
         EmptyVault(
-            onNavigateToCreatePasswordScreen = onNavigateToCreatePasswordScreen
+            onCreateClick = onCreateClick
         )
     }
 }

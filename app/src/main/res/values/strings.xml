@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">KStore</string>
     <string name="save_password">Сохранить пароль</string>
+    <string name="save">Сохранить</string>
     <string name="password">Пароль</string>
     <string name="app_name_title">Приложение</string>
     <string name="app_category">Категория</string>
@@ -25,6 +26,10 @@
 
     <string name="type_login">Логин и пароль</string>
     <string name="type_login_sub">Сайты и приложения</string>
+
+    <string name="bank_card_title">Банковская карта</string>
+    <string name="bank_card_holder_title">Держатель карты</string>
+    <string name="bank_card_valid_period_title">Срок действия</string>
 
     <string name="type_card">Банковская карта</string>
     <string name="type_card_sub">Номер, срок, CVV</string>
@@ -65,4 +70,7 @@
 
     <string name="empty_vault_title">Ваше хранилище пустое</string>
     <string name="empty_vault_description">Добавьте первую запись, чтобы нужные данные всегда были под рукой</string>
+
+    <string name="show_password">Показать пароль</string>
+    <string name="hide_password">Скрыть пароль</string>
 </resources>

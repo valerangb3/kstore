@@ -2,15 +2,18 @@ package com.vgb3.kstore.presentation.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.outlined.Visibility
+import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,7 +21,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
@@ -26,7 +28,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,26 +37,29 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vgb3.kstore.R
 import com.vgb3.kstore.presentation.VaultFormViewModel
 import com.vgb3.kstore.presentation.model.VaultFormInputs
-import com.vgb3.kstore.presentation.ui.widgets.Buttons.PrimaryButton
-import com.vgb3.kstore.presentation.ui.widgets.Buttons.TransparentButton
 import com.vgb3.kstore.presentation.ui.widgets.DropdownField
 import com.vgb3.kstore.presentation.ui.widgets.Form
 import com.vgb3.kstore.presentation.ui.widgets.GroupContent
 import com.vgb3.kstore.presentation.ui.widgets.InputField
+import com.vgb3.kstore.presentation.ui.widgets.RecordFormTopBar
+import com.vgb3.kstore.presentation.ui.widgets.RecordTypePlate
+import com.vgb3.kstore.presentation.ui.widgets.bottomBorder
+import com.vgb3.kstore.presentation.ui.widgets.styleFor
 import com.vgb3.kstore.ui.theme.KStoreTheme
 
 @Composable
 fun CreatePasswordScreen(
     createPasswordFormViewModel: VaultFormViewModel,
     modifier: Modifier = Modifier,
-    onSavePassword: () -> Unit = {},
-    onCancel: () -> Unit = {}
 ) {
-    //val formsState by vaultViewModel.vaultFormState.collectAsStateWithLifecycle()
     val formsState by createPasswordFormViewModel.uiState.collectAsStateWithLifecycle()
+    var isPasswordVisible by remember { mutableStateOf(false) }
     Form(
         modifier = modifier,
         formContent = { onInput, onSelect ->
+            RecordTypePlate(
+                style = styleFor("login")
+            )
             GroupContent {
                 Column(
                     modifier = Modifier.fillMaxWidth(),
@@ -162,11 +168,30 @@ fun CreatePasswordScreen(
                                 contentDescription = "",
                             )
                         },
+                        visualTransformation = if (isPasswordVisible) {
+                            VisualTransformation.None
+                        } else {
+                            PasswordVisualTransformation()
+                        },
                         trailingIcon = {
-                            Icon(
-                                painter = painterResource(R.drawable.visible),
-                                contentDescription = "",
-                            )
+                            IconButton(
+                                onClick = { isPasswordVisible = !isPasswordVisible }
+                            ) {
+                                Icon(
+                                    imageVector = if (isPasswordVisible) {
+                                        Icons.Outlined.Visibility
+                                    } else {
+                                        Icons.Outlined.VisibilityOff
+                                    },
+                                    contentDescription = stringResource(
+                                        if (isPasswordVisible) {
+                                            R.string.hide_password
+                                        } else {
+                                            R.string.show_password
+                                        }
+                                    ),
+                                )
+                            }
                         },
                         placeholder = {
                             Text(
@@ -212,32 +237,6 @@ fun CreatePasswordScreen(
                 }
             }
         },
-        formFooter = {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                PrimaryButton(
-                    onClick = onSavePassword,
-                    modifier = Modifier.fillMaxWidth(),
-                    content = {
-                        Text(
-                            text = stringResource(R.string.save_password),
-                            fontSize = 16.sp,
-                        )
-                    }
-                )
-                TransparentButton(
-                    onClick = onCancel,
-                    modifier = Modifier.fillMaxWidth(),
-                    content = {
-                        Text(
-                            text = stringResource(R.string.cancel),
-                            fontSize = 16.sp,
-                        )
-                    }
-                )
-            }
-        },
         onInput = { inputField, text ->
             createPasswordFormViewModel.onInput(inputField, text)
         },
@@ -254,9 +253,13 @@ private fun CreatePasswordData(
     onInput: () -> Unit = {},
     onCancel: () -> Unit = {}
 ) {
+    var isPasswordVisible by remember { mutableStateOf(false) }
     Form(
         modifier = modifier,
         formContent = { onInput, onSelect ->
+            RecordTypePlate(
+                style = styleFor("login")
+            )
             GroupContent {
                 Column(
                     modifier = Modifier.fillMaxWidth(),
@@ -355,11 +358,23 @@ private fun CreatePasswordData(
                                 contentDescription = "",
                             )
                         },
+                        visualTransformation = if (isPasswordVisible) {
+                            VisualTransformation.None
+                        } else {
+                            PasswordVisualTransformation()
+                        },
                         trailingIcon = {
-                            Icon(
-                                painter = painterResource(R.drawable.visible),
-                                contentDescription = "",
-                            )
+                            IconButton(
+                                onClick = { isPasswordVisible = !isPasswordVisible }
+                            ) {
+                                Icon(
+                                    imageVector = if (isPasswordVisible) Icons.Outlined.Visibility else Icons.Outlined.VisibilityOff,
+                                    contentDescription = stringResource(
+                                        if (isPasswordVisible) R.string.hide_password
+                                        else R.string.show_password
+                                    ),
+                                )
+                            }
                         },
                         placeholder = {
                             Text(
@@ -396,32 +411,6 @@ private fun CreatePasswordData(
                 }
             }
         },
-        formFooter = {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                PrimaryButton(
-                    onClick = onSavePassword,
-                    modifier = Modifier.fillMaxWidth(),
-                    content = {
-                        Text(
-                            text = stringResource(R.string.save_password),
-                            fontSize = 16.sp,
-                        )
-                    }
-                )
-                TransparentButton(
-                    onClick = onCancel,
-                    modifier = Modifier.fillMaxWidth(),
-                    content = {
-                        Text(
-                            text = stringResource(R.string.cancel),
-                            fontSize = 16.sp,
-                        )
-                    }
-                )
-            }
-        }
     )
 }
 
@@ -434,28 +423,14 @@ fun CreatePasswordScreenPreview() {
                 .fillMaxWidth()
                 .statusBarsPadding(),
             topBar = {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    IconButton(
-                        modifier = Modifier.size(40.dp),
-                        onClick = {}
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.left_arrow_icon),
-                            contentDescription = null,
-                        )
-                    }
-                    Text(
-                        modifier = Modifier
-                            .weight(1f),
-                        text = stringResource(R.string.add_new_password),
-                        textAlign = TextAlign.Center
-                    )
-                }
+                RecordFormTopBar(
+                    "Создать пароль",
+                    canSave = true,
+                    imageVector = Icons.Default.Close,
+                    modifier = Modifier.bottomBorder(1.dp, MaterialTheme.colorScheme.outline),
+                    onSave = {},
+                    onBack = {}
+                )
             }
         ) { innerPadding ->
             val topPadding = innerPadding.calculateTopPadding() + 16.dp

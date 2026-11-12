@@ -21,6 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
@@ -38,7 +39,7 @@ fun BankCard(
             .fillMaxWidth()
             .border(1.dp, MaterialTheme.colorScheme.outline, shape)
             .clip(shape)
-            .background(KStoreTheme.colors.tileNeutral.container)
+            .background(MaterialTheme.colorScheme.surfaceVariant)
             .padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
@@ -61,26 +62,23 @@ fun BankCard(
             ) {
                 Icon(
                     painter = painterResource(R.drawable.bank_chip),
-                    contentDescription = "",
+                    contentDescription = null,
                     tint = KStoreTheme.colors.bankCard.tint
                 )
             }
             Icon(
                 painter = painterResource(R.drawable.bank_contactless),
                 tint = KStoreTheme.colors.tileNeutral.tint,
-                contentDescription = "",
+                contentDescription = null,
             )
         }
-        Text(
-            text = "•••• •••• •••• 3456",
-            color = MaterialTheme.colorScheme.onSurface,
-            style = MaterialTheme.typography.bodyLarge
-        )
+        BankCardNumber(lastFour = "3456")
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Column(
+                modifier = Modifier.weight(1f),
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
@@ -94,6 +92,7 @@ fun BankCard(
                 )
                 Text(
                     text = "Имя фамилия".uppercase(),
+                    overflow = TextOverflow.Ellipsis,
                     lineHeight = 16.sp,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Medium,

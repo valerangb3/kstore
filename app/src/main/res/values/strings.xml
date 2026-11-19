@@ -3,6 +3,15 @@
     <string name="save_password">Сохранить пароль</string>
     <string name="save">Сохранить</string>
     <string name="password">Пароль</string>
+    <string name="card_name_title">Название</string>
+    <string name="card_expiry_title">Срок действия</string>
+    <string name="card_cvv_title">CVV</string>
+    <string name="card_name_placeholder">Введите название карты</string>
+    <string name="card_number_placeholder">Введите номер карты</string>
+    <string name="card_expiry_placeholder">ММ/ГГ</string>
+    <string name="card_holder_placeholder">Введите владельца карты</string>
+    <string name="card_holder_title">Держатель карты</string>
+    <string name="card_number_title">Номер карты</string>
     <string name="app_name_title">Приложение</string>
     <string name="app_category">Категория</string>
     <string name="app_name_placeholder">Например, Netflix, GitHub</string>
@@ -73,4 +82,8 @@
 
     <string name="show_password">Показать пароль</string>
     <string name="hide_password">Скрыть пароль</string>
+
+    <string name="bank_card_name_placeholder">Имя фамилия</string>
+    <string name="bank_card_month_placeholder">мм</string>
+    <string name="bank_card_year_placeholder">гг</string>
 </resources>

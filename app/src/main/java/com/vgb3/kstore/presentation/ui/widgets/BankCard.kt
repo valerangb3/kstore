@@ -21,7 +21,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
@@ -31,9 +30,29 @@ import com.vgb3.kstore.ui.theme.KStoreTheme
 
 @Composable
 fun BankCard(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    lastFour: String = "••••",
+    holderName: String = "",
+    expiry: String = "",
 ) {
     val shape = RoundedCornerShape(16.dp)
+    val monthPlaceholder = stringResource(R.string.bank_card_month_placeholder)
+    val yearPlaceholder = stringResource(R.string.bank_card_year_placeholder)
+    val displayHolderName = holderName.ifBlank { stringResource(R.string.bank_card_name_placeholder) }
+    val displayedLastFour = lastFour.take(4).padEnd(4, '•')
+    val parts = expiry.split("/", limit = 2)
+    val month = parts
+        .getOrNull(0)
+        .orEmpty()
+        .take(2)
+        .padEnd(2, monthPlaceholder.first())
+
+    val year = parts
+        .getOrNull(1)
+        .orEmpty()
+        .take(2)
+        .padEnd(2, yearPlaceholder.first())
+
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -72,10 +91,10 @@ fun BankCard(
                 contentDescription = null,
             )
         }
-        BankCardNumber(lastFour = "3456")
+        BankCardNumber(lastFour = displayedLastFour)
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Column(
                 modifier = Modifier.weight(1f),
@@ -90,15 +109,7 @@ fun BankCard(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     text = stringResource(R.string.bank_card_holder_title).uppercase()
                 )
-                Text(
-                    text = "Имя фамилия".uppercase(),
-                    overflow = TextOverflow.Ellipsis,
-                    lineHeight = 16.sp,
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium,
-                    letterSpacing = 0.3.sp,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
+                BankCardHolderName(displayHolderName)
             }
             Column(
                 horizontalAlignment = Alignment.End,
@@ -112,14 +123,7 @@ fun BankCard(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     text = stringResource(R.string.bank_card_valid_period_title).uppercase()
                 )
-                Text(
-                    text = "мм/гг".uppercase(),
-                    lineHeight = 16.sp,
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium,
-                    letterSpacing = 0.3.sp,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
+                BankCardExpiry(month, year)
             }
         }
     }
@@ -130,7 +134,11 @@ fun BankCard(
 private fun BankCardPreview() {
     KStoreTheme {
         Surface() {
-            BankCard()
+            BankCard(
+                lastFour = "3456",
+                holderName = "Valery Karev",
+                expiry = "11/28",
+            )
         }
     }
 }
@@ -145,12 +153,38 @@ private fun BankCardPreviewFullScreen() {
         ) {
 
             BankCard(
+                lastFour = "3456",
+                holderName = "Valery Karev",
+                expiry = "11/28",
                 modifier = Modifier
                     .padding(
                         top = topPadding,
                         start = 16.dp,
                         end = 16.dp,
                     )
+            )
+        }
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun BankCardEmptyPreview() {
+    KStoreTheme {
+        Surface(color = MaterialTheme.colorScheme.background) {
+            BankCard()
+        }
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun BankCardPartialPreview() {
+    KStoreTheme {
+        Surface(color = MaterialTheme.colorScheme.background) {
+            BankCard(
+                lastFour = "3",
+                expiry = "12/2",
             )
         }
     }

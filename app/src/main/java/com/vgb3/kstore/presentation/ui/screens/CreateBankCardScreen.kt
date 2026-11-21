@@ -1,5 +1,6 @@
 package com.vgb3.kstore.presentation.ui.screens
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -7,23 +8,34 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.outlined.Visibility
+import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.vgb3.kstore.R
-import com.vgb3.kstore.presentation.model.VaultFormInputs
 import com.vgb3.kstore.presentation.ui.widgets.BankCard
 import com.vgb3.kstore.presentation.ui.widgets.DropdownField
 import com.vgb3.kstore.presentation.ui.widgets.Form
@@ -39,16 +51,14 @@ import com.vgb3.kstore.ui.theme.KStoreTheme
 fun CreateBankCardScreen(
     modifier: Modifier = Modifier
 ) {
+    var isCodeVisible by remember { mutableStateOf(false) }
     Form(
         modifier = modifier,
         formContent = { onInput, onSelect ->
             RecordTypePlate(
                 style = styleFor("bank_card")
             )
-            BankCard(
-                lastFour = "3",
-                expiry = "12/2",
-            )
+            BankCard()
 
             GroupContent {
                 Column(
@@ -67,19 +77,22 @@ fun CreateBankCardScreen(
                         },
                         leadingIcon = {
                             Icon(
-                                painter = painterResource(R.drawable.card_name_icon),
+                                //modifier = Modifier.size(22.dp),
+                                painter = painterResource(R.drawable.text_icon),
                                 contentDescription = "",
                             )
                         },
                         placeholder = {
                             Text(
                                 text = stringResource(R.string.card_name_placeholder),
-                                fontSize = 16.sp
+                                fontSize = 16.sp,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
                             )
                         }
                     )
                     InputField(
-                        value = "1234 5678 9012 3456",
+                        value = "",
                         onValueChange = {  },
                         titleField = {
                             Text(
@@ -90,14 +103,21 @@ fun CreateBankCardScreen(
                         },
                         leadingIcon = {
                             Icon(
+                                modifier = Modifier.size(24.dp),
                                 painter = painterResource(R.drawable.card_icon),
                                 contentDescription = "",
                             )
                         },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Next
+                        ),
                         placeholder = {
                             Text(
                                 text = stringResource(R.string.card_number_placeholder),
-                                fontSize = 16.sp
+                                fontSize = 16.sp,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
                             )
                         }
                     )
@@ -106,10 +126,9 @@ fun CreateBankCardScreen(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        //TODO заметил что икноки в InputField размером меньше, чем в полях на экране PasswordScreen - надо проверить и поправить
                         InputField(
                             modifier = Modifier.weight(1f),
-                            value = "12/28",
+                            value = "",
                             onValueChange = {  },
                             titleField = {
                                 Text(
@@ -120,6 +139,7 @@ fun CreateBankCardScreen(
                             },
                             leadingIcon = {
                                 Icon(
+                                    modifier = Modifier.size(24.dp),
                                     painter = painterResource(R.drawable.card_expiry_icon),
                                     contentDescription = "",
                                 )
@@ -127,14 +147,25 @@ fun CreateBankCardScreen(
                             placeholder = {
                                 Text(
                                     text = stringResource(R.string.card_expiry_placeholder),
-                                    fontSize = 16.sp
+                                    fontSize = 16.sp,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
                                 )
-                            }
+                            },
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Number,
+                                imeAction = ImeAction.Next
+                            ),
                         )
 
                         InputField(
                             modifier = Modifier.weight(1f),
-                            value = "123",
+                            visualTransformation = if (isCodeVisible) {
+                                VisualTransformation.None
+                            } else {
+                                PasswordVisualTransformation()
+                            },
+                            value = "",
                             onValueChange = {  },
                             titleField = {
                                 Text(
@@ -145,16 +176,32 @@ fun CreateBankCardScreen(
                             },
                             leadingIcon = {
                                 Icon(
-                                    //modifier = Modifier.size(18.dp),
+                                    modifier = Modifier.size(24.dp),
                                     painter = painterResource(R.drawable.card_lock_icon),
                                     contentDescription = "",
                                 )
                             },
+                            keyboardOptions = KeyboardOptions(
+                                imeAction = ImeAction.Next,
+                                keyboardType = KeyboardType.NumberPassword
+                            ),
+                            trailingIcon = {
+                                IconButton(onClick = { isCodeVisible = !isCodeVisible }) {
+                                    Icon(
+                                        imageVector = if (isCodeVisible) Icons.Outlined.Visibility else Icons.Outlined.VisibilityOff,
+                                        contentDescription = stringResource(
+                                            if (isCodeVisible) R.string.hide_cvv
+                                            else R.string.show_cvv
+                                        ),
+                                    )
+                                }
+                            },
                             placeholder = {
                                 Text(
-                                    //TODO - какой placeholder для сvv?
-                                    text = stringResource(R.string.card_number_placeholder),
-                                    fontSize = 16.sp
+                                    text = stringResource(R.string.card_cvv_placeholder),
+                                    fontSize = 16.sp,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
                                 )
                             }
                         )
@@ -163,6 +210,10 @@ fun CreateBankCardScreen(
                     InputField(
                         value = "",
                         onValueChange = {  },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Text,
+                            imeAction = ImeAction.Done
+                        ),
                         titleField = {
                             Text(
                                 text = stringResource(R.string.card_holder_title),
@@ -172,14 +223,16 @@ fun CreateBankCardScreen(
                         },
                         leadingIcon = {
                             Icon(
-                                painter = painterResource(R.drawable.card_holder_icon),
+                                painter = painterResource(R.drawable.user_icon),
                                 contentDescription = "",
                             )
                         },
                         placeholder = {
                             Text(
                                 text = stringResource(R.string.card_holder_placeholder),
-                                fontSize = 16.sp
+                                fontSize = 16.sp,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
                             )
                         }
                     )
@@ -220,8 +273,22 @@ fun CreateBankCardScreen(
     )
 }
 
-@PreviewLightDark
-@Preview
+@Preview(
+    name = "390 dp — светлая",
+    widthDp = 390,
+    heightDp = 800,
+    showSystemUi = true,
+    fontScale = 1f,
+    uiMode = Configuration.UI_MODE_NIGHT_NO
+)
+@Preview(
+    name = "390 dp — тёмная",
+    widthDp = 390,
+    heightDp = 800,
+    showSystemUi = true,
+    fontScale = 1f,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
 @Composable
 fun CreateBankCardScreenPreview() {
     KStoreTheme {
@@ -232,7 +299,7 @@ fun CreateBankCardScreenPreview() {
             topBar = {
                 RecordFormTopBar(
                     "Новая карта",
-                    canSave = true,
+                    canSave = false,
                     imageVector = Icons.Default.Close,
                     modifier = Modifier.bottomBorder(1.dp, MaterialTheme.colorScheme.outline),
                     onSave = {},

@@ -43,6 +43,8 @@ fun InputField(
     placeholder: @Composable (() -> Unit)? = null,
     readOnly: Boolean = false,
     singleLine: Boolean = true,
+    maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
+    minLines: Int = 1,
     keyboardOptions: KeyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     visualTransformation: VisualTransformation = VisualTransformation.None
@@ -62,6 +64,8 @@ fun InputField(
             placeholder = placeholder,
             shape = RoundedCornerShape(12.dp),
             leadingIcon = leadingIcon,
+            maxLines = maxLines,
+            minLines = minLines,
             trailingIcon = trailingIcon,
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = MaterialTheme.colorScheme.outline,
@@ -75,9 +79,7 @@ fun InputField(
                 focusedPlaceholderColor = KStoreTheme.colors.placeholderText,
                 unfocusedPlaceholderColor = KStoreTheme.colors.placeholderText,
             ),
-            textStyle = TextStyle(
-                fontSize = 16.sp
-            ),
+            textStyle = MaterialTheme.typography.bodyLarge.copy(fontSize = 16.sp),
             readOnly = readOnly,
             keyboardOptions = keyboardOptions,
             keyboardActions = keyboardActions,

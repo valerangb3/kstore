@@ -39,7 +39,8 @@ fun CreateRecordScreen(
         topBar = {
             RecordFormTopBar(
                 modifier = Modifier.bottomBorder(1.dp, MaterialTheme.colorScheme.outline),
-                canSave = formState.canSave,
+                //todo: ограничил сохранения до этапа реализации сохранения записей
+                canSave = type == RecordFormType.LOGIN && formState.canSave,
                 imageVector = Icons.Default.Close,
                 title = stringResource(titleRes),
                 onBack = onClose,
@@ -60,9 +61,10 @@ fun CreateRecordScreen(
                 modifier = contentModifier,
                 createPasswordFormViewModel = vaultFormViewModel,
             )
-            RecordFormType.BANK_CARD,
-            RecordFormType.SECURE_NOTE -> Text(
-                text = "TODO: ${type.key}",
+            RecordFormType.BANK_CARD -> CreateBankCardScreen(
+                modifier = contentModifier,
+            )
+            RecordFormType.SECURE_NOTE -> CreateSecureNoteScreen(
                 modifier = contentModifier
             )
         }

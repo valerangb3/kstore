@@ -23,6 +23,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -42,8 +43,11 @@ fun InputField(
     placeholder: @Composable (() -> Unit)? = null,
     readOnly: Boolean = false,
     singleLine: Boolean = true,
+    maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
+    minLines: Int = 1,
     keyboardOptions: KeyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-    keyboardActions: KeyboardActions = KeyboardActions.Default
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
+    visualTransformation: VisualTransformation = VisualTransformation.None
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -60,6 +64,8 @@ fun InputField(
             placeholder = placeholder,
             shape = RoundedCornerShape(12.dp),
             leadingIcon = leadingIcon,
+            maxLines = maxLines,
+            minLines = minLines,
             trailingIcon = trailingIcon,
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = MaterialTheme.colorScheme.outline,
@@ -73,12 +79,11 @@ fun InputField(
                 focusedPlaceholderColor = KStoreTheme.colors.placeholderText,
                 unfocusedPlaceholderColor = KStoreTheme.colors.placeholderText,
             ),
-            textStyle = TextStyle(
-                fontSize = 16.sp
-            ),
+            textStyle = MaterialTheme.typography.bodyLarge.copy(fontSize = 16.sp),
             readOnly = readOnly,
             keyboardOptions = keyboardOptions,
-            keyboardActions = keyboardActions
+            keyboardActions = keyboardActions,
+            visualTransformation = visualTransformation
         )
     }
 }

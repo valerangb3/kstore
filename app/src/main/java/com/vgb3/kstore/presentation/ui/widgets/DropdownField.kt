@@ -58,10 +58,10 @@ fun DropdownField(
             expanded = expanded,
             onExpandedChange = { expanded = it }
         ) {
-            val inputTextRes =
-                options.find { it.id == selected }
-                    ?.titleRes
-                    ?: R.string.category_unknown
+            val selectedOption = options.find { it.id == selected }
+            val inputText = selectedOption
+                ?.let { stringResource(it.titleRes) }
+                .orEmpty()
 
             val arrowRotation by animateFloatAsState(
                 targetValue = if (expanded) 180f else 0f,
@@ -70,7 +70,7 @@ fun DropdownField(
             )
 
             InputField(
-                value = stringResource(inputTextRes),
+                value = inputText,
                 onValueChange = {},
                 titleField = titleField,
                 placeholder = placeholder,
@@ -84,7 +84,10 @@ fun DropdownField(
                 leadingIcon = leadingIcon,
                 modifier = Modifier.fillMaxWidth(),
                 fieldModifier = Modifier
-                    .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
+                    .menuAnchor(
+                        type = ExposedDropdownMenuAnchorType.PrimaryNotEditable,
+                        enabled = options.isNotEmpty()
+                    )
                     .padding(bottom = 4.dp),
                 readOnly = true
             )

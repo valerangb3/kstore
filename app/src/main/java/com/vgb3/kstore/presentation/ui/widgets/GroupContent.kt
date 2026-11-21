@@ -27,7 +27,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.vgb3.kstore.R
 import com.vgb3.kstore.ui.theme.KStoreTheme
-import com.vgb3.kstore.ui.theme.LocalKStoreColors
 
 @Composable
 fun GroupContent(

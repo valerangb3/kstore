@@ -81,6 +81,49 @@ fun styleFor(key: String): RecordTypeStyle {
 }
 
 @Composable
+private fun RecordTypeContent(
+    style: RecordTypeStyle,
+    modifier: Modifier = Modifier,
+    trailingIcon: @Composable (() -> Unit)? = null
+) {
+    Row(
+        modifier = modifier.padding(12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .background(style.container, RoundedCornerShape(12.dp)),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                modifier = Modifier.size(20.dp),
+                imageVector = style.icon,
+                contentDescription = null,
+                tint = style.tint
+            )
+        }
+        Spacer(Modifier.width(12.dp))
+
+        Column(Modifier.weight(1f)) {
+            Text(
+                text = stringResource(style.title),
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Text(
+                text = stringResource(style.subtitle),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+
+        trailingIcon?.invoke()
+    }
+}
+
+@Composable
 fun RecordTypeButton(
     recordType: RecordTypeUi,
     style: RecordTypeStyle,
@@ -93,51 +136,41 @@ fun RecordTypeButton(
     Surface(
         interactionSource = interaction,
         modifier = modifier.fillMaxWidth(),
-        onClick = { onClick(recordType) },
+        onClick = { onClick.invoke(recordType) },
         shape = RoundedCornerShape(16.dp),
         color = if (pressed) cs.primaryContainer.copy(alpha = .5f) else cs.surface,
         border = BorderStroke(1.dp, if (pressed) cs.primary else cs.outline)
     ) {
-        Row(
-            modifier = Modifier.padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .background(style.container, RoundedCornerShape(12.dp)),
-                contentAlignment = Alignment.Center
-            ) {
+        RecordTypeContent(
+            style = style,
+            trailingIcon = {
                 Icon(
-                    modifier = Modifier.size(20.dp),
-                    imageVector = style.icon,
+                    imageVector = Icons.AutoMirrored.Outlined.KeyboardArrowRight,
                     contentDescription = null,
-                    tint = style.tint
+                    modifier = Modifier.size(18.dp),
+                    tint = if (pressed) cs.primary else KStoreTheme.colors.placeholderText,
                 )
             }
-            Spacer(Modifier.width(12.dp))
+        )
+    }
+}
 
-            Column(Modifier.weight(1f)) {
-                Text(
-                    text = stringResource(style.title),
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Medium,
-                    color = cs.onSurface
-                )
-                Text(
-                    text = stringResource(style.subtitle),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = cs.onSurfaceVariant
-                )
-            }
+@Composable
+fun RecordTypePlate(
+    style: RecordTypeStyle,
+    modifier: Modifier = Modifier
+) {
+    val cs = MaterialTheme.colorScheme
 
-            Icon(
-                imageVector = Icons.AutoMirrored.Outlined.KeyboardArrowRight,
-                contentDescription = null,
-                modifier = Modifier.size(18.dp),
-                tint = if (pressed) cs.primary else KStoreTheme.colors.placeholderText,
-            )
-        }
+    Surface(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        color = cs.surface,
+        border = BorderStroke(1.dp, cs.outline)
+    ) {
+        RecordTypeContent(
+            style = style
+        )
     }
 }
 
@@ -155,11 +188,11 @@ fun PreviewRecordTypeButton() {
             ) {  }
             RecordTypeButton(
                 recordType = bankCard,
-                style = styleFor("bank_card")
+                style = styleFor(bankCard.type)
             ) {  }
             RecordTypeButton(
                 recordType = secureNote,
-                style = styleFor("secure_note")
+                style = styleFor(secureNote.type)
             ) {  }
         }
     }

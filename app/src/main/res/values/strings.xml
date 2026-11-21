@@ -1,7 +1,22 @@
 <resources>
     <string name="app_name">KStore</string>
     <string name="save_password">Сохранить пароль</string>
+    <string name="save">Сохранить</string>
     <string name="password">Пароль</string>
+    <string name="secure_name_title">Название</string>
+    <string name="secure_note_title">Текст заметки</string>
+    <string name="secure_note_placeholder">Добавьте текст, который хотите сохранить…</string>
+    <string name="secure_name_placeholder">Например, домашняя сеть</string>
+    <string name="card_name_title">Название</string>
+    <string name="card_expiry_title">Срок действия</string>
+    <string name="card_cvv_title">CVV</string>
+    <string name="card_cvv_placeholder">•••</string>
+    <string name="card_name_placeholder">Введите название карты</string>
+    <string name="card_number_placeholder">Введите номер карты</string>
+    <string name="card_expiry_placeholder">ММ/ГГ</string>
+    <string name="card_holder_placeholder">Введите владельца карты</string>
+    <string name="card_holder_title">Держатель карты</string>
+    <string name="card_number_title">Номер карты</string>
     <string name="app_name_title">Приложение</string>
     <string name="app_category">Категория</string>
     <string name="app_name_placeholder">Например, Netflix, GitHub</string>
@@ -25,6 +40,10 @@
 
     <string name="type_login">Логин и пароль</string>
     <string name="type_login_sub">Сайты и приложения</string>
+
+    <string name="bank_card_title">Банковская карта</string>
+    <string name="bank_card_holder_title">Держатель карты</string>
+    <string name="bank_card_valid_period_title">Срок действия</string>
 
     <string name="type_card">Банковская карта</string>
     <string name="type_card_sub">Номер, срок, CVV</string>
@@ -65,4 +84,14 @@
 
     <string name="empty_vault_title">Ваше хранилище пустое</string>
     <string name="empty_vault_description">Добавьте первую запись, чтобы нужные данные всегда были под рукой</string>
+
+    <string name="show_password">Показать пароль</string>
+    <string name="hide_password">Скрыть пароль</string>
+
+    <string name="show_cvv">Показать CVV</string>
+    <string name="hide_cvv">Скрыть CVV</string>
+
+    <string name="bank_card_name_placeholder">Имя фамилия</string>
+    <string name="bank_card_month_placeholder">мм</string>
+    <string name="bank_card_year_placeholder">гг</string>
 </resources>

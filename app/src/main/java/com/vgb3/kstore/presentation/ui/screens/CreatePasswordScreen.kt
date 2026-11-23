@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vgb3.kstore.R
 import com.vgb3.kstore.presentation.VaultFormViewModel
+import com.vgb3.kstore.presentation.model.RecordForm
 import com.vgb3.kstore.presentation.model.VaultFormInputs
 import com.vgb3.kstore.presentation.ui.widgets.DropdownField
 import com.vgb3.kstore.presentation.ui.widgets.Form
@@ -65,175 +66,178 @@ fun CreatePasswordScreen(
                     modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(24.dp)
                 ) {
-                    val appName = formsState.input.appNameInput
-                    val focusManager = LocalFocusManager.current
-                    InputField(
-                        value = appName,
-                        onValueChange = { onInput(VaultFormInputs.APP_NAME_INPUT, it) },
-                        titleField = {
-                            Text(
-                                text = stringResource(R.string.app_name_title),
-                                fontWeight = FontWeight.W600,
-                                fontSize = 14.sp,
-                            )
-                        },
-                        leadingIcon = {
-                            Icon(
-                                painter = painterResource(R.drawable.app_icon),
-                                contentDescription = "",
-                            )
-                        },
-                        placeholder = {
-                            Text(
-                                text = stringResource(R.string.app_name_placeholder),
-                                fontSize = 16.sp
-                            )
-                        }
-                    )
-
-                    val url = formsState.input.urlInput
-                    InputField(
-                        value = url,
-                        onValueChange = { onInput(VaultFormInputs.URL_INPUT, it) },
-                        titleField = {
-                            Text(
-                                text = stringResource(R.string.url_title),
-                                fontWeight = FontWeight.W600,
-                                fontSize = 14.sp,
-                            )
-                        },
-                        leadingIcon = {
-                            Icon(
-                                painter = painterResource(R.drawable.www_icon),
-                                contentDescription = "",
-                            )
-                        },
-                        placeholder = {
-                            Text(
-                                text = "https://example.com",
-                                fontSize = 16.sp
-                            )
-                        },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Uri,
-                            imeAction = ImeAction.Next
-                        )
-                    )
-
-                    val userName = formsState.input.loginInput
-                    InputField(
-                        value = userName,
-                        onValueChange = {
-                            onInput(VaultFormInputs.LOGIN_INPUT, it)
-                        },
-                        titleField = {
-                            Text(
-                                text = stringResource(R.string.login_email),
-                                fontWeight = FontWeight.W600,
-                                fontSize = 14.sp,
-                            )
-                        },
-                        leadingIcon = {
-                            Icon(
-                                painter = painterResource(R.drawable.user_icon),
-                                contentDescription = "",
-                            )
-                        },
-                        placeholder = {
-                            Text(
-                                text = "vgb3@gmail.com",
-                                fontSize = 16.sp
-                            )
-                        },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Email,
-                            imeAction = ImeAction.Next
-                        )
-                    )
-
-                    val password = formsState.input.passwordInput
-                    InputField(
-                        value = password,
-                        onValueChange = { onInput(VaultFormInputs.PASSWORD_INPUT, it) },
-                        titleField = {
-                            Text(
-                                text = stringResource(R.string.password),
-                                fontWeight = FontWeight.W600,
-                                fontSize = 14.sp,
-                            )
-                        },
-                        leadingIcon = {
-                            Icon(
-                                painter = painterResource(R.drawable.secure_icon),
-                                contentDescription = "",
-                            )
-                        },
-                        visualTransformation = if (isPasswordVisible) {
-                            VisualTransformation.None
-                        } else {
-                            PasswordVisualTransformation()
-                        },
-                        trailingIcon = {
-                            IconButton(
-                                onClick = { isPasswordVisible = !isPasswordVisible }
-                            ) {
+                    val loginFormState = formsState.form as? RecordForm.Login
+                    //TODO: сверстать экран возникшей ошибки и если что-то пошло не так, нужно отобразить это пользователю.
+                    loginFormState?.let { inputState ->
+                        val appName = inputState.appNameInput
+                        val focusManager = LocalFocusManager.current
+                        InputField(
+                            value = appName,
+                            onValueChange = { onInput(VaultFormInputs.APP_NAME_INPUT, it) },
+                            titleField = {
+                                Text(
+                                    text = stringResource(R.string.app_name_title),
+                                    fontWeight = FontWeight.W600,
+                                    fontSize = 14.sp,
+                                )
+                            },
+                            leadingIcon = {
                                 Icon(
-                                    imageVector = if (isPasswordVisible) {
-                                        Icons.Outlined.Visibility
-                                    } else {
-                                        Icons.Outlined.VisibilityOff
-                                    },
-                                    contentDescription = stringResource(
-                                        if (isPasswordVisible) {
-                                            R.string.hide_password
-                                        } else {
-                                            R.string.show_password
-                                        }
-                                    ),
+                                    painter = painterResource(R.drawable.app_icon),
+                                    contentDescription = "",
+                                )
+                            },
+                            placeholder = {
+                                Text(
+                                    text = stringResource(R.string.app_name_placeholder),
+                                    fontSize = 16.sp
                                 )
                             }
-                        },
-                        placeholder = {
-                            Text(
-                                text = "foo-bar-foo",
-                                fontSize = 16.sp
-                            )
-                        },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Password,
-                            imeAction = ImeAction.Done
-                        ),
-                        keyboardActions = KeyboardActions(
-                            onDone = { focusManager.clearFocus() }
                         )
-                    )
 
-                    val selectedCategoryId = formsState.input.selectedCategoryId
+                        val url = inputState.urlInput
+                        InputField(
+                            value = url,
+                            onValueChange = { onInput(VaultFormInputs.URL_INPUT, it) },
+                            titleField = {
+                                Text(
+                                    text = stringResource(R.string.url_title),
+                                    fontWeight = FontWeight.W600,
+                                    fontSize = 14.sp,
+                                )
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    painter = painterResource(R.drawable.www_icon),
+                                    contentDescription = "",
+                                )
+                            },
+                            placeholder = {
+                                Text(
+                                    text = "https://example.com",
+                                    fontSize = 16.sp
+                                )
+                            },
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Uri,
+                                imeAction = ImeAction.Next
+                            )
+                        )
 
-                    DropdownField(
-                        leadingIcon = {
-                            Icon(
-                                painter = painterResource(R.drawable.category_folder),
-                                contentDescription = "",
+                        val userName = inputState.loginInput
+                        InputField(
+                            value = userName,
+                            onValueChange = {
+                                onInput(VaultFormInputs.LOGIN_INPUT, it)
+                            },
+                            titleField = {
+                                Text(
+                                    text = stringResource(R.string.login_email),
+                                    fontWeight = FontWeight.W600,
+                                    fontSize = 14.sp,
+                                )
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    painter = painterResource(R.drawable.user_icon),
+                                    contentDescription = "",
+                                )
+                            },
+                            placeholder = {
+                                Text(
+                                    text = "vgb3@gmail.com",
+                                    fontSize = 16.sp
+                                )
+                            },
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Email,
+                                imeAction = ImeAction.Next
                             )
-                        },
-                        titleField = {
-                            Text(
-                                text = stringResource(R.string.app_category),
-                                fontWeight = FontWeight.W600,
-                                fontSize = 14.sp,
+                        )
+
+                        val password = inputState.passwordInput
+                        InputField(
+                            value = password,
+                            onValueChange = { onInput(VaultFormInputs.PASSWORD_INPUT, it) },
+                            titleField = {
+                                Text(
+                                    text = stringResource(R.string.password),
+                                    fontWeight = FontWeight.W600,
+                                    fontSize = 14.sp,
+                                )
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    painter = painterResource(R.drawable.secure_icon),
+                                    contentDescription = "",
+                                )
+                            },
+                            visualTransformation = if (isPasswordVisible) {
+                                VisualTransformation.None
+                            } else {
+                                PasswordVisualTransformation()
+                            },
+                            trailingIcon = {
+                                IconButton(
+                                    onClick = { isPasswordVisible = !isPasswordVisible }
+                                ) {
+                                    Icon(
+                                        imageVector = if (isPasswordVisible) {
+                                            Icons.Outlined.Visibility
+                                        } else {
+                                            Icons.Outlined.VisibilityOff
+                                        },
+                                        contentDescription = stringResource(
+                                            if (isPasswordVisible) {
+                                                R.string.hide_password
+                                            } else {
+                                                R.string.show_password
+                                            }
+                                        ),
+                                    )
+                                }
+                            },
+                            placeholder = {
+                                Text(
+                                    text = "foo-bar-foo",
+                                    fontSize = 16.sp
+                                )
+                            },
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Password,
+                                imeAction = ImeAction.Done
+                            ),
+                            keyboardActions = KeyboardActions(
+                                onDone = { focusManager.clearFocus() }
                             )
-                        },
-                        placeholder = {
-                            Text(
-                                text = stringResource(R.string.no_selected),
-                                fontSize = 16.sp
-                            )
-                        },
-                        options = formsState.categories,
-                        selected = selectedCategoryId ?: 0,
-                        onSelect = { onSelect(it) }
-                    )
+                        )
+
+                        val selectedCategoryId = inputState.selectedCategoryId
+                        DropdownField(
+                            leadingIcon = {
+                                Icon(
+                                    painter = painterResource(R.drawable.category_folder),
+                                    contentDescription = "",
+                                )
+                            },
+                            titleField = {
+                                Text(
+                                    text = stringResource(R.string.app_category),
+                                    fontWeight = FontWeight.W600,
+                                    fontSize = 14.sp,
+                                )
+                            },
+                            placeholder = {
+                                Text(
+                                    text = stringResource(R.string.no_selected),
+                                    fontSize = 16.sp
+                                )
+                            },
+                            options = formsState.categories,
+                            selected = selectedCategoryId ?: 0,
+                            onSelect = { onSelect(it) }
+                        )
+                    }
                 }
             }
         },

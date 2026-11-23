@@ -8,6 +8,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,6 +36,9 @@ fun CreateRecordScreen(
         RecordFormType.SECURE_NOTE -> R.string.add_new_note
     }
     val formState by vaultFormViewModel.uiState.collectAsStateWithLifecycle()
+    LaunchedEffect(type) {
+        vaultFormViewModel.start(type)
+    }
     Scaffold(
         topBar = {
             RecordFormTopBar(

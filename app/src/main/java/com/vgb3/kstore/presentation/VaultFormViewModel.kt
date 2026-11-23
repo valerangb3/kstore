@@ -10,9 +10,10 @@ import com.vgb3.kstore.domain.interactor.VaultInteractor
 import com.vgb3.kstore.domain.model.input.CreateVaultItem
 import com.vgb3.kstore.domain.usecase.GetCategoriesUseCase
 import com.vgb3.kstore.presentation.map.toUi
-import com.vgb3.kstore.presentation.model.VaultFormInput
+import com.vgb3.kstore.presentation.model.RecordForm
 import com.vgb3.kstore.presentation.model.VaultFormInputs
 import com.vgb3.kstore.presentation.model.VaultFormUiState
+import com.vgb3.kstore.presentation.ui.model.RecordFormType
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -25,19 +26,22 @@ class VaultFormViewModel(
     private val getCategories: GetCategoriesUseCase
 ) : ViewModel() {
 
-    private val input = MutableStateFlow(VaultFormInput())
+    private val formState = MutableStateFlow<RecordForm?>(null)
     private val isSaving = MutableStateFlow(false)
 
     val uiState = combine(
-        input,
+        formState,
         getCategories(),
         isSaving
-    ) { input, categories, saving ->
+    ) { form, categories, saving ->
         VaultFormUiState(
-            input = input,
+            form = form,
             categories = categories.map { it.toUi() },
             isSaving = saving,
-            canSave = input.appNameInput.isNotBlank() && input.passwordInput.isNotBlank() && !saving
+            canSave = !saving &&
+                form is RecordForm.Login &&
+                form.appNameInput.isNotBlank() &&
+                form.passwordInput.isNotBlank()
         )
     }.stateIn(
         scope = viewModelScope,
@@ -53,35 +57,69 @@ class VaultFormViewModel(
         }
     }
 
+    fun start(formType: RecordFormType) {
+        when (formType) {
+            RecordFormType.LOGIN -> formState.value = RecordForm.Login()
+            RecordFormType.BANK_CARD -> formState.value = RecordForm.BankCard()
+            RecordFormType.SECURE_NOTE -> formState.value = RecordForm.SecureNote()
+        }
+    }
+
     fun onInput(inputField: VaultFormInputs, fieldValue: String) {
-        input.update { currentState ->
-            when (inputField) {
-                VaultFormInputs.APP_NAME_INPUT -> currentState.copy(appNameInput = fieldValue)
-                VaultFormInputs.URL_INPUT -> currentState.copy(urlInput = fieldValue)
-                VaultFormInputs.LOGIN_INPUT -> currentState.copy(loginInput = fieldValue)
-                VaultFormInputs.PASSWORD_INPUT -> currentState.copy(passwordInput = fieldValue)
+        formState.update { currentFormState ->
+            currentFormState?.let { state ->
+                when (state) {
+                    is RecordForm.Login -> {
+                        when (inputField) {
+                            VaultFormInputs.APP_NAME_INPUT -> state.copy(appNameInput = fieldValue)
+                            VaultFormInputs.URL_INPUT -> state.copy(urlInput = fieldValue)
+                            VaultFormInputs.LOGIN_INPUT -> state.copy(loginInput = fieldValue)
+                            VaultFormInputs.PASSWORD_INPUT -> state.copy(passwordInput = fieldValue)
+                        }
+                    }
+                    is RecordForm.BankCard -> TODO()
+                    is RecordForm.SecureNote -> TODO()
+                }
             }
         }
     }
 
     fun onCategorySelected(categoryId: Long?) {
-        input.update { it.copy(selectedCategoryId = categoryId) }
+        formState.update { currentFormState ->
+            currentFormState?.let { state ->
+                when (state) {
+                    is RecordForm.Login -> state.copy(selectedCategoryId = categoryId)
+                    is RecordForm.BankCard -> TODO()
+                    is RecordForm.SecureNote -> TODO()
+                }
+            }
+        }
     }
 
     fun createVault() {
-        val curState = input.value
+        val curState = formState.value
         viewModelScope.launch {
             isSaving.value = true
-            vaultInteractor.createVaultItem(
-                CreateVaultItem.Login(
-                    title = curState.appNameInput,
-                    url = curState.urlInput,
-                    login = curState.loginInput,
-                    password = curState.passwordInput,
-                    categoryId = curState.selectedCategoryId
-                )
-            )
-            input.value = VaultFormInput()
+            curState?.let { state ->
+                when (state) {
+                    is RecordForm.Login -> {
+                        vaultInteractor.createVaultItem(
+                            CreateVaultItem.Login(
+                                title = state.appNameInput,
+                                url = state.urlInput,
+                                login = state.loginInput,
+                                password = state.passwordInput,
+                                categoryId = state.selectedCategoryId
+                            )
+                        )
+                    }
+                    is RecordForm.BankCard -> TODO()
+                    is RecordForm.SecureNote -> TODO()
+                }
+            }
+            formState.update { current ->
+                if (current === curState) null else current
+            }
             isSaving.value = false
         }
     }
@@ -89,8 +127,10 @@ class VaultFormViewModel(
     companion object {
         val Factory = viewModelFactory {
             initializer {
-                val vaultInteractor = (this[APPLICATION_KEY] as KStoreApplication).diContainer.provideVaultInteractor()
-                val getCategories = (this[APPLICATION_KEY] as KStoreApplication).diContainer.provideGetCategoriesUseCase()
+                val vaultInteractor =
+                    (this[APPLICATION_KEY] as KStoreApplication).diContainer.provideVaultInteractor()
+                val getCategories =
+                    (this[APPLICATION_KEY] as KStoreApplication).diContainer.provideGetCategoriesUseCase()
                 VaultFormViewModel(vaultInteractor, getCategories)
             }
         }

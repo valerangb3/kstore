@@ -11,7 +11,8 @@ data class VaultFormInput(
 )
 
 data class VaultFormUiState(
-    val input: VaultFormInput = VaultFormInput(),
+    //val input: VaultFormInput = VaultFormInput(),
+    val form: RecordForm? = null,
     val categories: List<DropdownOption> = emptyList(),
     val isSaving: Boolean = false,
     val canSave: Boolean = false,

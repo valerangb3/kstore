@@ -36,6 +36,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.vgb3.kstore.R
+import com.vgb3.kstore.presentation.VaultFormViewModel
 import com.vgb3.kstore.presentation.ui.widgets.BankCard
 import com.vgb3.kstore.presentation.ui.widgets.DropdownField
 import com.vgb3.kstore.presentation.ui.widgets.Form
@@ -49,6 +50,7 @@ import com.vgb3.kstore.ui.theme.KStoreTheme
 
 @Composable
 fun CreateBankCardScreen(
+    createRecordFormViewModel: VaultFormViewModel,
     modifier: Modifier = Modifier
 ) {
     var isCodeVisible by remember { mutableStateOf(false) }
@@ -309,14 +311,14 @@ fun CreateBankCardScreenPreview() {
         ) { innerPadding ->
             val topPadding = innerPadding.calculateTopPadding() + 16.dp
             val bottomPadding = innerPadding.calculateBottomPadding()
-            CreateBankCardScreen(
+            /*CreateBankCardScreen(
                 modifier = Modifier.padding(
                     top = topPadding,
                     start = 16.dp,
                     bottom = bottomPadding,
                     end = 16.dp,
                 )
-            )
+            )*/
         }
     }
 }

@@ -50,10 +50,10 @@ import com.vgb3.kstore.ui.theme.KStoreTheme
 
 @Composable
 fun CreatePasswordScreen(
-    createPasswordFormViewModel: VaultFormViewModel,
+    createRecordFormViewModel: VaultFormViewModel,
     modifier: Modifier = Modifier,
 ) {
-    val formsState by createPasswordFormViewModel.uiState.collectAsStateWithLifecycle()
+    val formsState by createRecordFormViewModel.uiState.collectAsStateWithLifecycle()
     var isPasswordVisible by remember { mutableStateOf(false) }
     Form(
         modifier = modifier,
@@ -73,7 +73,7 @@ fun CreatePasswordScreen(
                         val focusManager = LocalFocusManager.current
                         InputField(
                             value = appName,
-                            onValueChange = { onInput(VaultFormInputs.APP_NAME_INPUT, it) },
+                            onValueChange = { onInput(VaultFormInputs.Login.APP_NAME_INPUT, it) },
                             titleField = {
                                 Text(
                                     text = stringResource(R.string.app_name_title),
@@ -98,7 +98,7 @@ fun CreatePasswordScreen(
                         val url = inputState.urlInput
                         InputField(
                             value = url,
-                            onValueChange = { onInput(VaultFormInputs.URL_INPUT, it) },
+                            onValueChange = { onInput(VaultFormInputs.Login.URL_INPUT, it) },
                             titleField = {
                                 Text(
                                     text = stringResource(R.string.url_title),
@@ -128,7 +128,7 @@ fun CreatePasswordScreen(
                         InputField(
                             value = userName,
                             onValueChange = {
-                                onInput(VaultFormInputs.LOGIN_INPUT, it)
+                                onInput(VaultFormInputs.Login.LOGIN_INPUT, it)
                             },
                             titleField = {
                                 Text(
@@ -158,7 +158,7 @@ fun CreatePasswordScreen(
                         val password = inputState.passwordInput
                         InputField(
                             value = password,
-                            onValueChange = { onInput(VaultFormInputs.PASSWORD_INPUT, it) },
+                            onValueChange = { onInput(VaultFormInputs.Login.PASSWORD_INPUT, it) },
                             titleField = {
                                 Text(
                                     text = stringResource(R.string.password),
@@ -242,10 +242,10 @@ fun CreatePasswordScreen(
             }
         },
         onInput = { inputField, text ->
-            createPasswordFormViewModel.onInput(inputField, text)
+            createRecordFormViewModel.onInput(inputField, text)
         },
         onSelect = { optionId ->
-            createPasswordFormViewModel.onCategorySelected(optionId)
+            createRecordFormViewModel.onCategorySelected(optionId)
         }
     )
 }

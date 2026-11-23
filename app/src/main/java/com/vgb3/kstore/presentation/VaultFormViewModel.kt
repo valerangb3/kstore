@@ -70,15 +70,31 @@ class VaultFormViewModel(
             currentFormState?.let { state ->
                 when (state) {
                     is RecordForm.Login -> {
-                        when (inputField) {
-                            VaultFormInputs.APP_NAME_INPUT -> state.copy(appNameInput = fieldValue)
-                            VaultFormInputs.URL_INPUT -> state.copy(urlInput = fieldValue)
-                            VaultFormInputs.LOGIN_INPUT -> state.copy(loginInput = fieldValue)
-                            VaultFormInputs.PASSWORD_INPUT -> state.copy(passwordInput = fieldValue)
+                        val field = inputField as? VaultFormInputs.Login ?: return@update state
+                        when (field) {
+                            VaultFormInputs.Login.APP_NAME_INPUT -> state.copy(appNameInput = fieldValue)
+                            VaultFormInputs.Login.URL_INPUT -> state.copy(urlInput = fieldValue)
+                            VaultFormInputs.Login.LOGIN_INPUT -> state.copy(loginInput = fieldValue)
+                            VaultFormInputs.Login.PASSWORD_INPUT -> state.copy(passwordInput = fieldValue)
                         }
                     }
-                    is RecordForm.BankCard -> TODO()
-                    is RecordForm.SecureNote -> TODO()
+                    is RecordForm.BankCard -> {
+                        val field = inputField as? VaultFormInputs.BankCard ?: return@update state
+                        when (field) {
+                            VaultFormInputs.BankCard.TITLE -> state.copy(cardTitle = fieldValue)
+                            VaultFormInputs.BankCard.NUMBER -> state.copy(cardNumber = fieldValue)
+                            VaultFormInputs.BankCard.EXPIRY -> state.copy(cardExpiry = fieldValue)
+                            VaultFormInputs.BankCard.CVV -> state.copy(cardCvv = fieldValue)
+                            VaultFormInputs.BankCard.HOLDER -> state.copy(cardHolder = fieldValue)
+                        }
+                    }
+                    is RecordForm.SecureNote -> {
+                        val field = inputField as? VaultFormInputs.SecureNote ?: return@update state
+                        when (field) {
+                            VaultFormInputs.SecureNote.TITLE -> state.copy(secureTitle = fieldValue)
+                            VaultFormInputs.SecureNote.TEXT -> state.copy(secureText = fieldValue)
+                        }
+                    }
                 }
             }
         }

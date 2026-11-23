@@ -6,7 +6,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -21,6 +20,7 @@ import com.vgb3.kstore.presentation.ui.widgets.bottomBorder
 import com.vgb3.kstore.ui.theme.KStoreTheme
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.vgb3.kstore.presentation.model.RecordForm
 
 @Composable
 fun CreateRecordScreen(
@@ -63,13 +63,18 @@ fun CreateRecordScreen(
         when (type) {
             RecordFormType.LOGIN -> CreatePasswordScreen(
                 modifier = contentModifier,
-                createPasswordFormViewModel = vaultFormViewModel,
+                createRecordFormViewModel = vaultFormViewModel,
             )
             RecordFormType.BANK_CARD -> CreateBankCardScreen(
                 modifier = contentModifier,
+                createRecordFormViewModel = vaultFormViewModel
             )
             RecordFormType.SECURE_NOTE -> CreateSecureNoteScreen(
-                modifier = contentModifier
+                modifier = contentModifier,
+                secureNoteState = formState.form as RecordForm.SecureNote,
+                onInput = { formInput, formValue ->
+                    //vaultFormViewModel.onInput()
+                }
             )
         }
     }

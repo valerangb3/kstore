@@ -49,7 +49,7 @@ import com.vgb3.kstore.ui.theme.KStoreTheme
 import kotlin.String
 
 @Composable
-fun CreatePasswordScreen(
+fun LoginForm(
     loginFormState: RecordForm.Login,
     categories: List<DropdownOption>,
     onInput: (VaultFormInputs, String) -> Unit,
@@ -248,7 +248,7 @@ fun CreatePasswordScreen(
 
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
-fun CreatePasswordScreenPreview() {
+fun LoginFormPreview() {
     var loginFormState by remember { mutableStateOf(
         RecordForm.Login(
             appNameInput = "",
@@ -275,7 +275,7 @@ fun CreatePasswordScreenPreview() {
         ) { innerPadding ->
             val topPadding = innerPadding.calculateTopPadding() + 16.dp
             val bottomPadding = innerPadding.calculateTopPadding()
-            CreatePasswordScreen(
+            LoginForm(
                 categories = emptyList(),
                 loginFormState = loginFormState,
                 onInput = { formInput, formValue ->

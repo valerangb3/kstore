@@ -50,7 +50,7 @@ interface VaultDao {
 
     @Transaction
     suspend fun insertVaultLoginItem(item: VaultEntity, login: VaultLoginEntity): Long {
-        val generatedId = insertNewVault(item.copy(categoryId = 1))
+        val generatedId = insertNewVault(item)
         insertLoginVault(login.copy(vaultItemId = generatedId))
         return generatedId
     }

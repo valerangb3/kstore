@@ -11,8 +11,10 @@ import com.vgb3.kstore.domain.model.input.CreateVaultItem
 import com.vgb3.kstore.domain.usecase.GetCategoriesUseCase
 import com.vgb3.kstore.presentation.map.toUi
 import com.vgb3.kstore.presentation.model.RecordForm
+import com.vgb3.kstore.presentation.model.RecordFormUiState
 import com.vgb3.kstore.presentation.model.VaultFormInputs
 import com.vgb3.kstore.presentation.model.VaultFormUiState
+import com.vgb3.kstore.presentation.model.toPreview
 import com.vgb3.kstore.presentation.ui.model.RecordFormType
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -23,7 +25,7 @@ import kotlinx.coroutines.launch
 
 class VaultFormViewModel(
     private val vaultInteractor: VaultInteractor,
-    private val getCategories: GetCategoriesUseCase
+    getCategories: GetCategoriesUseCase
 ) : ViewModel() {
 
     private val formState = MutableStateFlow<RecordForm?>(null)
@@ -33,29 +35,30 @@ class VaultFormViewModel(
         formState,
         getCategories(),
         isSaving
-    ) { form, categories, saving ->
+    ) { draftFormFields, categories, saving ->
+        val form = when (draftFormFields) {
+            is RecordForm.Login -> RecordFormUiState.Login(draftFormFields)
+            is RecordForm.BankCard -> RecordFormUiState.BankCard(
+                draftFields = draftFormFields,
+                preview = draftFormFields.toPreview(),
+            )
+            is RecordForm.SecureNote -> RecordFormUiState.SecureNote(draftFormFields)
+            null -> null
+        }
         VaultFormUiState(
             form = form,
             categories = categories.map { it.toUi() },
             isSaving = saving,
             canSave = !saving &&
-                form is RecordForm.Login &&
-                form.appNameInput.isNotBlank() &&
-                form.passwordInput.isNotBlank()
+                form is RecordFormUiState.Login &&
+                form.draftFields.appNameInput.isNotBlank() &&
+                form.draftFields.passwordInput.isNotBlank()
         )
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
         initialValue = VaultFormUiState()
     )
-
-    init {
-        //todo по идее нигде не используется
-        viewModelScope.launch {
-            getCategories()
-                .stateIn(viewModelScope)
-        }
-    }
 
     fun start(formType: RecordFormType) {
         when (formType) {
@@ -82,9 +85,17 @@ class VaultFormViewModel(
                         val field = inputField as? VaultFormInputs.BankCard ?: return@update state
                         when (field) {
                             VaultFormInputs.BankCard.TITLE -> state.copy(cardTitle = fieldValue)
-                            VaultFormInputs.BankCard.NUMBER -> state.copy(cardNumber = fieldValue)
+                            VaultFormInputs.BankCard.NUMBER -> state.copy(cardNumber =
+                                fieldValue
+                                    .filter(Char::isDigit)
+                                    .take(16)
+                            )
                             VaultFormInputs.BankCard.EXPIRY -> state.copy(cardExpiry = fieldValue)
-                            VaultFormInputs.BankCard.CVV -> state.copy(cardCvv = fieldValue)
+                            VaultFormInputs.BankCard.CVV -> state.copy(cardCvv =
+                                fieldValue
+                                    .filter(Char::isDigit)
+                                    .take(4)
+                            )
                             VaultFormInputs.BankCard.HOLDER -> state.copy(cardHolder = fieldValue)
                         }
                     }
@@ -105,8 +116,8 @@ class VaultFormViewModel(
             currentFormState?.let { state ->
                 when (state) {
                     is RecordForm.Login -> state.copy(selectedCategoryId = categoryId)
-                    is RecordForm.BankCard -> TODO()
-                    is RecordForm.SecureNote -> TODO()
+                    is RecordForm.BankCard -> state.copy(selectedCategoryId = categoryId )
+                    is RecordForm.SecureNote -> state.copy(selectedCategoryId = categoryId)
                 }
             }
         }

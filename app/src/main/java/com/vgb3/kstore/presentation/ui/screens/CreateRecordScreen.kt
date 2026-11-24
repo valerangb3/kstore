@@ -10,17 +10,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.vgb3.kstore.R
 import com.vgb3.kstore.presentation.VaultFormViewModel
 import com.vgb3.kstore.presentation.ui.model.RecordFormType
 import com.vgb3.kstore.presentation.ui.widgets.RecordFormTopBar
 import com.vgb3.kstore.presentation.ui.widgets.bottomBorder
-import com.vgb3.kstore.ui.theme.KStoreTheme
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.vgb3.kstore.presentation.model.RecordForm
+import com.vgb3.kstore.presentation.model.RecordFormUiState
 
 @Composable
 fun CreateRecordScreen(
@@ -28,7 +26,6 @@ fun CreateRecordScreen(
     vaultFormViewModel: VaultFormViewModel,
     onClose: () -> Unit,
     onSave: () -> Unit,
-    modifier: Modifier = Modifier
 ) {
     val titleRes = when (type) {
         RecordFormType.LOGIN -> R.string.add_new_password
@@ -61,32 +58,46 @@ fun CreateRecordScreen(
                 end = 16.dp,
             )
         when (type) {
-            RecordFormType.LOGIN -> CreatePasswordScreen(
-                modifier = contentModifier,
-                createRecordFormViewModel = vaultFormViewModel,
-            )
-            RecordFormType.BANK_CARD -> CreateBankCardScreen(
-                modifier = contentModifier,
-                createRecordFormViewModel = vaultFormViewModel
-            )
-            RecordFormType.SECURE_NOTE -> CreateSecureNoteScreen(
-                modifier = contentModifier,
-                secureNoteState = formState.form as RecordForm.SecureNote,
-                onInput = { formInput, formValue ->
-                    //vaultFormViewModel.onInput()
+            RecordFormType.LOGIN -> {
+                val loginFormState = formState.form as? RecordFormUiState.Login
+                //todo: если loginFormState - null, то нужно отобразить экран с ошибкой, экран ошибок нарисуем в другой задаче
+                loginFormState?.let { state ->
+                    CreatePasswordScreen(
+                        modifier = contentModifier,
+                        loginFormState = state.draftFields,
+                        onInput = vaultFormViewModel::onInput,
+                        onSelect = vaultFormViewModel::onCategorySelected,
+                        categories = formState.categories
+                    )
                 }
-            )
+            }
+            RecordFormType.BANK_CARD -> {
+                val bankCardFormState = formState.form as? RecordFormUiState.BankCard
+                //todo: если bankCardFormState - null, то нужно отобразить экран с ошибкой, экран ошибок нарисуем в другой задаче
+                bankCardFormState?.let { state ->
+                    CreateBankCardScreen(
+                        modifier = contentModifier,
+                        bankCardState = state.draftFields,
+                        onInput = vaultFormViewModel::onInput,
+                        onSelect = vaultFormViewModel::onCategorySelected,
+                        categories = formState.categories,
+                        bankCardPreview = state.preview
+                    )
+                }
+            }
+            RecordFormType.SECURE_NOTE -> {
+                val secureFormState = formState.form as? RecordFormUiState.SecureNote
+                //todo: если secureFormState - null, то нужно отобразить экран с ошибкой, экран ошибок нарисуем в другой задаче
+                secureFormState?.let { state ->
+                    CreateSecureNoteScreen(
+                        modifier = contentModifier,
+                        secureNoteState = state.draftFields,
+                        onInput = vaultFormViewModel::onInput,
+                        onSelect = vaultFormViewModel::onCategorySelected,
+                        categories = formState.categories
+                    )
+                }
+            }
         }
-    }
-}
-
-@Preview
-@Composable
-fun CreateRecordScreenPreview() {
-    KStoreTheme {
-        /*CreateRecordScreen(
-            modifier = Modifier,
-            vaultFormViewModel = VaultViewModel()
-        )*/
     }
 }

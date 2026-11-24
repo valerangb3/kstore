@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.sp
 import com.vgb3.kstore.R
 import com.vgb3.kstore.presentation.model.RecordForm
 import com.vgb3.kstore.presentation.model.VaultFormInputs
+import com.vgb3.kstore.presentation.ui.model.DropdownOption
 import com.vgb3.kstore.presentation.ui.widgets.DropdownField
 import com.vgb3.kstore.presentation.ui.widgets.Form
 import com.vgb3.kstore.presentation.ui.widgets.GroupContent
@@ -44,9 +45,10 @@ import com.vgb3.kstore.ui.theme.KStoreTheme
 @Composable
 fun CreateSecureNoteScreen(
     secureNoteState: RecordForm.SecureNote,
-    modifier: Modifier = Modifier,
+    categories: List<DropdownOption>,
     onInput: (VaultFormInputs, String) -> Unit,
-    onSelect: (Long) -> Unit = {}
+    onSelect: (Long) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Form(
         modifier = modifier,
@@ -104,8 +106,8 @@ fun CreateSecureNoteScreen(
                                 fontSize = 16.sp
                             )
                         },
-                        options = emptyList(),
-                        selected = 0,
+                        options = categories,
+                        selected = secureNoteState.selectedCategoryId ?: 0,
                         onSelect = onSelect
                     )
                     InputField(
@@ -161,12 +163,14 @@ fun CreateSecureNoteScreen(
 )
 @Composable
 private fun CreateSecureNoteScreenPreview() {
-    var secureFormState by remember { mutableStateOf(
-        RecordForm.SecureNote(
-            secureTitle = "Домашний wifi",
-            secureText = "Некоторый текст"
+    var secureFormState by remember {
+        mutableStateOf(
+            RecordForm.SecureNote(
+                secureTitle = "Домашний wifi",
+                secureText = "Некоторый текст"
+            )
         )
-    ) }
+    }
     KStoreTheme {
         Scaffold(
             modifier = Modifier
@@ -194,6 +198,8 @@ private fun CreateSecureNoteScreenPreview() {
                         VaultFormInputs.SecureNote.TITLE -> secureFormState.copy(secureTitle = formValue)
                     }
                 },
+                onSelect = {},
+                categories = emptyList(),
                 modifier = Modifier.padding(
                     top = topPadding,
                     start = 16.dp,

@@ -10,9 +10,12 @@ import com.vgb3.kstore.domain.interactor.VaultInteractor
 import com.vgb3.kstore.domain.model.input.CreateVaultItem
 import com.vgb3.kstore.domain.usecase.GetCategoriesUseCase
 import com.vgb3.kstore.presentation.map.toUi
-import com.vgb3.kstore.presentation.model.VaultFormInput
+import com.vgb3.kstore.presentation.model.RecordForm
+import com.vgb3.kstore.presentation.model.RecordFormUiState
 import com.vgb3.kstore.presentation.model.VaultFormInputs
 import com.vgb3.kstore.presentation.model.VaultFormUiState
+import com.vgb3.kstore.presentation.model.toPreview
+import com.vgb3.kstore.presentation.ui.model.RecordFormType
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -22,22 +25,34 @@ import kotlinx.coroutines.launch
 
 class VaultFormViewModel(
     private val vaultInteractor: VaultInteractor,
-    private val getCategories: GetCategoriesUseCase
+    getCategories: GetCategoriesUseCase
 ) : ViewModel() {
 
-    private val input = MutableStateFlow(VaultFormInput())
+    private val formState = MutableStateFlow<RecordForm?>(null)
     private val isSaving = MutableStateFlow(false)
 
     val uiState = combine(
-        input,
+        formState,
         getCategories(),
         isSaving
-    ) { input, categories, saving ->
+    ) { draftFormFields, categories, saving ->
+        val form = when (draftFormFields) {
+            is RecordForm.Login -> RecordFormUiState.Login(draftFormFields)
+            is RecordForm.BankCard -> RecordFormUiState.BankCard(
+                draftFields = draftFormFields,
+                preview = draftFormFields.toPreview(),
+            )
+            is RecordForm.SecureNote -> RecordFormUiState.SecureNote(draftFormFields)
+            null -> null
+        }
         VaultFormUiState(
-            input = input,
+            form = form,
             categories = categories.map { it.toUi() },
             isSaving = saving,
-            canSave = input.appNameInput.isNotBlank() && input.passwordInput.isNotBlank() && !saving
+            canSave = !saving &&
+                form is RecordFormUiState.Login &&
+                form.draftFields.appNameInput.isNotBlank() &&
+                form.draftFields.passwordInput.isNotBlank()
         )
     }.stateIn(
         scope = viewModelScope,
@@ -45,43 +60,93 @@ class VaultFormViewModel(
         initialValue = VaultFormUiState()
     )
 
-    init {
-        //todo по идее нигде не используется
-        viewModelScope.launch {
-            getCategories()
-                .stateIn(viewModelScope)
+    fun start(formType: RecordFormType) {
+        when (formType) {
+            RecordFormType.LOGIN -> formState.value = RecordForm.Login()
+            RecordFormType.BANK_CARD -> formState.value = RecordForm.BankCard()
+            RecordFormType.SECURE_NOTE -> formState.value = RecordForm.SecureNote()
         }
     }
 
     fun onInput(inputField: VaultFormInputs, fieldValue: String) {
-        input.update { currentState ->
-            when (inputField) {
-                VaultFormInputs.APP_NAME_INPUT -> currentState.copy(appNameInput = fieldValue)
-                VaultFormInputs.URL_INPUT -> currentState.copy(urlInput = fieldValue)
-                VaultFormInputs.LOGIN_INPUT -> currentState.copy(loginInput = fieldValue)
-                VaultFormInputs.PASSWORD_INPUT -> currentState.copy(passwordInput = fieldValue)
+        formState.update { currentFormState ->
+            currentFormState?.let { state ->
+                when (state) {
+                    is RecordForm.Login -> {
+                        val field = inputField as? VaultFormInputs.Login ?: return@update state
+                        when (field) {
+                            VaultFormInputs.Login.APP_NAME_INPUT -> state.copy(appNameInput = fieldValue)
+                            VaultFormInputs.Login.URL_INPUT -> state.copy(urlInput = fieldValue)
+                            VaultFormInputs.Login.LOGIN_INPUT -> state.copy(loginInput = fieldValue)
+                            VaultFormInputs.Login.PASSWORD_INPUT -> state.copy(passwordInput = fieldValue)
+                        }
+                    }
+                    is RecordForm.BankCard -> {
+                        val field = inputField as? VaultFormInputs.BankCard ?: return@update state
+                        when (field) {
+                            VaultFormInputs.BankCard.TITLE -> state.copy(cardTitle = fieldValue)
+                            VaultFormInputs.BankCard.NUMBER -> state.copy(cardNumber =
+                                fieldValue
+                                    .filter(Char::isDigit)
+                                    .take(16)
+                            )
+                            VaultFormInputs.BankCard.EXPIRY -> state.copy(cardExpiry = fieldValue)
+                            VaultFormInputs.BankCard.CVV -> state.copy(cardCvv =
+                                fieldValue
+                                    .filter(Char::isDigit)
+                                    .take(4)
+                            )
+                            VaultFormInputs.BankCard.HOLDER -> state.copy(cardHolder = fieldValue)
+                        }
+                    }
+                    is RecordForm.SecureNote -> {
+                        val field = inputField as? VaultFormInputs.SecureNote ?: return@update state
+                        when (field) {
+                            VaultFormInputs.SecureNote.TITLE -> state.copy(secureTitle = fieldValue)
+                            VaultFormInputs.SecureNote.TEXT -> state.copy(secureText = fieldValue)
+                        }
+                    }
+                }
             }
         }
     }
 
     fun onCategorySelected(categoryId: Long?) {
-        input.update { it.copy(selectedCategoryId = categoryId) }
+        formState.update { currentFormState ->
+            currentFormState?.let { state ->
+                when (state) {
+                    is RecordForm.Login -> state.copy(selectedCategoryId = categoryId)
+                    is RecordForm.BankCard -> state.copy(selectedCategoryId = categoryId )
+                    is RecordForm.SecureNote -> state.copy(selectedCategoryId = categoryId)
+                }
+            }
+        }
     }
 
     fun createVault() {
-        val curState = input.value
+        val curState = formState.value
         viewModelScope.launch {
             isSaving.value = true
-            vaultInteractor.createVaultItem(
-                CreateVaultItem.Login(
-                    title = curState.appNameInput,
-                    url = curState.urlInput,
-                    login = curState.loginInput,
-                    password = curState.passwordInput,
-                    categoryId = curState.selectedCategoryId
-                )
-            )
-            input.value = VaultFormInput()
+            curState?.let { state ->
+                when (state) {
+                    is RecordForm.Login -> {
+                        vaultInteractor.createVaultItem(
+                            CreateVaultItem.Login(
+                                title = state.appNameInput,
+                                url = state.urlInput,
+                                login = state.loginInput,
+                                password = state.passwordInput,
+                                categoryId = state.selectedCategoryId
+                            )
+                        )
+                    }
+                    is RecordForm.BankCard -> TODO()
+                    is RecordForm.SecureNote -> TODO()
+                }
+            }
+            formState.update { current ->
+                if (current === curState) null else current
+            }
             isSaving.value = false
         }
     }
@@ -89,8 +154,10 @@ class VaultFormViewModel(
     companion object {
         val Factory = viewModelFactory {
             initializer {
-                val vaultInteractor = (this[APPLICATION_KEY] as KStoreApplication).diContainer.provideVaultInteractor()
-                val getCategories = (this[APPLICATION_KEY] as KStoreApplication).diContainer.provideGetCategoriesUseCase()
+                val vaultInteractor =
+                    (this[APPLICATION_KEY] as KStoreApplication).diContainer.provideVaultInteractor()
+                val getCategories =
+                    (this[APPLICATION_KEY] as KStoreApplication).diContainer.provideGetCategoriesUseCase()
                 VaultFormViewModel(vaultInteractor, getCategories)
             }
         }

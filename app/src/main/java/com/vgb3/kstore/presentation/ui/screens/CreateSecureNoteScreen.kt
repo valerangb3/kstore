@@ -14,6 +14,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -25,6 +29,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.vgb3.kstore.R
+import com.vgb3.kstore.presentation.model.RecordForm
+import com.vgb3.kstore.presentation.model.VaultFormInputs
+import com.vgb3.kstore.presentation.ui.model.DropdownOption
 import com.vgb3.kstore.presentation.ui.widgets.DropdownField
 import com.vgb3.kstore.presentation.ui.widgets.Form
 import com.vgb3.kstore.presentation.ui.widgets.GroupContent
@@ -37,7 +44,11 @@ import com.vgb3.kstore.ui.theme.KStoreTheme
 
 @Composable
 fun CreateSecureNoteScreen(
-    modifier: Modifier = Modifier
+    secureNoteState: RecordForm.SecureNote,
+    categories: List<DropdownOption>,
+    onInput: (VaultFormInputs, String) -> Unit,
+    onSelect: (Long) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Form(
         modifier = modifier,
@@ -51,8 +62,8 @@ fun CreateSecureNoteScreen(
                     verticalArrangement = Arrangement.spacedBy(24.dp)
                 ) {
                     InputField(
-                        value = "",
-                        onValueChange = { /*todo onInput(VaultFormInputs.APP_NAME_INPUT, it)*/ },
+                        value = secureNoteState.secureTitle,
+                        onValueChange = { onInput(VaultFormInputs.SecureNote.TITLE, it) },
                         titleField = {
                             Text(
                                 text = stringResource(R.string.secure_name_title),
@@ -95,16 +106,16 @@ fun CreateSecureNoteScreen(
                                 fontSize = 16.sp
                             )
                         },
-                        options = emptyList(),
-                        selected = 0,
-                        onSelect = {}
+                        options = categories,
+                        selected = secureNoteState.selectedCategoryId ?: 0,
+                        onSelect = onSelect
                     )
                     InputField(
-                        value = "",
+                        value = secureNoteState.secureText,
                         minLines = 6,
                         maxLines = 12,
                         singleLine = false,
-                        onValueChange = {  },
+                        onValueChange = { onInput(VaultFormInputs.SecureNote.TEXT, it) },
                         titleField = {
                             Text(
                                 text = stringResource(R.string.secure_note_title),
@@ -127,9 +138,12 @@ fun CreateSecureNoteScreen(
                     )
                 }
             }
-        }
+        },
+        onInput = onInput,
+        onSelect = onSelect
     )
 }
+
 
 @Preview(
     name = "390 dp — светлая",
@@ -149,6 +163,14 @@ fun CreateSecureNoteScreen(
 )
 @Composable
 private fun CreateSecureNoteScreenPreview() {
+    var secureFormState by remember {
+        mutableStateOf(
+            RecordForm.SecureNote(
+                secureTitle = "Домашний wifi",
+                secureText = "Некоторый текст"
+            )
+        )
+    }
     KStoreTheme {
         Scaffold(
             modifier = Modifier
@@ -168,6 +190,16 @@ private fun CreateSecureNoteScreenPreview() {
             val topPadding = innerPadding.calculateTopPadding() + 16.dp
             val bottomPadding = innerPadding.calculateBottomPadding()
             CreateSecureNoteScreen(
+                secureNoteState = secureFormState,
+                onInput = { formInput, formValue ->
+                    val fieldsState = formInput as VaultFormInputs.SecureNote
+                    secureFormState = when (fieldsState) {
+                        VaultFormInputs.SecureNote.TEXT -> secureFormState.copy(secureText = formValue)
+                        VaultFormInputs.SecureNote.TITLE -> secureFormState.copy(secureTitle = formValue)
+                    }
+                },
+                onSelect = {},
+                categories = emptyList(),
                 modifier = Modifier.padding(
                     top = topPadding,
                     start = 16.dp,

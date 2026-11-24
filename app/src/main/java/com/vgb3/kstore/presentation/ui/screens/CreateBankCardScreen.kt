@@ -36,6 +36,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.vgb3.kstore.R
+import com.vgb3.kstore.presentation.model.BankCardPreviewUiState
+import com.vgb3.kstore.presentation.model.RecordForm
+import com.vgb3.kstore.presentation.model.VaultFormInputs
+import com.vgb3.kstore.presentation.model.toPreview
+import com.vgb3.kstore.presentation.ui.model.DropdownOption
 import com.vgb3.kstore.presentation.ui.widgets.BankCard
 import com.vgb3.kstore.presentation.ui.widgets.DropdownField
 import com.vgb3.kstore.presentation.ui.widgets.Form
@@ -46,10 +51,16 @@ import com.vgb3.kstore.presentation.ui.widgets.RecordTypePlate
 import com.vgb3.kstore.presentation.ui.widgets.bottomBorder
 import com.vgb3.kstore.presentation.ui.widgets.styleFor
 import com.vgb3.kstore.ui.theme.KStoreTheme
+import kotlin.String
 
 @Composable
 fun CreateBankCardScreen(
-    modifier: Modifier = Modifier
+    bankCardState: RecordForm.BankCard,
+    categories: List<DropdownOption>,
+    bankCardPreview: BankCardPreviewUiState,
+    onInput: (VaultFormInputs, String) -> Unit,
+    onSelect: (Long) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     var isCodeVisible by remember { mutableStateOf(false) }
     Form(
@@ -58,7 +69,11 @@ fun CreateBankCardScreen(
             RecordTypePlate(
                 style = styleFor("bank_card")
             )
-            BankCard()
+            BankCard(
+                holderName = bankCardPreview.holderName,
+                lastFour = bankCardPreview.lastFour,
+                expiry = bankCardPreview.expiry
+            )
 
             GroupContent {
                 Column(
@@ -66,8 +81,8 @@ fun CreateBankCardScreen(
                     verticalArrangement = Arrangement.spacedBy(24.dp)
                 ) {
                     InputField(
-                        value = "",
-                        onValueChange = { /*todo onInput(VaultFormInputs.APP_NAME_INPUT, it)*/ },
+                        value = bankCardState.cardTitle,
+                        onValueChange = { onInput(VaultFormInputs.BankCard.TITLE, it) },
                         titleField = {
                             Text(
                                 text = stringResource(R.string.card_name_title),
@@ -92,8 +107,8 @@ fun CreateBankCardScreen(
                         }
                     )
                     InputField(
-                        value = "",
-                        onValueChange = {  },
+                        value = bankCardState.cardNumber,
+                        onValueChange = { onInput(VaultFormInputs.BankCard.NUMBER, it) },
                         titleField = {
                             Text(
                                 text = stringResource(R.string.card_number_title),
@@ -128,8 +143,8 @@ fun CreateBankCardScreen(
                     ) {
                         InputField(
                             modifier = Modifier.weight(1f),
-                            value = "",
-                            onValueChange = {  },
+                            value = bankCardState.cardExpiry,
+                            onValueChange = { onInput(VaultFormInputs.BankCard.EXPIRY, it) },
                             titleField = {
                                 Text(
                                     text = stringResource(R.string.card_expiry_title),
@@ -165,8 +180,8 @@ fun CreateBankCardScreen(
                             } else {
                                 PasswordVisualTransformation()
                             },
-                            value = "",
-                            onValueChange = {  },
+                            value = bankCardState.cardCvv,
+                            onValueChange = { onInput(VaultFormInputs.BankCard.CVV, it) },
                             titleField = {
                                 Text(
                                     text = stringResource(R.string.card_cvv_title),
@@ -208,8 +223,8 @@ fun CreateBankCardScreen(
                     }
 
                     InputField(
-                        value = "",
-                        onValueChange = {  },
+                        value = bankCardState.cardHolder,
+                        onValueChange = { onInput(VaultFormInputs.BankCard.HOLDER, it) },
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Text,
                             imeAction = ImeAction.Done
@@ -257,19 +272,15 @@ fun CreateBankCardScreen(
                                 fontSize = 16.sp
                             )
                         },
-                        options = emptyList(),
-                        selected = 0,
-                        onSelect = {}
+                        options = categories,
+                        selected = bankCardState.selectedCategoryId ?: 0,
+                        onSelect = onSelect
                     )
                 }
             }
         },
-        onInput = { inputField, text ->
-
-        },
-        onSelect = { optionId ->
-
-        }
+        onInput = onInput,
+        onSelect = onSelect
     )
 }
 
@@ -291,6 +302,17 @@ fun CreateBankCardScreen(
 )
 @Composable
 fun CreateBankCardScreenPreview() {
+    var bankCardFormState by remember {
+        mutableStateOf(
+            RecordForm.BankCard(
+                cardTitle = "",
+                cardNumber = "",
+                cardExpiry = "",
+                cardCvv = "",
+                cardHolder = "",
+            )
+        )
+    }
     KStoreTheme {
         Scaffold(
             modifier = Modifier
@@ -310,12 +332,26 @@ fun CreateBankCardScreenPreview() {
             val topPadding = innerPadding.calculateTopPadding() + 16.dp
             val bottomPadding = innerPadding.calculateBottomPadding()
             CreateBankCardScreen(
+                bankCardState = bankCardFormState,
+                bankCardPreview = bankCardFormState.toPreview(),
                 modifier = Modifier.padding(
                     top = topPadding,
                     start = 16.dp,
                     bottom = bottomPadding,
                     end = 16.dp,
-                )
+                ),
+                onInput = { formInput, formValue ->
+                    val fieldsState = formInput as VaultFormInputs.BankCard
+                    bankCardFormState = when (fieldsState) {
+                        VaultFormInputs.BankCard.TITLE -> bankCardFormState.copy(cardTitle = formValue)
+                        VaultFormInputs.BankCard.NUMBER -> bankCardFormState.copy(cardNumber = formValue)
+                        VaultFormInputs.BankCard.HOLDER -> bankCardFormState.copy(cardHolder = formValue)
+                        VaultFormInputs.BankCard.EXPIRY -> bankCardFormState.copy(cardExpiry = formValue)
+                        VaultFormInputs.BankCard.CVV -> bankCardFormState.copy(cardCvv = formValue)
+                    }
+                },
+                onSelect = {},
+                categories = emptyList(),
             )
         }
     }

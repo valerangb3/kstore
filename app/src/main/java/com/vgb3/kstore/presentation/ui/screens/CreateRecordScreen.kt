@@ -40,8 +40,7 @@ fun CreateRecordScreen(
         topBar = {
             RecordFormTopBar(
                 modifier = Modifier.bottomBorder(1.dp, MaterialTheme.colorScheme.outline),
-                //todo: ограничил сохранения до этапа реализации сохранения записей
-                canSave = type == RecordFormType.LOGIN && formState.canSave,
+                canSave = formState.canSave,
                 imageVector = Icons.Default.Close,
                 title = stringResource(titleRes),
                 onBack = onClose,
@@ -62,7 +61,7 @@ fun CreateRecordScreen(
                 val loginFormState = formState.form as? RecordFormUiState.Login
                 //todo: если loginFormState - null, то нужно отобразить экран с ошибкой, экран ошибок нарисуем в другой задаче
                 loginFormState?.let { state ->
-                    CreatePasswordScreen(
+                    LoginForm(
                         modifier = contentModifier,
                         loginFormState = state.draftFields,
                         onInput = vaultFormViewModel::onInput,

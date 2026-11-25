@@ -30,8 +30,7 @@ import com.vgb3.kstore.ui.theme.KStoreTheme
 
 @Composable
 fun BankCardExpiry(
-    month: String,
-    year: String,
+    expiry: String,
     modifier: Modifier = Modifier
 ) {
     val expiryStyle = MaterialTheme.typography.bodyLarge.copy(
@@ -43,13 +42,25 @@ fun BankCardExpiry(
     )
     val monthPlaceholder = stringResource(R.string.bank_card_month_placeholder)
     val yearPlaceholder = stringResource(R.string.bank_card_year_placeholder)
-    val monthSymbols = ("0123456789" + monthPlaceholder)
+    val monthSymbols = ("0123456789$monthPlaceholder")
         .uppercase()
         .toSet()
 
-    val yearSymbols = ("0123456789" + yearPlaceholder)
+    val yearSymbols = ("0123456789$yearPlaceholder")
         .uppercase()
         .toSet()
+
+    val parts = expiry.split("/", limit = 2)
+    val month = parts
+        .getOrNull(0)
+        .orEmpty()
+        .take(2)
+        .padEnd(2, monthPlaceholder.first())
+    val year = parts
+        .getOrNull(1)
+        .orEmpty()
+        .take(2)
+        .padEnd(2, yearPlaceholder.first())
 
     val textMeasurer = rememberTextMeasurer()
 
@@ -132,10 +143,7 @@ fun BankCardExpiryPreview() {
             var monthHolder by remember { mutableStateOf("мм") }
             var yearHolder by remember { mutableStateOf("гг") }
             Column(modifier = Modifier.padding(top = 36.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                BankCardExpiry(
-                    monthHolder,
-                    yearHolder
-                )
+                BankCardExpiry(expiry = "$monthHolder/$yearHolder")
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     mapOf(
                         "Пусто" to listOf("мм", "гг"),

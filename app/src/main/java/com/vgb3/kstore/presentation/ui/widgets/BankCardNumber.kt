@@ -31,6 +31,7 @@ fun BankCardNumber(
     lastFour: String,
     modifier: Modifier = Modifier
 ) {
+    val displayedLastFour = lastFour.take(4).padEnd(4, '•')
     val numberStyle = MaterialTheme.typography.bodyLarge.copy(
         fontSize = 20.sp,
         lineHeight = 24.sp,
@@ -61,7 +62,7 @@ fun BankCardNumber(
         )
 
         Row {
-            lastFour.forEach { symbol ->
+            displayedLastFour.forEach { symbol ->
                 AnimatedContent(
                     targetState = symbol,
                     label = "CardDigit",

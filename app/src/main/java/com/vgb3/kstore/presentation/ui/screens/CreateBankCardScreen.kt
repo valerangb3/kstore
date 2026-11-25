@@ -1,10 +1,22 @@
 package com.vgb3.kstore.presentation.ui.screens
 
 import android.content.res.Configuration
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -23,6 +35,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -42,6 +55,7 @@ import com.vgb3.kstore.presentation.model.VaultFormInputs
 import com.vgb3.kstore.presentation.model.toPreview
 import com.vgb3.kstore.presentation.ui.model.DropdownOption
 import com.vgb3.kstore.presentation.ui.widgets.BankCard
+import com.vgb3.kstore.presentation.ui.widgets.BankCardCompact
 import com.vgb3.kstore.presentation.ui.widgets.DropdownField
 import com.vgb3.kstore.presentation.ui.widgets.Form
 import com.vgb3.kstore.presentation.ui.widgets.GroupContent
@@ -53,6 +67,7 @@ import com.vgb3.kstore.presentation.ui.widgets.styleFor
 import com.vgb3.kstore.ui.theme.KStoreTheme
 import kotlin.String
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun CreateBankCardScreen(
     bankCardState: RecordForm.BankCard,
@@ -63,225 +78,263 @@ fun CreateBankCardScreen(
     modifier: Modifier = Modifier,
 ) {
     var isCodeVisible by remember { mutableStateOf(false) }
-    Form(
-        modifier = modifier,
-        formContent = { onInput, onSelect ->
-            RecordTypePlate(
-                style = styleFor("bank_card")
-            )
-            BankCard(
-                holderName = bankCardPreview.holderName,
-                lastFour = bankCardPreview.lastFour,
-                expiry = bankCardPreview.expiry
-            )
-
-            GroupContent {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(24.dp)
-                ) {
-                    InputField(
-                        value = bankCardState.cardTitle,
-                        onValueChange = { onInput(VaultFormInputs.BankCard.TITLE, it) },
-                        titleField = {
-                            Text(
-                                text = stringResource(R.string.card_name_title),
-                                fontWeight = FontWeight.W600,
-                                fontSize = 14.sp,
-                            )
-                        },
-                        leadingIcon = {
-                            Icon(
-                                //modifier = Modifier.size(22.dp),
-                                painter = painterResource(R.drawable.text_icon),
-                                contentDescription = "",
-                            )
-                        },
-                        placeholder = {
-                            Text(
-                                text = stringResource(R.string.card_name_placeholder),
-                                fontSize = 16.sp,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                        }
+    val isImeVisible = WindowInsets.isImeVisible
+    val cardEnter = slideInHorizontally(animationSpec = tween(180)) { -it }
+    val cardExit = slideOutHorizontally(animationSpec = tween(180)) { it }
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .imePadding()
+    ) {
+        Form(
+            modifier = Modifier,
+            formContent = { onInput, onSelect ->
+                Column {
+                    RecordTypePlate(
+                        style = styleFor("bank_card")
                     )
-                    InputField(
-                        value = bankCardState.cardNumber,
-                        onValueChange = { onInput(VaultFormInputs.BankCard.NUMBER, it) },
-                        titleField = {
-                            Text(
-                                text = stringResource(R.string.card_number_title),
-                                fontWeight = FontWeight.W600,
-                                fontSize = 14.sp,
-                            )
-                        },
-                        leadingIcon = {
-                            Icon(
-                                modifier = Modifier.size(24.dp),
-                                painter = painterResource(R.drawable.card_icon),
-                                contentDescription = "",
-                            )
-                        },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Next
+                    AnimatedVisibility(
+                        visible = !isImeVisible,
+                        enter = cardEnter + expandVertically(
+                            animationSpec = tween(180),
+                            expandFrom = Alignment.Top
                         ),
-                        placeholder = {
-                            Text(
-                                text = stringResource(R.string.card_number_placeholder),
-                                fontSize = 16.sp,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                        }
-                    )
+                        exit = cardExit + shrinkVertically(
+                            animationSpec = tween(180),
+                            shrinkTowards = Alignment.Top
+                        )
+                    ) {
+                        BankCard(
+                            holderName = bankCardPreview.holderName,
+                            lastFour = bankCardPreview.lastFour,
+                            expiry = bankCardPreview.expiry
+                        )
+                    }
+                }
 
-                    Row(
+                GroupContent {
+                    Column(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        verticalArrangement = Arrangement.spacedBy(24.dp)
                     ) {
                         InputField(
-                            modifier = Modifier.weight(1f),
-                            value = bankCardState.cardExpiry,
-                            onValueChange = { onInput(VaultFormInputs.BankCard.EXPIRY, it) },
+                            value = bankCardState.cardTitle,
+                            onValueChange = { onInput(VaultFormInputs.BankCard.TITLE, it) },
                             titleField = {
                                 Text(
-                                    text = stringResource(R.string.card_expiry_title),
+                                    text = stringResource(R.string.card_name_title),
                                     fontWeight = FontWeight.W600,
                                     fontSize = 14.sp,
                                 )
                             },
                             leadingIcon = {
                                 Icon(
-                                    modifier = Modifier.size(24.dp),
-                                    painter = painterResource(R.drawable.card_expiry_icon),
+                                    //modifier = Modifier.size(22.dp),
+                                    painter = painterResource(R.drawable.text_icon),
                                     contentDescription = "",
                                 )
                             },
                             placeholder = {
                                 Text(
-                                    text = stringResource(R.string.card_expiry_placeholder),
-                                    fontSize = 16.sp,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                            },
-                            keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Number,
-                                imeAction = ImeAction.Next
-                            ),
-                        )
-
-                        InputField(
-                            modifier = Modifier.weight(1f),
-                            visualTransformation = if (isCodeVisible) {
-                                VisualTransformation.None
-                            } else {
-                                PasswordVisualTransformation()
-                            },
-                            value = bankCardState.cardCvv,
-                            onValueChange = { onInput(VaultFormInputs.BankCard.CVV, it) },
-                            titleField = {
-                                Text(
-                                    text = stringResource(R.string.card_cvv_title),
-                                    fontWeight = FontWeight.W600,
-                                    fontSize = 14.sp,
-                                )
-                            },
-                            leadingIcon = {
-                                Icon(
-                                    modifier = Modifier.size(24.dp),
-                                    painter = painterResource(R.drawable.card_lock_icon),
-                                    contentDescription = "",
-                                )
-                            },
-                            keyboardOptions = KeyboardOptions(
-                                imeAction = ImeAction.Next,
-                                keyboardType = KeyboardType.NumberPassword
-                            ),
-                            trailingIcon = {
-                                IconButton(onClick = { isCodeVisible = !isCodeVisible }) {
-                                    Icon(
-                                        imageVector = if (isCodeVisible) Icons.Outlined.Visibility else Icons.Outlined.VisibilityOff,
-                                        contentDescription = stringResource(
-                                            if (isCodeVisible) R.string.hide_cvv
-                                            else R.string.show_cvv
-                                        ),
-                                    )
-                                }
-                            },
-                            placeholder = {
-                                Text(
-                                    text = stringResource(R.string.card_cvv_placeholder),
+                                    text = stringResource(R.string.card_name_placeholder),
                                     fontSize = 16.sp,
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis
                                 )
                             }
                         )
-                    }
+                        InputField(
+                            value = bankCardState.cardNumber,
+                            onValueChange = { onInput(VaultFormInputs.BankCard.NUMBER, it) },
+                            titleField = {
+                                Text(
+                                    text = stringResource(R.string.card_number_title),
+                                    fontWeight = FontWeight.W600,
+                                    fontSize = 14.sp,
+                                )
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    modifier = Modifier.size(24.dp),
+                                    painter = painterResource(R.drawable.card_icon),
+                                    contentDescription = "",
+                                )
+                            },
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Number,
+                                imeAction = ImeAction.Next
+                            ),
+                            placeholder = {
+                                Text(
+                                    text = stringResource(R.string.card_number_placeholder),
+                                    fontSize = 16.sp,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
+                        )
 
-                    InputField(
-                        value = bankCardState.cardHolder,
-                        onValueChange = { onInput(VaultFormInputs.BankCard.HOLDER, it) },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Done
-                        ),
-                        titleField = {
-                            Text(
-                                text = stringResource(R.string.card_holder_title),
-                                fontWeight = FontWeight.W600,
-                                fontSize = 14.sp,
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            InputField(
+                                modifier = Modifier.weight(1f),
+                                value = bankCardState.cardExpiry,
+                                onValueChange = { onInput(VaultFormInputs.BankCard.EXPIRY, it) },
+                                titleField = {
+                                    Text(
+                                        text = stringResource(R.string.card_expiry_title),
+                                        fontWeight = FontWeight.W600,
+                                        fontSize = 14.sp,
+                                    )
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        modifier = Modifier.size(24.dp),
+                                        painter = painterResource(R.drawable.card_expiry_icon),
+                                        contentDescription = "",
+                                    )
+                                },
+                                placeholder = {
+                                    Text(
+                                        text = stringResource(R.string.card_expiry_placeholder),
+                                        fontSize = 16.sp,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                },
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Number,
+                                    imeAction = ImeAction.Next
+                                ),
                             )
-                        },
-                        leadingIcon = {
-                            Icon(
-                                painter = painterResource(R.drawable.user_icon),
-                                contentDescription = "",
-                            )
-                        },
-                        placeholder = {
-                            Text(
-                                text = stringResource(R.string.card_holder_placeholder),
-                                fontSize = 16.sp,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
+
+                            InputField(
+                                modifier = Modifier.weight(1f),
+                                visualTransformation = if (isCodeVisible) {
+                                    VisualTransformation.None
+                                } else {
+                                    PasswordVisualTransformation()
+                                },
+                                value = bankCardState.cardCvv,
+                                onValueChange = { onInput(VaultFormInputs.BankCard.CVV, it) },
+                                titleField = {
+                                    Text(
+                                        text = stringResource(R.string.card_cvv_title),
+                                        fontWeight = FontWeight.W600,
+                                        fontSize = 14.sp,
+                                    )
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        modifier = Modifier.size(24.dp),
+                                        painter = painterResource(R.drawable.card_lock_icon),
+                                        contentDescription = "",
+                                    )
+                                },
+                                keyboardOptions = KeyboardOptions(
+                                    imeAction = ImeAction.Next,
+                                    keyboardType = KeyboardType.NumberPassword
+                                ),
+                                trailingIcon = {
+                                    IconButton(onClick = { isCodeVisible = !isCodeVisible }) {
+                                        Icon(
+                                            imageVector = if (isCodeVisible) Icons.Outlined.Visibility else Icons.Outlined.VisibilityOff,
+                                            contentDescription = stringResource(
+                                                if (isCodeVisible) R.string.hide_cvv
+                                                else R.string.show_cvv
+                                            ),
+                                        )
+                                    }
+                                },
+                                placeholder = {
+                                    Text(
+                                        text = stringResource(R.string.card_cvv_placeholder),
+                                        fontSize = 16.sp,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                }
                             )
                         }
-                    )
 
-                    DropdownField(
-                        leadingIcon = {
-                            Icon(
-                                painter = painterResource(R.drawable.category_folder),
-                                contentDescription = "",
-                            )
-                        },
-                        titleField = {
-                            Text(
-                                text = stringResource(R.string.app_category),
-                                fontWeight = FontWeight.W600,
-                                fontSize = 14.sp,
-                            )
-                        },
-                        placeholder = {
-                            Text(
-                                text = stringResource(R.string.no_selected),
-                                fontSize = 16.sp
-                            )
-                        },
-                        options = categories,
-                        selected = bankCardState.selectedCategoryId ?: 0,
-                        onSelect = onSelect
-                    )
+                        InputField(
+                            value = bankCardState.cardHolder,
+                            onValueChange = { onInput(VaultFormInputs.BankCard.HOLDER, it) },
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Text,
+                                imeAction = ImeAction.Done
+                            ),
+                            titleField = {
+                                Text(
+                                    text = stringResource(R.string.card_holder_title),
+                                    fontWeight = FontWeight.W600,
+                                    fontSize = 14.sp,
+                                )
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    painter = painterResource(R.drawable.user_icon),
+                                    contentDescription = "",
+                                )
+                            },
+                            placeholder = {
+                                Text(
+                                    text = stringResource(R.string.card_holder_placeholder),
+                                    fontSize = 16.sp,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
+                        )
+
+                        DropdownField(
+                            leadingIcon = {
+                                Icon(
+                                    painter = painterResource(R.drawable.category_folder),
+                                    contentDescription = "",
+                                )
+                            },
+                            titleField = {
+                                Text(
+                                    text = stringResource(R.string.app_category),
+                                    fontWeight = FontWeight.W600,
+                                    fontSize = 14.sp,
+                                )
+                            },
+                            placeholder = {
+                                Text(
+                                    text = stringResource(R.string.no_selected),
+                                    fontSize = 16.sp
+                                )
+                            },
+                            options = categories,
+                            selected = bankCardState.selectedCategoryId ?: 0,
+                            onSelect = onSelect
+                        )
+                    }
                 }
-            }
-        },
-        onInput = onInput,
-        onSelect = onSelect
-    )
+            },
+            onInput = onInput,
+            onSelect = onSelect
+        )
+        AnimatedVisibility(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(start = 8.dp, end = 8.dp, bottom = 8.dp),
+            visible = isImeVisible,
+            enter = cardEnter,
+            exit = cardExit
+        ) {
+            BankCardCompact(
+                lastFour = bankCardPreview.lastFour,
+                holderName = bankCardPreview.holderName,
+                expiry = bankCardPreview.expiry,
+            )
+        }
+    }
+
 }
 
 @Preview(

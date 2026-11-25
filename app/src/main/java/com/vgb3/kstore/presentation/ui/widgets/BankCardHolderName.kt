@@ -16,12 +16,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.vgb3.kstore.R
 import com.vgb3.kstore.presentation.ui.widgets.utils.bankCardTextTransition
 import com.vgb3.kstore.ui.theme.KStoreTheme
 import kotlinx.coroutines.delay
@@ -32,7 +34,8 @@ fun BankCardHolderName(
     holderName: String,
     modifier: Modifier = Modifier
 ) {
-    val incomingName = holderName.uppercase()
+    val displayHolderName = holderName.ifBlank { stringResource(R.string.bank_card_name_placeholder) }
+    val incomingName = displayHolderName.uppercase()
     var debouncedName by remember { mutableStateOf(incomingName) }
     LaunchedEffect(incomingName) {
         delay(120L.milliseconds)

@@ -3,12 +3,9 @@ package com.vgb3.kstore.presentation.ui.screens
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
@@ -35,8 +32,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -76,43 +73,32 @@ fun CreateBankCardScreen(
     onInput: (VaultFormInputs, String) -> Unit,
     onSelect: (Long) -> Unit,
     modifier: Modifier = Modifier,
+    isImeVisible: Boolean = WindowInsets.isImeVisible,
 ) {
     var isCodeVisible by remember { mutableStateOf(false) }
-    val isImeVisible = WindowInsets.isImeVisible
     val cardEnter = slideInHorizontally(animationSpec = tween(180)) { -it }
     val cardExit = slideOutHorizontally(animationSpec = tween(180)) { it }
-    Box(
+
+    Column(
         modifier = modifier
             .fillMaxSize()
             .imePadding()
     ) {
         Form(
-            modifier = Modifier,
+            modifier = Modifier.weight(1f),
             formContent = { onInput, onSelect ->
                 Column {
                     RecordTypePlate(
                         style = styleFor("bank_card")
                     )
-                    AnimatedVisibility(
-                        visible = !isImeVisible,
-                        enter = cardEnter + expandVertically(
-                            animationSpec = tween(180),
-                            expandFrom = Alignment.Top
-                        ),
-                        exit = cardExit + shrinkVertically(
-                            animationSpec = tween(180),
-                            shrinkTowards = Alignment.Top
-                        )
-                    ) {
-                        BankCard(
-                            holderName = bankCardPreview.holderName,
-                            lastFour = bankCardPreview.lastFour,
-                            expiry = bankCardPreview.expiry
-                        )
-                    }
+                    BankCard(
+                        modifier = Modifier.padding(top = 24.dp),
+                        holderName = bankCardPreview.holderName,
+                        lastFour = bankCardPreview.lastFour,
+                        expiry = bankCardPreview.expiry
+                    )
                 }
-
-                GroupContent {
+                GroupContent(modifier = Modifier.padding(bottom = 12.dp)) {
                     Column(
                         modifier = Modifier.fillMaxWidth(),
                         verticalArrangement = Arrangement.spacedBy(24.dp)
@@ -311,7 +297,7 @@ fun CreateBankCardScreen(
                             },
                             options = categories,
                             selected = bankCardState.selectedCategoryId ?: 0,
-                            onSelect = onSelect
+                            onSelect = onSelect,
                         )
                     }
                 }
@@ -320,9 +306,7 @@ fun CreateBankCardScreen(
             onSelect = onSelect
         )
         AnimatedVisibility(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(start = 8.dp, end = 8.dp, bottom = 8.dp),
+            modifier = Modifier.padding(8.dp),
             visible = isImeVisible,
             enter = cardEnter,
             exit = cardExit
@@ -337,24 +321,24 @@ fun CreateBankCardScreen(
 
 }
 
+
 @Preview(
-    name = "390 dp — светлая",
-    widthDp = 390,
-    heightDp = 800,
+    name = "320 × 568 dp — с клавиатурой",
+    widthDp = 320,
+    heightDp = 568,
     showSystemUi = true,
-    fontScale = 1f,
-    uiMode = Configuration.UI_MODE_NIGHT_NO
-)
-@Preview(
-    name = "390 dp — тёмная",
-    widthDp = 390,
-    heightDp = 800,
-    showSystemUi = true,
-    fontScale = 1f,
-    uiMode = Configuration.UI_MODE_NIGHT_YES
 )
 @Composable
-fun CreateBankCardScreenPreview() {
+private fun CreateBankCardScreenSmallPreview() {
+    BankCardScreenPreviewContent(simulateIme = true)
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun BankCardScreenPreviewContent(simulateIme: Boolean = false) {
+    val showSimulatedIme = simulateIme && LocalInspectionMode.current
+    val simulatedImeHeight = if (showSimulatedIme) 220.dp else 0.dp
+
     var bankCardFormState by remember {
         mutableStateOf(
             RecordForm.BankCard(
@@ -385,12 +369,13 @@ fun CreateBankCardScreenPreview() {
             val topPadding = innerPadding.calculateTopPadding() + 16.dp
             val bottomPadding = innerPadding.calculateBottomPadding()
             CreateBankCardScreen(
+                isImeVisible = showSimulatedIme || WindowInsets.isImeVisible,
                 bankCardState = bankCardFormState,
                 bankCardPreview = bankCardFormState.toPreview(),
                 modifier = Modifier.padding(
                     top = topPadding,
                     start = 16.dp,
-                    bottom = bottomPadding,
+                    bottom = bottomPadding + simulatedImeHeight,
                     end = 16.dp,
                 ),
                 onInput = { formInput, formValue ->
@@ -403,9 +388,36 @@ fun CreateBankCardScreenPreview() {
                         VaultFormInputs.BankCard.CVV -> bankCardFormState.copy(cardCvv = formValue)
                     }
                 },
-                onSelect = {},
-                categories = emptyList(),
+                onSelect = { categoryId ->
+                    bankCardFormState = bankCardFormState.copy(selectedCategoryId = categoryId)
+                },
+                categories = listOf(
+                    DropdownOption(1, "PERSONAL", R.string.category_personal),
+                    DropdownOption(2, "WORK", R.string.category_work),
+                    DropdownOption(3, "FINANCE", R.string.category_finance),
+                ),
             )
         }
     }
+}
+
+@Preview(
+    name = "390 dp — светлая",
+    widthDp = 390,
+    heightDp = 800,
+    showSystemUi = true,
+    fontScale = 1f,
+    uiMode = Configuration.UI_MODE_NIGHT_NO
+)
+@Preview(
+    name = "390 dp — тёмная",
+    widthDp = 390,
+    heightDp = 800,
+    showSystemUi = true,
+    fontScale = 1f,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+fun CreateBankCardScreenPreview() {
+    BankCardScreenPreviewContent()
 }

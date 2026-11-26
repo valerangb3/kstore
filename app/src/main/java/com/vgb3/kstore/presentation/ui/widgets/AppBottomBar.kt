@@ -20,24 +20,20 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.vgb3.kstore.navigation.Destinations
 import com.vgb3.kstore.navigation.TopLevelBackStack
 import com.vgb3.kstore.navigation.rememberTopLevelBackStack
+import com.vgb3.kstore.presentation.ui.widgets.utils.floatingShadow
 import com.vgb3.kstore.ui.theme.KStoreTheme
 
 @Composable
@@ -47,7 +43,6 @@ fun AppBottomBar(
     onItemClick: ((itemIdx: Int, destination: Destinations) -> Unit)? = null,
 ) {
     val shape = RoundedCornerShape(99.dp)
-    val shadowColor = Color(0x1A000000)
     val navBarHeight = WindowInsets.navigationBars
         .asPaddingValues()
         .calculateBottomPadding()
@@ -65,24 +60,7 @@ fun AppBottomBar(
                     end = 24.dp
                 )
                 .fillMaxWidth()
-                .dropShadow(
-                    shape = shape,
-                    shadow = Shadow(
-                        radius = 15.dp,
-                        spread = (-3).dp,
-                        color = shadowColor,
-                        offset = DpOffset(x = 0.dp, 10.dp)
-                    )
-                )
-                .dropShadow(
-                    shape = shape,
-                    shadow = Shadow(
-                        radius = 6.dp,
-                        spread = (-4).dp,
-                        color = shadowColor,
-                        offset = DpOffset(x = 0.dp, 4.dp)
-                    )
-                )
+                .floatingShadow(shape)
                 .border(1.dp, MaterialTheme.colorScheme.outline, shape)
                 .clip(shape)
                 .background(color = MaterialTheme.colorScheme.surface)

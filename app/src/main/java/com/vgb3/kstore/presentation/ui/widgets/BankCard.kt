@@ -36,22 +36,6 @@ fun BankCard(
     expiry: String = "",
 ) {
     val shape = RoundedCornerShape(16.dp)
-    val monthPlaceholder = stringResource(R.string.bank_card_month_placeholder)
-    val yearPlaceholder = stringResource(R.string.bank_card_year_placeholder)
-    val displayHolderName = holderName.ifBlank { stringResource(R.string.bank_card_name_placeholder) }
-    val displayedLastFour = lastFour.take(4).padEnd(4, '•')
-    val parts = expiry.split("/", limit = 2)
-    val month = parts
-        .getOrNull(0)
-        .orEmpty()
-        .take(2)
-        .padEnd(2, monthPlaceholder.first())
-
-    val year = parts
-        .getOrNull(1)
-        .orEmpty()
-        .take(2)
-        .padEnd(2, yearPlaceholder.first())
 
     Column(
         modifier = modifier
@@ -91,7 +75,7 @@ fun BankCard(
                 contentDescription = null,
             )
         }
-        BankCardNumber(lastFour = displayedLastFour)
+        BankCardNumber(lastFour = lastFour)
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -109,7 +93,7 @@ fun BankCard(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     text = stringResource(R.string.bank_card_holder_title).uppercase()
                 )
-                BankCardHolderName(displayHolderName)
+                BankCardHolderName(holderName)
             }
             Column(
                 horizontalAlignment = Alignment.End,
@@ -123,7 +107,7 @@ fun BankCard(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     text = stringResource(R.string.bank_card_valid_period_title).uppercase()
                 )
-                BankCardExpiry(month, year)
+                BankCardExpiry(expiry = expiry)
             }
         }
     }

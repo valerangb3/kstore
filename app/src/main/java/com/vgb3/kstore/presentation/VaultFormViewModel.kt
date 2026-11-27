@@ -150,39 +150,38 @@ class VaultFormViewModel(
     }
 
     fun createVault(onSaved: () -> Unit) {
-        val curState = formState.value
+        if (isSaving.value) return
+        val curState = formState.value ?: return
+        isSaving.value = true
         viewModelScope.launch {
-            isSaving.value = true
             try {
-                curState?.let { state ->
-                    when (state) {
-                        is RecordForm.Login -> {
-                            vaultInteractor.createVaultItem(
-                                CreateVaultItem.Login(
-                                    title = state.appNameInput,
-                                    url = state.urlInput,
-                                    login = state.loginInput,
-                                    password = state.passwordInput,
-                                    categoryId = state.selectedCategoryId
-                                )
+                when (curState) {
+                    is RecordForm.Login -> {
+                        vaultInteractor.createVaultItem(
+                            CreateVaultItem.Login(
+                                title = curState.appNameInput,
+                                url = curState.urlInput,
+                                login = curState.loginInput,
+                                password = curState.passwordInput,
+                                categoryId = curState.selectedCategoryId
                             )
-                        }
-                        is RecordForm.BankCard -> {
-                            val (month, year) = parseCardExpiry(state.cardExpiry) ?: return@launch
-                            vaultInteractor.createVaultItem(
-                                CreateVaultItem.BankCard(
-                                    title = state.cardTitle,
-                                    cardNumber = state.cardNumber,
-                                    cardholderName = state.cardHolder,
-                                    expirationMonth = month,
-                                    expirationYear = year,
-                                    cvv = state.cardCvv,
-                                    categoryId = state.selectedCategoryId
-                                )
-                            )
-                        }
-                        is RecordForm.SecureNote -> TODO()
+                        )
                     }
+                    is RecordForm.BankCard -> {
+                        val (month, year) = parseCardExpiry(curState.cardExpiry) ?: return@launch
+                        vaultInteractor.createVaultItem(
+                            CreateVaultItem.BankCard(
+                                title = curState.cardTitle,
+                                cardNumber = curState.cardNumber,
+                                cardholderName = curState.cardHolder,
+                                expirationMonth = month,
+                                expirationYear = year,
+                                cvv = curState.cardCvv,
+                                categoryId = curState.selectedCategoryId
+                            )
+                        )
+                    }
+                    is RecordForm.SecureNote -> TODO()
                 }
                 val previous = formState.getAndUpdate { current ->
                     if (current === curState) null else current

@@ -35,8 +35,12 @@ fun entryProvider(
             type = key.type,
             vaultFormViewModel = vaultFormViewModel,
             onSave = {
-                vaultFormViewModel.createVault()
-                navigator.removeLast()
+                vaultFormViewModel.createVault {
+                    if (navigator.currentKey == key) {
+                        navigator.removeLast()
+                    }
+                }
+                //navigator.removeLast()
             },
             onClose = { navigator.removeLast() }
         )

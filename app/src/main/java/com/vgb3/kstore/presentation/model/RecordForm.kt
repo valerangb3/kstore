@@ -27,7 +27,6 @@ sealed interface RecordForm {
     ) : RecordForm
 }
 
-//lastFour: String = "••••
 fun RecordForm.BankCard.toPreview(): BankCardPreviewUiState {
     val expiryDigits = cardExpiry.filter(Char::isDigit).take(4)
     val month = expiryDigits.take(2)

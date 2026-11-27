@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
+import com.vgb3.kstore.data.datasource.local.db.entities.VaultBankCardEntity
 import com.vgb3.kstore.data.datasource.local.db.entities.VaultRecordTypeEntity
 import com.vgb3.kstore.data.datasource.local.db.entities.VaultCategoryEntity
 import com.vgb3.kstore.data.datasource.local.db.entities.VaultEntity
@@ -18,6 +19,9 @@ interface VaultDao {
 
     @Insert(entity = VaultLoginEntity::class)
     suspend fun insertLoginVault(vaultLogin: VaultLoginEntity): Long
+
+    @Insert(entity = VaultBankCardEntity::class)
+    suspend fun insertBankCardVault(vaultBankCard: VaultBankCardEntity): Long
 
     @Query("SELECT * FROM vault_table")
     fun getVaultSummaryItemsOld(): Flow<List<VaultEntity>>
@@ -52,6 +56,13 @@ interface VaultDao {
     suspend fun insertVaultLoginItem(item: VaultEntity, login: VaultLoginEntity): Long {
         val generatedId = insertNewVault(item)
         insertLoginVault(login.copy(vaultItemId = generatedId))
+        return generatedId
+    }
+
+    @Transaction
+    suspend fun insertVaultBankCardItem(item: VaultEntity, bankCard: VaultBankCardEntity): Long {
+        val generatedId = insertNewVault(item)
+        insertBankCardVault(bankCard.copy(vaultItemId = generatedId))
         return generatedId
     }
 

@@ -12,6 +12,7 @@ import com.vgb3.kstore.data.datasource.local.db.KStoreDataBase
 import com.vgb3.kstore.data.datasource.local.db.entities.VaultCategoryEntity
 import com.vgb3.kstore.data.datasource.local.db.entities.VaultRecordTypeEntity
 import com.vgb3.kstore.data.datasource.local.db.migrations.MIGRATION_1_2
+import com.vgb3.kstore.data.datasource.local.db.migrations.MIGRATION_2_3
 import com.vgb3.kstore.data.datasource.local.settings.SettingsDataStoreDataSource
 import com.vgb3.kstore.data.datasource.local.settings.SettingsLocalDataSource
 import com.vgb3.kstore.data.repository.CategoryRepositoryImpl
@@ -104,7 +105,7 @@ class Container(
                 KStoreDataBase::class.java,
                 "database.db"
             )
-                .addMigrations(MIGRATION_1_2)
+                .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
                 .addCallback(object : RoomDatabase.Callback() {
                     override fun onCreate(db: SupportSQLiteDatabase) {
                         super.onCreate(db)

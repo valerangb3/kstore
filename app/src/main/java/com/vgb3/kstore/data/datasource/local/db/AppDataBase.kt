@@ -12,7 +12,7 @@ import com.vgb3.kstore.data.datasource.local.db.entities.VaultSecureNoteEntity
 
 
 @Database(
-    version = 2,
+    version = 3,
     entities = [
         VaultEntity::class,
         VaultLoginEntity::class,

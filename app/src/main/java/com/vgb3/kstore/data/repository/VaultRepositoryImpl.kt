@@ -2,6 +2,8 @@ package com.vgb3.kstore.data.repository
 
 import com.vgb3.kstore.data.datasource.local.db.dao.VaultDao
 import com.vgb3.kstore.data.model.VaultItemType
+import com.vgb3.kstore.data.utils.map.toVaultBankCardData
+import com.vgb3.kstore.data.utils.map.toVaultBankCardEntity
 import com.vgb3.kstore.data.utils.map.toVaultEntity
 import com.vgb3.kstore.data.utils.map.toVaultItemSummary
 import com.vgb3.kstore.data.utils.map.toVaultLoginData
@@ -37,13 +39,20 @@ class VaultRepositoryImpl(
         return when(vaultItem) {
             is VaultItem.VaultLogin -> vaultDao.insertVaultLoginItem(
                 item = vaultItem
-                    .toVaultSummaryData()
-                    .toVaultEntity(VaultItemType.LOGIN),
+                    .toVaultSummaryData(VaultItemType.LOGIN)
+                    .toVaultEntity(),
                 login = vaultItem
                     .toVaultLoginData()
                     .toVaultLoginEntity()
             )
-            is VaultItem.VaultBankCard -> TODO()
+            is VaultItem.VaultBankCard -> vaultDao.insertVaultBankCardItem(
+                item = vaultItem
+                    .toVaultSummaryData(VaultItemType.BANK_CARD)
+                    .toVaultEntity(),
+                bankCard = vaultItem
+                    .toVaultBankCardData()
+                    .toVaultBankCardEntity()
+            )
             is VaultItem.VaultSecureNote -> TODO()
         }
     }

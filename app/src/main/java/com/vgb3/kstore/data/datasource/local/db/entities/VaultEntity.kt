@@ -62,7 +62,17 @@ data class VaultLoginItemEntity(
     val loginInfo: VaultLoginEntity
 )
 
-@Entity(tableName = "vault_bank_card_table")
+@Entity(
+    tableName = "vault_bank_card_table",
+    foreignKeys = [
+        ForeignKey(
+            entity = VaultEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["vaultItemId"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
+)
 data class VaultBankCardEntity(
     @PrimaryKey
     val vaultItemId: Long,

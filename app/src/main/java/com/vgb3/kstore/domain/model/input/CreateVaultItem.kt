@@ -10,9 +10,13 @@ sealed interface CreateVaultItem {
     ) : CreateVaultItem
 
     data class BankCard(
-        val categoryId: Long?,
+        val title: String,
         val cardNumber: String,
-        val cvv: Int
+        val cardholderName: String,
+        val expirationMonth: Int,
+        val expirationYear: Int,
+        val cvv: String,
+        val categoryId: Long?,
     ) : CreateVaultItem
 
     data class SecureNote(

@@ -28,7 +28,19 @@ class VaultInteractorImpl(
                 password = createVaultItem.password,
                 url = createVaultItem.url
             )
-            is CreateVaultItem.BankCard -> TODO()
+            is CreateVaultItem.BankCard -> VaultItem.VaultBankCard(
+                id = 0,
+                title = createVaultItem.title,
+                createdAt = now,
+                updatedAt = now,
+                isFavorite = false,
+                categoryId = createVaultItem.categoryId,
+                cardholderName = createVaultItem.cardholderName,
+                cardNumber = createVaultItem.cardNumber,
+                cvv = createVaultItem.cvv.toString(),
+                expirationMonth = createVaultItem.expirationMonth,
+                expirationYear = createVaultItem.expirationYear
+            )
             is CreateVaultItem.SecureNote -> TODO()
         }
         return withContext(coroutineDispatcher) {
